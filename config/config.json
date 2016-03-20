@@ -1,0 +1,77 @@
+{
+  "settings":
+  [
+    {
+      "description": "version",
+      "value": "0210.024"
+    },
+    {
+      "description":  "Site1",
+      "value": "Site1"
+    },
+    {
+      "description": "rtuid",
+      "value": "1"
+    },
+    {
+      "description":  "LocalIP",
+      "value": "192.168.1.198"
+    },
+    {
+      "description": "LocalWebPort",
+      "value": "8000"
+    },
+    {
+      "description": "Default HTML page",
+      "value": "default.html"
+    },
+    {
+      "description": "ServerIP",
+      "value": "192.168.1.95"
+    },
+    {
+      "description": "Server Port",
+      "value": 2344
+    },
+    {
+      "description": "Fixed Tx Time",
+      "value": 2
+    },
+    {
+      "description": "Comms Timeout",
+      "value": 30
+    },
+    {
+      "description": "TimeZone",
+      "value": 2
+    },
+    {
+      "description": "ModBusSlavePort",
+      "value": 2030
+    }
+
+  ]
+  ,
+  "modbus-tcp-io": [
+    {
+      "description": "Reservoir Level",
+      "unitid": 0,
+      "registertype": "readCoils",
+      "startAddress": 10,
+      "endAddress": 10,
+      "readMask": 65535,
+      "writeMask": 0,
+      "value": 67
+    },
+    {
+      "description": "Pump1 status",
+      "unitid": 0,
+      "registertype": "readCoils",
+      "startAddress": 11,
+      "endAddress": 11,
+      "readMask": 1,
+      "writeMask": 0,
+      "value": 65535
+  }]
+}
+

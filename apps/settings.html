@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style/bootstrap.min.css">
+    <link rel="stylesheet" href="style/rtu.css">
+    <title>RTU Settings</title>
+</head>
+<body>
+
+
+<div class="navbar-default">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <input type="button" class="btn btn-default menu" value="Home" onclick="__xaf_PrePaidVendingV1.SelectPage(0);">
+            <input type="button" class="btn btn-default pull-right menu" value="Options" onclick="__xaf_PrePaidVendingV1.SelectPage(4);">
+        </div>
+    </div>
+</div>
+
+
+<div id="divPage" class="container">
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h2 class="panel-title">RTU Settings</h2>
+        </div>
+        <div class="panel-body">
+
+            <div id="divMeterNumber">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="txtRTUDescription">RTU Description:</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" placeholder="Enter RTU Description (eg: Site1 or Zuma Reservoir)" id="txtRTUDescription" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="txtRTUID">RTUID:</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" placeholder="Enter RTU ID (eg: 1)" id="txtRTUID" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="txtLocalIP">Local IP:</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" placeholder="Enter Local IP (eg: 192.168.1.95)" id="txtLocalIP" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="txtLocalWebPort">Local Web Port:</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" placeholder="Enter Local Web Port (eg: 8000)" id="txtLocalWebPort" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="txtDefaultHTMLPage">Default HTML page:</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" placeholder="Enter Default HTML page (eg: default.html)" id="txtDefaultHTMLPage" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="txtServerIP">ServerIP:</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" placeholder="Enter ServerIP (eg: www.rmcapps.co.za)" id="txtServerIP" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="txtServerPort">Server Port:</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" placeholder="Enter Server Port (eg: 2001)" id="txtServerPort" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="txtFixedTXTime">Fixed Tx Time (seconds):</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" placeholder="Enter Fixe Tx Time (eg: 3600)" id="txtFixedTXTime" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="txtCommsTimeout">Comms Timeout (seconds):</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" placeholder="Enter Comms Timeout (eg: 6000)" id="txtCommsTimeout" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="txtTimezone">Timezone (UTC):</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" placeholder="Enter UTC Timezone (eg: -2)" id="txtTimezone" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="txtModbusSlavePort">Modbus Slave Port:</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" placeholder="Enter Modbus Slave Port (eg: 5021)" id="txtModbusSlavePort" type="text">
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+        <input type="button" class="btn btn-success btn-lg btn-block pull-right" value="Save" onclick="return __xaf_PrePaidVendingV1.processVendVoucher();">
+    </div>
+
+
+</div>
+
+
+
+<script src="scripts/jquery-2.1.4.min.js"></script>
+<script src="scripts/bootstrap.min.js"></script>
+</body>
+</html>

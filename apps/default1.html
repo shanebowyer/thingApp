@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>RMC Telemetry Site1</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="scripts/myCanvas.js"></script>
+    <script type="text/javascript" src="scripts/socket.io.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            LoadApp();
+        });
+
+        $(window).load(function () {
+            //console.log("window loaded");
+        });
+    </script>
+</head>
+<body>
+    <div>
+        <table width="100%">
+            <tr>
+                <td align="middle">
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <img src="images/on.jpg" onclick="return ControlIO_onclick('DigOut',255);">
+                    <img src="images/off.jpg" onclick="return ControlIO_onclick('DigOut',0);">
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <button style="width:100px" onclick="return ReadIO_onclick();">Read</button><input type="text" id="txtValue" style="width:100%" value=""/>
+    <button style="width:100px" onclick="return TestFMX();">TestFMX</button><input type="text" id="txtValue" style="width:100%" value=""/>
+</body>
+</html>

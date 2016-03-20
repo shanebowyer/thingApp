@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>RMC Telemetry Site1</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <script type="text/javascript" src="scripts/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="scripts/myCanvas.js"></script>
+    <script type="text/javascript" src="scripts/socket.io.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            LoadApp();
+        });
+
+        $(window).load(function () {
+            //console.log("window loaded");
+        });
+    </script>
+
+</head>
+<body>
+<h1>RMC Telemetry Site1</h1>
+
+<div>
+    <button style="width:100px" onclick="return ControlIO_onclick('DigOut',255);">ON</button>
+    <button style="width:100px" onclick="return ControlIO_onclick('DigOut',0);">OFF</button>
+</div>
+
+<br/>
+<br/>
+<br/>
+<h2>Settings</h2>
+<li>
+    <span style="display: inline-block; width: 200px; text-align: left;">Fixed TxTime:</span>
+    <span style="display: inline-block; width: 80px; text-align: left;"><input type="text" id="app_Tx style="width:100%" value="60"/></span>
+</li>
+<li>
+    <span style="display: inline-block; width: 200px; text-align: left;">Link Fail Time:</span>
+    <span style="display: inline-block; width: 80px; text-align: left;"><input type="text" id="app_Link style="width:100%" value="10"/></span>
+</li>
+<br/>
+<button style="width:100px" onclick="return __rlsm_telemetry.test();">Save</button>
+
+
+
+<h2>Current Status</h2>
+<input id="Button1" type="button" value="button" onclick="return sendCommand_onclick();" />
+<br/>
+<canvas id="Canvas1" width="300px" height="300px" style="border:0px solid #000000;"></canvas>
+<br/>
+<canvas id="Canvas2" width="300px" height="300px" style="border:0px solid #000000;"></canvas>
+
+
+
+<h2>Historical Log</h2>
+<li>
+    <span style="display: inline-block; width: 200px; text-align: left;">DateAndTime: 2015-05-09 12:12:23 Res Level 98%</span>
+    <span style="display: inline-block; width: 80px; text-align: left;"><input type="text" id="app_Tx style="width:100%" value="78%"/></span>
+</li>
+
+
+<div>
+    <h1>Test Control</h1>
+    <input type="text" id="txtValueWrite" style="width:100%" value=""/>
+    <button style="width:100px" onclick="return ControlIO_onclick('DigOut');">Write Digital</button>
+    <button style="width:100px" onclick="return ControlIO_onclick('Counter0',-1);">Write Counter0</button>
+    <button style="width:100px" onclick="return ControlIO_onclick('Counter1',-1);">Write Counter1</button>
+    <button style="width:100px" onclick="return ReadIO_onclick();">Read</button><input type="text" id="txtValue" style="width:100%" value=""/>
+</div>
+
+<div>
+    <h1>do get</h1>
+    <button style="width:100px" onclick="return doGet_onclick('255');">Write(get) Digital On</button>
+    <button style="width:100px" onclick="return doGet_onclick('0');">Write(get) Digital Off</button>
+</div>
+
+</body>
+</html>
+
