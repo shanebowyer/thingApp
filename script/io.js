@@ -316,11 +316,12 @@ var sbModule = function() {
     var myIOModbusTCP_DIO8 = new iomodbustcp.ioModbus('MODMUX-DIO8');
     myIOModbusTCP_DIO8.init(myTCPClient_DIO8,0);
 
-    console.log('RS232');
-    var myrs232 = new rs232.rmcRS232;
-    myrs232.init(1);
-    var myIOModbusSerial_GARFEP = new iomodbusserial.ioModbusSerial('GAR-FEP');
-    myIOModbusSerial_GARFEP.init(myrs232,0);
+    // console.log('RS232');
+    // var myrs232 = new rs232.rmcRS232;
+    // myrs232.init(1);
+    // var myIOModbusSerial_GARFEP = new iomodbusserial.ioModbusSerial('GAR-FEP');
+    // console.log('here2');
+    // myIOModbusSerial_GARFEP.init(myrs232,0);
 
 
 

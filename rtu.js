@@ -26,7 +26,7 @@ var bodyParser 	= require('body-parser');		// call body-parser
 try{
     var rtu = {
 
-        initWeb: function(){
+        initWeb: function(retErr){
             try{
                 var app	= express();
                 // Allow cross domain for AJAX queries
@@ -79,7 +79,6 @@ try{
                 });
                 app.get('/api',function(req,res){
                     var response={header:{result:{}},content:{}};
-                    console.log('here');
                     if(req.query.reqIOToWrite == 'DigOut'){
                         var cs = mywebsvrComms.getIOStatus(1);
                         response.content = cs.DigitalsExt;
@@ -101,12 +100,22 @@ try{
                 //REGISTER ROUTES
                 //All of the routes will be prefixed with the value defined in the ROUTE_PARAM.API_RES parameter
                 app.use('/api', router);
+                //ErrorHandler
+                app.use(function(err, req, res, next) {
+                    //console.log('router error: ', err);
+                    var response={header:{result:{}},content:{}};
+                    response.header.result = 'failed';
+                    response.content = err.message.toString();
+                    retErr(err);
+                    res.json(response);
+                });                
 
                 app.listen(port);
                 console.log('API connect on port ' + port);
 
             }
             catch(e){
+                next1(e);
                 console.log(e.message.toString());
             }
         }
@@ -115,14 +124,18 @@ try{
     }
 
     //rtu.readConfig();
-    rtu.initWeb();
+    rtu.initWeb(function(err){
+        console.log('rtu error: ', err);
+    });
 
     var WebSvrIp = settings.searchSettings('ServerIP');
     var WebSvrPort = settings.searchSettings('Server Port');
     var Debug = 1;
 
     var myWebSvrTCPClient = new tcpClient.rmcTCP;
-    myWebSvrTCPClient.init(WebSvrIp,WebSvrPort,Debug);
+    myWebSvrTCPClient.init(function(err){
+        console.log('WebSvrTCPClientError', err);
+    },WebSvrIp,WebSvrPort,Debug);
 
 
     var myIO = new io.rmcio;

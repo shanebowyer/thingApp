@@ -18,13 +18,13 @@ var sbModule = function() {
 
 
     var pubTCP = {
-        init: function (Server, Port, Debug) {
+        init: function (retErr,Server, Port, Debug) {
             thisServer = Server;
             thisPort = Port;
             thisdebug = Debug;
-            pubTCP.connect();
+            pubTCP.connect(retErr);
         },
-        connect: function () {
+        connect: function (retErr) {
 
             //Establish TCP socket connection to RMC and listen for Data from RTU. We subscribe to messages we want to hear.
 
@@ -70,6 +70,7 @@ var sbModule = function() {
                     RMCSocket.Status = 'DISCONNECTED';
                     if (thisdebug == 1) {
                         console.log("RMCSocket - DISCONNECTED-error");
+                        retErr("retErr: RMCSocket - DISCONNECTED-error");
                     }
                     newclient.destroy();
                 });
