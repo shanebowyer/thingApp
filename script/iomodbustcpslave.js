@@ -1,7 +1,7 @@
 
 
 
-var settings = require(__base + '/script/settings.js');
+var settings = require(__base + '/config.js');
 
 
 var EventEmitter = require( "events" ).EventEmitter;
@@ -13,7 +13,7 @@ var tcpSvr = require(__base + '/script/tcpsvr.js');
 var ModbusComms = new tcpSvr.rmcTCPSvr;
 
 
-var sbModule = function(IOType) {
+var sbModule = function() {
     var self = this;
 
     var thisdebug = 0;
@@ -125,8 +125,8 @@ var sbModule = function(IOType) {
         }
     }
 
-    ModbusComms.init(settings.searchSettings('LocalIP'),settings.searchSettings('ModBusSlavePort'),1);
-    console.log('Listening for MODBUS on: ' + settings.searchSettings('ModBusSlavePort'));
+    ModbusComms.init(settings.localwebserver.ipAddress,settings.modbusslave.port,1);
+    console.log('Listening for MODBUS on: ' + settings.modbusslave.port);
 
     return pubIOModbusTCPSlave
 

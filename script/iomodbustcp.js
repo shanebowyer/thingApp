@@ -1,7 +1,7 @@
 
 
 
-var settings = require(__base + '/script/settings.js');
+var settings = require(__base + '/config.js');
 
 
 var EventEmitter = require( "events" ).EventEmitter;
@@ -98,9 +98,9 @@ var sbModule = function(IOType) {
             console.log('ReadModbus Sent');
             var arrayReturn;
             //arrayReturn = pubIOModbus.BuildModbusRegisterToRead(1,3,1,1);
-            if(thisIOType == 'MODMUX-DIO8') {
+            if(thisIOType == 'TCP-MODMUX-DIO8') {
                 arrayReturn = pubIOModbus.BuildModbusRegisterToRead(1, 3, 1, 20);
-            }else if(thisIOType == 'MODMUX-AI8'){
+            }else if(thisIOType == 'TCP-MODMUX-AI8'){
                 arrayReturn = pubIOModbus.BuildModbusRegisterToRead(1, 3, 1, 9);
             }else{
                 arrayReturn = pubIOModbus.BuildModbusRegisterToRead(1,3,2,1);
@@ -123,7 +123,7 @@ var sbModule = function(IOType) {
             var arrayReturn;
             var StartRegister = 0;
             var NumberOfRegisters;
-            if(thisIOType == 'MODMUX-DIO8'){
+            if(thisIOType == 'TCP-MODMUX-DIO8'){
                 if(IOToWrite == 'DigOut'){
                     StartRegister = 2;
                     NumberOfRegisters = 1;

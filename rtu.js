@@ -18,7 +18,7 @@ var modbusslave = require(__base + './script/iomodbustcpslave.js');
 
 
 //var myPlc = require('./script/plc.js');
-var settings = require('./script/settings.js');
+var settings    = require(__base + './config.js');
 var express		= require('express'); 			// call express
 var cors		= require('cors');				// call cors
 var bodyParser 	= require('body-parser');		// call body-parser
@@ -123,38 +123,40 @@ try{
 
     }
 
-    //rtu.readConfig();
+
     rtu.initWeb(function(err){
         console.log('rtu error: ', err);
     });
 
-    var WebSvrIp = settings.searchSettings('ServerIP');
-    var WebSvrPort = settings.searchSettings('Server Port');
     var Debug = 1;
 
-    var myWebSvrTCPClient = new tcpClient.rmcTCP;
-    myWebSvrTCPClient.init(function(err){
-        console.log('WebSvrTCPClientError', err);
-    },WebSvrIp,WebSvrPort,Debug);
+    var settingsRemoteWebserver = settings.remotewebserver;
+    var remoteServerTCPClient = new tcpClient.rmcTCP;
+    remoteServerTCPClient.init(function(err){
+        console.log('remoteServerTCPClient error', err);
+    },settingsRemoteWebserver.ipAddress,settingsRemoteWebserver.port,Debug);
 
 
     var myIO = new io.rmcio;
     myIO.init();
 
-    var myiomodbustcpslave = new modbusslave.ioModbusTCPSlave;
-    myiomodbustcpslave.init(myIO,1);
+    var settingsModbusSlave = settings.modbusslave;
+    if(settingsModbusSlave.enabled == 1){
+        var ioModbustcpslave = new modbusslave.ioModbusTCPSlave;
+        ioModbustcpslave.init(myIO,1);
+    }
 
 
-    var myRTULog = new rtulog.rmcLog;
-    myRTULog.init(myIO,1);
+    //var myRTULog = new rtulog.rmcLog;
+    // myRTULog.init(myIO,1);
 
-    var myPlc = new plc.rmcplc;
-    myPlc.init(myIO,myRTULog,1);
+    // var myPlc = new plc.rmcplc;
+    // myPlc.init(myIO,myRTULog,1);
 
 
 
-    var mywebsvrComms = new websvrcomms.webSVRComms;
-    mywebsvrComms.init(myWebSvrTCPClient,myRTULog,myIO,Debug);
+    //var mywebsvrComms = new websvrcomms.webSVRComms;
+    // mywebsvrComms.init(myWebSvrTCPClient,myRTULog,myIO,Debug);
 
     // console.log('RS232');
     // var myrs232 = new rs232.rmcRS232;

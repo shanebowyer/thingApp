@@ -1,7 +1,7 @@
 
 
 
-var settings = require(__base + '/script/settings.js');
+var settings = require(__base + '/config.js');
 
 var EventEmitter = require( "events" ).EventEmitter;
 var util = require('util');
@@ -9,21 +9,26 @@ var util = require('util');
 
 var SerialPort = require("serialport").SerialPort
 
-var sbModule = function() {
+var sbModule = function(err) {
     var self = this;
 
     var thisdebug = 0;
 
-    var serialPort = new SerialPort("COM3", {
-      baudrate: 9600
-    }, false); // this is the openImmediately flag [default is true] 
+    var serialPort;
+    // var serialPort = new SerialPort("COM3", {
+    //   baudrate: 9600
+    // }, false); // this is the openImmediately flag [default is true] 
 
 
     var pubRS232 = {
 
 
-        init: function(debug){
+        init: function(commPort,baudrate,debug){
             thisdebug = debug;
+
+            serialPort = new SerialPort(commPort, {
+              baudrate: baudrate
+            }, false); // this is the openImmediately flag [default is true] 
 
             console.log('Init RS232');
 
@@ -39,12 +44,16 @@ var sbModule = function() {
                 }
                 catch (e) {
                     console.log('socket data error: ' + e);
+                    err(e);
                 }
 
 
 
               });
               serialPort.write("ls\n", function(err, results) {
+                if(err){
+                    err(e);
+                }
                 console.log('err ' + err);
                 console.log('results ' + results);
               });

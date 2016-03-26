@@ -32,7 +32,7 @@ var sbModule = function() {
             try{
                 var newserver = new net.createServer();
                 newserver.listen(thisPort, thisServer);
-                console.log('Server listening on ' + newserver.address.address +':'+ newserver.address.port);
+                console.log('Server listening on ' + thisServer +':'+ thisPort);
                 newserver.on('connection', function(sock) {
                     mySocks.push(sock);
                     console.log('CONNECTED: ' + sock.remoteAddress +':'+ sock.remotePort);

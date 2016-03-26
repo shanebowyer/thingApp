@@ -1,7 +1,7 @@
 
 
 
-var settings = require(__base + '/script/settings.js');
+var settings = require(__base + '/config.js');
 var iomodbustcp = require(__base + '/script/iomodbustcp.js');
 var tcpClient = require(__base + '/script/tcpclient.js');
 

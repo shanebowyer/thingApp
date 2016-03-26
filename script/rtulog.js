@@ -5,7 +5,7 @@
 
 
 
-var settings = require(__base + '/script/settings.js');
+var settings = require(__base + '/config.js');
 
 
 var EventEmitter = require( "events" ).EventEmitter;
@@ -26,7 +26,7 @@ var sbModule = function() {
         var currentLogIndex = 0;
         var myIO;
 
-        var timezone = settings.searchSettings('TimeZone');
+        var timezone = settings.timeZone;
 
         var pubRTULog = {
             log: [],
@@ -35,8 +35,8 @@ var sbModule = function() {
                     'Sent': 0,
                     'ID': 1,
                     'Start': '%1',
-                    'VersionNumber': settings.searchSettings('version'),
-                    'SerialNumber': settings.searchSettings('rtuid'),
+                    'VersionNumber': settings.version,
+                    'SerialNumber': settings.localwebserver.rtuId,
                     'MessageID': thisMessageID,
                     'DateTime': 22351140,
                     'TxFlag': 1,
@@ -172,8 +172,8 @@ var sbModule = function() {
                 return vDateValue;
             },
             convertJsonToOutput: function(jsonData){
-                jsonData.VersionNumber = settings.searchSettings('version');
-                jsonData.SerialNumber = settings.searchSettings('rtuid');
+                jsonData.VersionNumber = settings.version;
+                jsonData.SerialNumber = settings.rtuId;
                 var strOutput = ''
                     + jsonData.Start
                     + ' ' + jsonData.VersionNumber
@@ -222,7 +222,7 @@ var sbModule = function() {
         return pubRTULog
     }
     catch(error){
-        console.log('rtulog The following error has occurred: '+error.message);
+        console.log('rtulog The following error has occurred: ', error);
     }
 
 
