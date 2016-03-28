@@ -38,7 +38,7 @@ try{
                 // Set the connection port
                 var port = 8000; 		// set our port
                 // Setup processing at the base URL to retrieve static assets
-                app.use('/', express.static(__dirname + '/apps'));
+                app.use('/', express.static(__dirname + '/app'));
                 app.get('/', function(req, res){
                     res.sendFile('default.html',{ root: __dirname + '/apps'} );
                 });
