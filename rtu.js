@@ -40,7 +40,7 @@ try{
                 // Setup processing at the base URL to retrieve static assets
                 app.use('/', express.static(__dirname + '/app'));
                 app.get('/', function(req, res){
-                    res.sendFile('default.html',{ root: __dirname + '/apps'} );
+                    res.sendFile('index.html',{ root: __dirname + '/apps'} );
                 });
 
                 // API ROUTES

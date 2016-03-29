@@ -9,7 +9,7 @@ var settings = {
   "localwebserver":{
     "ipAddress": "127.0.0.1",
     "port": 8000,
-    "defaultHtmlPage": "default.html"
+    "defaultHtmlPage": "index.html"
   },
   "modbusslave":{
       "enabled": 1,
@@ -23,8 +23,8 @@ var settings = {
     {
       "ioType": "TCP-MODMUX-DIO8",
       "enabled": 1,
-      "ipAddress": "192.168.1.198",
-      "port": 12345,
+      "ipAddress": "192.168.1.9",
+      "port": 502,
       "description": "Reservoir Level",
       "unitid": 0,
       "registertype": "readCoils",
@@ -37,8 +37,8 @@ var settings = {
     {
       "ioType": "TCP-MODMUX-AI8",
       "enabled": 1,
-      "ipAddress": "192.168.1.198",
-      "port": 12346,
+      "ipAddress": "192.168.1.8",
+      "port": 502,
       "description": "Pump1 status",
       "unitid": 0,
       "registertype": "readCoils",

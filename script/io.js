@@ -114,8 +114,6 @@ var sbModule = function() {
             }
         },
         processData: function(data){
-            console.log('on processData done',data);
-
             switch(data.IOType){
                 case('TCP-MODMUX-DIO8'):
                     if(thisdebug == 1){
@@ -195,7 +193,6 @@ var sbModule = function() {
                         i = pubIO.arrCurrentStatus.length;
                     }
 
-                    console.log('found',bFound);
 
                     pubIO.arrCurrentStatus[i].Analog0 = data.data[9];
                     pubIO.arrCurrentStatus[i].Analog0 <<= 8;
@@ -205,8 +202,6 @@ var sbModule = function() {
                     pubIO.arrCurrentStatus[i].Analog1 <<= 8;
                     pubIO.arrCurrentStatus[i].Analog1 += data.data[12];
 
-                    console.log('Address', Address);
-                    console.log('Analog0',pubIO.arrCurrentStatus[i].Analog0);
                     break;
                 case('GAR-FEP'):
                     if(thisdebug == 1){
