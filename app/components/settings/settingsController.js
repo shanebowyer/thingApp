@@ -1,9 +1,11 @@
-global.__base = __dirname + '/';
-var settings    = require(__base + './config.js');
-
-
 angular.module('myApp')
-.controller('settingsCtrl', function($scope,$state) {
+.controller('settingsCtrl', function($scope,$state,api) {
+	console.log('gettingio');
+	$scope.io = api.getAbsolutePath();
+	api.getSettings(function(data){
+		console.log('done',data);
 
-    $scope.io = 'a';//settings.io;
+	},function(data){
+		console.log('error',data);
+	})
 });

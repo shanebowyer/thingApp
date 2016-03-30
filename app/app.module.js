@@ -1,7 +1,6 @@
 angular.module('myApp', ['ui.router'])
 .run(function($rootScope, $state) {
-    
-
+    $rootScope.header = {UserName:'paul@realtimesolutions.co.za', Password:'story', System:'RC'};
 })
 .config(function($stateProvider, $urlRouterProvider){
     $stateProvider

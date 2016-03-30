@@ -147,16 +147,18 @@ try{
     }
 
 
-    //var myRTULog = new rtulog.rmcLog;
-    // myRTULog.init(myIO,1);
+    var myRTULog = new rtulog.rmcLog;
+    myRTULog.init(myIO,1);
 
     // var myPlc = new plc.rmcplc;
     // myPlc.init(myIO,myRTULog,1);
 
 
+    var myWebSvrTCPClient = new tcpSvr.rmcTCPSvr();
+    myWebSvrTCPClient.init('127.0.0.1',1254,1);
 
-    //var mywebsvrComms = new websvrcomms.webSVRComms;
-    // mywebsvrComms.init(myWebSvrTCPClient,myRTULog,myIO,Debug);
+    var mywebsvrComms = new websvrcomms.webSVRComms;
+    mywebsvrComms.init(myWebSvrTCPClient,myRTULog,myIO,Debug);
 
     // console.log('RS232');
     // var myrs232 = new rs232.rmcRS232;
