@@ -13,6 +13,7 @@ var tcpClient = require(__base + './script/tcpclient.js');
 var io = require(__base + './script/io.js');
 var plc = require(__base + './script/plc.js');
 var modbusslave = require(__base + './script/iomodbustcpslave.js');
+
 //var rs232 = require(__base + './script/rs232.js');
 
 
@@ -22,6 +23,7 @@ var settings    = require(__base + './config.js');
 var express		= require('express'); 			// call express
 var cors		= require('cors');				// call cors
 var bodyParser 	= require('body-parser');		// call body-parser
+var http      = require('http');
 
 try{
     var rtu = {
@@ -100,6 +102,7 @@ try{
                 //REGISTER ROUTES
                 //All of the routes will be prefixed with the value defined in the ROUTE_PARAM.API_RES parameter
                 app.use('/api', router);
+
                 //ErrorHandler
                 app.use(function(err, req, res, next) {
                     //console.log('router error: ', err);
@@ -110,12 +113,45 @@ try{
                     res.json(response);
                 });                
 
-                app.listen(port);
+
+                var server = http.createServer(app);
+                var websockio = require('socket.io').listen(server);
+                server.listen(port);
+
+
+                websockio.sockets.on('connection', function (socket) {
+                    console.log('websockio connection made:');
+
+                    setInterval(function(data){
+                        console.log('sending socketio data to client');
+                        socket.emit('message','test');
+                    },10000);
+
+                    socket.on('message', function(data){
+                        var resData = {
+                            message: data
+                        }
+                        console.log('Server recieved client socketio data',data);
+                    });
+                });
+
+                console.log('connecting story');
+                var test = require('socket.io-client').connect('http://localhost:8000');
+                console.log('connecting story1');
+                test.on('connect',function(data){
+                    console.log('test Client Connected to Server socketio');
+                    test.on('message',function(data){
+                        console.log('test socketio server data reveived',data);
+                    });
+                });
+
+
+
                 console.log('API connect on port ' + port);
 
             }
             catch(e){
-                next1(e);
+                //next1(e);
                 console.log(e.message.toString());
             }
         }
@@ -130,35 +166,42 @@ try{
 
     var Debug = 1;
 
+
+
+    var myIO = new io.rmcio;
+    myIO.init();
+
+    //---------------------------Modbus Slave---------------------------//
+    var settingsModbusSlave = settings.modbusslave;
+    if(settingsModbusSlave.enabled == 1){
+        var ioModbustcpslave = new modbusslave.ioModbusTCPSlave;
+        ioModbustcpslave.init(myIO,1);
+    }
+    //---------------------------Modbus Slave---------------------------//
+
+
+    //--------------------------- Log    ---------------------------//
+    var myRTULog = new rtulog.rmcLog;
+    myRTULog.init(myIO,1);
+    //---------------------------End Log---------------------------//
+
+
+
+    //---------------------------Remote Web Server---------------------------//
     var settingsRemoteWebserver = settings.remotewebserver;
     var remoteServerTCPClient = new tcpClient.rmcTCP;
     remoteServerTCPClient.init(function(err){
         console.log('remoteServerTCPClient error', err);
     },settingsRemoteWebserver.ipAddress,settingsRemoteWebserver.port,Debug);
 
-
-    var myIO = new io.rmcio;
-    myIO.init();
-
-    var settingsModbusSlave = settings.modbusslave;
-    if(settingsModbusSlave.enabled == 1){
-        var ioModbustcpslave = new modbusslave.ioModbusTCPSlave;
-        ioModbustcpslave.init(myIO,1);
-    }
-
-
-    var myRTULog = new rtulog.rmcLog;
-    myRTULog.init(myIO,1);
-
-    // var myPlc = new plc.rmcplc;
-    // myPlc.init(myIO,myRTULog,1);
-
-
-    var myWebSvrTCPClient = new tcpSvr.rmcTCPSvr();
-    myWebSvrTCPClient.init('127.0.0.1',1254,1);
-
     var mywebsvrComms = new websvrcomms.webSVRComms;
-    mywebsvrComms.init(myWebSvrTCPClient,myRTULog,myIO,Debug);
+    mywebsvrComms.init(remoteServerTCPClient,myRTULog,myIO,Debug);
+    //---------------------------END Remote Web Server---------------------------//
+
+
+    var myPlc = new plc.rmcplc;
+    myPlc.init(myIO,myRTULog,1);
+
 
     // console.log('RS232');
     // var myrs232 = new rs232.rmcRS232;

@@ -39,32 +39,33 @@ var sbModule = function() {
         },
         runPLCLogic: function(runSpeedMilliseconds){
             setInterval(function(){
-                pubPLC.checkCOFS();
-                if(io.arrCurrentStatus[0] != undefined){
-                    //testDig += 1;
-                    //if(testDig > 255){
-                    //    testDig = 0;
-                    //}
-                    //var digVal = io.arrCurrentStatus[0].Digitals;
-                    //io.WriteRegister(1,'DigOut',testDig);
-                    //io.WriteRegister(1,'Counter0',testDig);
+                pubPLC.checkCOFS(function(COFS){
+                    if(io.arrCurrentStatus[0] != undefined){
+                        //testDig += 1;
+                        //if(testDig > 255){
+                        //    testDig = 0;
+                        //}
+                        //var digVal = io.arrCurrentStatus[0].Digitals;
+                        //io.WriteRegister(1,'DigOut',testDig);
+                        //io.WriteRegister(1,'Counter0',testDig);
 
 
-                    //if(io.arrCurrentStatus[0].Analog0 > 1000){
-                    //    io.WriteRegister(1,'DigOut',1);
-                    //}else{
-                    //    io.WriteRegister(1,'DigOut',0);
-                    //}
-                    //if(io.arrCurrentStatus[0].Analog1 > 1000){
-                    //    io.WriteRegister(1,'DigOut',3);
-                    //}else{
-                    //    io.WriteRegister(1,'DigOut',0);
-                    //}
+                        //if(io.arrCurrentStatus[0].Analog0 > 1000){
+                        //    io.WriteRegister(1,'DigOut',1);
+                        //}else{
+                        //    io.WriteRegister(1,'DigOut',0);
+                        //}
+                        //if(io.arrCurrentStatus[0].Analog1 > 1000){
+                        //    io.WriteRegister(1,'DigOut',3);
+                        //}else{
+                        //    io.WriteRegister(1,'DigOut',0);
+                        //}
 
-                }
+                    }
+                });
             },runSpeedMilliseconds);
         },
-        checkCOFS: function(){
+        checkCOFS: function(done){
             var i = 0;
             var bCOFS = 0;
             var TxFlag = 0;
@@ -113,6 +114,7 @@ var sbModule = function() {
                 var jsonRecord = io.arrCurrentStatus[0];
                 myLog.add(jsonRecord,1,1);
             }
+            done(bCOFS);
         },
         on: function(strEvent,callbackFunction){
             self.on(strEvent,function(data){

@@ -1,6 +1,23 @@
 angular.module('myApp', ['ui.router'])
 .run(function($rootScope, $state) {
     $rootScope.header = {UserName:'paul@realtimesolutions.co.za', Password:'story', System:'RC'};
+
+    $rootScope.io = io.connect('http://localhost:8000');
+    $rootScope.io.on('connect',function(data){
+        console.log('Client Connected to Server socketio');
+        $rootScope.io.on('message',function(data){
+            console.log('socketio server data reveived',data);
+        });
+    });
+
+
+    // var myio = io.connect('http://localhost:8000');
+    // myio.on('connect',function(data){
+    //     console.log('Client Connected to Server socketio');
+    //     myio.on('message',function(data){
+    //         console.log('socketio server data reveived',data);
+    //     });
+    // });
 })
 .config(function($stateProvider, $urlRouterProvider){
     $stateProvider

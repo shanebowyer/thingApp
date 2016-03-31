@@ -24,10 +24,31 @@ angular.module('myApp')
             error(reason);
         });
     };
+    function sendWebSocketData(err,done){
+        var data = {
+            clientData: 'From Client'
+        };
+
+    };
 
     return{
         getAbsolutePath:getAbsolutePath,
         getSettings:getSettings
     }
 
+}])
+angular.module('myApp')
+.factory('io', ['$rootScope', '$http', function io($rootScope, $http){
+    function sendData(){
+        var data = {
+            message: 'triggered'
+        };
+        $rootScope.io.emit('message',data);
+    };
+
+    return{
+        sendData:sendData,
+    }
+
 }]);
+
