@@ -3,6 +3,12 @@
 <head>
 	<title>RTU</title>
 	<!-- <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-ui-router.min.js"></script> -->
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" /> 
+    <link rel="stylesheet" type="text/css" href="/assets/css/Bootstrap.css" /> 
+
+	<script type="text/javascript" src="/assets/libs/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="/assets/libs/Bootstrap.js"></script>
 	<script type="text/javascript" src="/assets/libs/socket.io.js"></script>
 	<script type="text/javascript" src="/assets/libs/angular.min.js"></script>
 	<script type="text/javascript" src="/assets/libs/angular-ui-router.min.js"></script>
@@ -14,6 +20,7 @@
 	<script type="text/javascript" src="/components/appController.js"></script>
 	<script type="text/javascript" src="/components/home/homeController.js"></script>
 	<script type="text/javascript" src="/components/settings/settingsController.js"></script>	
+
 	<!-- <script type="text/javascript" src="app.routes.js"></script> -->
 </head>
 
@@ -21,14 +28,11 @@
 
 <body ng-app="myApp">
 
-
+	<div class="divError" id="divError" ng-show="showdiverror">{{diverror}}</div>
+	<div class="divMsg" id="divMsg" ng-show="showdivmsg">{{divMsg}}</div>
 	
 	<div ui-view="">
 	</div>
-	
-
-
-
 
 </body>
 </html>

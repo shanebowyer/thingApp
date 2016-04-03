@@ -25,6 +25,11 @@ gulp.task('components', function () {
     .pipe(connect.reload());
 });
 
+gulp.task('componentsSettings', function () {
+  gulp.src('./app/components/settings/*.html')
+    .pipe(connect.reload());
+});
+
 gulp.task('componentsjs', function () {
   gulp.src('./app/components/home/*.js')
     .pipe(connect.reload());
@@ -42,8 +47,8 @@ gulp.task('services', function () {
 });
 
 gulp.task('watch', function () {
-  gulp.watch(['./app/*.html', './app/*.js', './app/components/home/*.html', './app/components/home/*.js', './app/services/*.js'],
-        ['html', 'appjs', 'components', 'componentsjs', 'services']);
+  gulp.watch(['./app/*.html', './app/*.js', './app/components/home/*.html', './app/components/settings/*.html', './app/components/home/*.js', './app/services/*.js'],
+        ['html', 'appjs', 'components', 'componentsSettings', 'componentsjs', 'services']);
 });
 
 gulp.task('default', ['connect', 'watch']);

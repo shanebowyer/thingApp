@@ -1,6 +1,7 @@
 angular.module('myApp')
-.factory('api', ['$rootScope', '$http', function api($rootScope, $http){        
-    var url = getAbsolutePath() + 'api';
+.factory('api', ['$rootScope', '$http', '$timeout', function api($rootScope, $http, $timeout){        
+    //var url = getAbsolutePath() + 'api';
+    var url = 'http://127.0.0.1:8000/' + 'api';
     
     function getAbsolutePath() {
         var loc = window.location;
@@ -9,21 +10,31 @@ angular.module('myApp')
     }
 
     function getSettings(done, error){
-        var DTO = { 'myData': {'reqOption': 'read'} };
+        var DTO = { 'myData': {'reqOption': 'settings'} };
         $http.post(url, DTO)
         .success(function(data){
-            console.log('data',data);
-            if (data.ErrorCode == 0){
-                done(data.Data);
-            }
-            else {
-                error(data.Error);
-            }
+            // $rootScope.settings = data;
+            done(data);
         })
         .error(function(reason){
+            // $rootScope.settings = {};
             error(reason);
         });
     };
+    function saveSettings(done, error){
+        console.log('saving')
+        var DTO = { 'myData': {'reqOption': 'settingsSave', 'settings': $rootScope.settings} };
+        $http.post(url, DTO)
+        .success(function(data){
+            // $rootScope.settings = data;
+            done(data);
+        })
+        .error(function(reason){
+            // $rootScope.settings = {};
+            error(reason);
+        });
+    };
+
     function sendWebSocketData(err,done){
         var data = {
             clientData: 'From Client'
@@ -31,9 +42,31 @@ angular.module('myApp')
 
     };
 
+    function showMessage(message,isError){
+        if(isError){
+            $rootScope.diverror = message;
+            $rootScope.showdiverror = true;
+            $timeout(function() {
+                $rootScope.diverror = '';
+                $rootScope.showdiverror = false;
+            }, $rootScope.divErrorTimeout);
+        }
+        else
+        {
+            $rootScope.divMsg = message;
+            $rootScope.showdivmsg = true;
+            $timeout(function() {
+                $rootScope.diverror = '';
+                $rootScope.showdivmsg = false;
+            }, $rootScope.divErrorTimeout);
+        }
+    }
+
     return{
         getAbsolutePath:getAbsolutePath,
-        getSettings:getSettings
+        getSettings:getSettings,
+        showMessage:showMessage,
+        saveSettings:saveSettings
     }
 
 }])

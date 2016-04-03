@@ -5,7 +5,10 @@
 
 
 
-var settings = require(__base + '/config.js');
+//var settings = new require(__base + '/config.js');
+//var Settings    = require(__base + './script/settings.js');
+var Q       = require('q');
+
 var iomodbustcp = require(__base + '/script/iomodbustcp.js');
 var iomodbusserial = require(__base + '/script/iomodbusserial.js');
 var tcpClient = require(__base + '/script/tcpclient.js');
@@ -23,15 +26,118 @@ var sbModule = function() {
     var thisdebug = 0;
     var myTCPClient;
 
+    //var settings    = Settings.settings();
+
 
     var pubIO = {
+        processAPICall: function(req,res){
+            try{
+                console.log('in processAPICall');
+                var response={header:{result:{}},content:{}};
+                var cs = pubIO.getIOStatus(1);
+
+                switch(req.query.reqIOToWrite){
+                    case('DigOut'):
+                        response.content = cs.DigitalsExt;
+                        if(cs.DigitalsExt == 0){
+                            pubIO.WriteRegister(1,req.query.reqIOToWrite,255);
+                        }else{
+                            pubIO.WriteRegister(1,req.query.reqIOToWrite,0);
+                        }
+                        response.header.result = 'success';
+                        response.content = 'Done';
+                        res.json(response);
+
+                        return;
+                    default:
+                        // response.header.result = 'error';
+                        // response.content = 'Error. Not sure which io to control';
+                        // res.json(response);
+                        break;
+                }
+
+                switch(req.body.myData.reqOption){
+                    case('read'):
+                        response.header.result = 'success';
+                        response.content = cs.Digitals;
+                        res.json(response);
+                        return;
+                    case('settings'):
+                        response.header.result = 'success';
+                        response.content = settings;
+                        res.json(response);                        
+                        return;
+                    case('settingsSave'):
+                        function doit(args){
+                            var deferred = Q.defer();
+
+                            settings.saveSettings(args)
+                            .then(function(args){
+                                console.log('sammmmmmmmmmmmmm');
+                                response.header.result = 'success';
+                                response.content = args.settings;
+                                var res = args.reqres[1];
+                                res.json(response);
+
+                            }, function(args){
+                                console.log('sammmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm error');
+                                response.header.result = 'error';
+                                response.content = err;
+                                var res = args.reqres[1];
+                                res.json(response);
+
+                            })
+
+
+                            return deferred.promise;
+                        }
+                        console.log('sb');
+                        var args = {'reqres': [req,res] };
+                        doit(args);
+                        // pubIO.saveSettings(req,res,function(req,res,done){
+                        //     console.log('done',done);
+                        //     response.header.result = 'success';
+                        //     response.content = done;
+                        //     res.json(response);
+                        //     return;
+
+                        // }, function(req,res,err){
+                        //     response.header.result = 'error';
+                        //     response.content = err;
+                        //     res.json(response);
+                        //     return;
+                        // })
+                        return;
+                    default:
+                        response.header.result = 'error';
+                        response.content = 'Error. Not sure which io to read';
+                        return;
+                }
+
+
+            }
+            catch(e){
+                console.log('error',e);
+                response.header.result = 'error';
+                response.content = e.message.toString();
+                res.json(response);
+            }
+
+        },
+        saveSettings: function(req,res,done,error){
+            console.log('ab');
+            settings.writeSettings(req,res,function(req,res,data){
+                done(req,res,data);
+            });
+
+        },
         arrCurrentStatus: [],
         ioTemplateStatus: function(){
             ioStatus = {
                 'ID': 1,
                     'Start': '%1',
-                    'VersionNumber': settings.version,
-                    'SerialNumber': settings.rtuId,       //ModbusReg = 1
+                    'VersionNumber': settings.value.version,
+                    'SerialNumber': settings.value.rtuId,       //ModbusReg = 1
                     'MessageID': 0,                                         //ModbusReg = 2
                     'DateTime': 22351140,                                         //ModbusReg = 3
                     'TxFlag': 1,                                         //ModbusReg = 4
@@ -74,6 +180,7 @@ var sbModule = function() {
                     return pubIO.arrCurrentStatus[i];
                 }
             }
+            return -999;
         },
         getModBusRegisterValue: function(Address,ModBusPos){
             //console.log('Before ' + Address + '   ' + ModBusPos);
@@ -266,9 +373,9 @@ var sbModule = function() {
     }
 
     console.log('Starting io');
+    // console.log('settings',settings.value);
 
-
-    var myIO = settings.io;
+    var myIO = settings.value.io;
     var i = 0;
     for(i=0;i<myIO.length;i++){
         if(myIO[i].enabled == 1){

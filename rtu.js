@@ -7,6 +7,11 @@
 
 global.__base = __dirname + '/';
 
+var Q       = require('q');
+
+var Settings    = require(__base + './script/settings.js');
+global.settings = new Settings.settings();
+
 var rtulog = require(__base + './script/rtulog.js');
 var websvrcomms = require(__base + './script/websvrcomms.js');
 var tcpClient = require(__base + './script/tcpclient.js');
@@ -19,13 +24,15 @@ var modbusslave = require(__base + './script/iomodbustcpslave.js');
 
 
 //var myPlc = require('./script/plc.js');
-var settings    = require(__base + './config.js');
+//var settings    = require(__base + './config.js');
 var express		= require('express'); 			// call express
 var cors		= require('cors');				// call cors
 var bodyParser 	= require('body-parser');		// call body-parser
-var http      = require('http');
+var http        = require('http');
+
 
 try{
+    //var settings = new Settings.settings();
     var rtu = {
 
         initWeb: function(retErr){
@@ -53,48 +60,50 @@ try{
                 // Set up the main services at ROUTE_PARAM.API_RES / ROUTE_PARAM.WS_RESOURCE
                 // The target is specified in the request parameters
                 app.post('/api', function(req, res) {
-                    var response={header:{result:{}},content:{}};
+                    
                     res.header("Access-Control-Allow-Origin", "*");
                     res.header("Access-Control-Allow-Headers", "X-Requested-With");
-                    try{
-                        if(req.body.myData.reqOption == 'read'){
-                            response.header.result = 'success';
-                            var cs = mywebsvrComms.getIOStatus(1);
-                            response.content = cs.Digitals;
-                            res.json(response);
-                        }else{
-                            response.header.result = 'success';
-                            mywebsvrComms.ControlModbusIO(req.body.myData.reqAddress,req.body.myData.reqIOToWrite,req.body.myData.reqWriteValue);
-                            //mywebsvrComms.ControlModbusIO(1,'Counter0',vValue);
-                            var cs = mywebsvrComms.getIOStatus(1);
-                            response.content = cs.Digitals;
-                            res.json(response);
-                        }
-
-
-                    }
-                    catch(e){
-                        response.header.result = 'failed';
-                        response.content = e.message.toString();
-                        res.json(response);
-                    }
+                    // try{
+                        // if(req.body.myData.reqOption == 'read'){
+                        //     response.header.result = 'success';
+                        //     var cs = mywebsvrComms.getIOStatus(1);
+                        //     response.content = cs.Digitals;
+                        //     res.json(response);
+                        // }else{
+                        //     response.header.result = 'success';
+                        //     mywebsvrComms.ControlModbusIO(req.body.myData.reqAddress,req.body.myData.reqIOToWrite,req.body.myData.reqWriteValue);
+                        //     //mywebsvrComms.ControlModbusIO(1,'Counter0',vValue);
+                        //     var cs = mywebsvrComms.getIOStatus(1);
+                        //     response.content = cs.Digitals;
+                        //     res.json(response);
+                        // }
+                        myIO.processAPICall(req,res);
+                    // }
+                    // catch(e){
+                    //     response.header.result = 'failed';
+                    //     response.content = e.message.toString();
+                    //     res.json(response);
+                    // }
                 });
                 app.get('/api',function(req,res){
-                    var response={header:{result:{}},content:{}};
-                    if(req.query.reqIOToWrite == 'DigOut'){
-                        var cs = mywebsvrComms.getIOStatus(1);
-                        response.content = cs.DigitalsExt;
-                        if(cs.DigitalsExt == 0){
-                            mywebsvrComms.ControlModbusIO(1,req.query.reqIOToWrite,255);
-                        }else{
-                            mywebsvrComms.ControlModbusIO(1,req.query.reqIOToWrite,0);
-                        }
-                    }else{
-                        mywebsvrComms.ControlModbusIO(1,'DigOut',0);
-                    }
-                    //res.write('Done');
-                    //response.content = 'Okay';
-                    res.json(response);
+
+                    myIO.processAPICall(req,res);
+                    
+                    // var response={header:{result:{}},content:{}};
+                    // if(req.query.reqIOToWrite == 'DigOut'){
+                    //     var cs = mywebsvrComms.getIOStatus(1);
+                    //     response.content = cs.DigitalsExt;
+                    //     if(cs.DigitalsExt == 0){
+                    //         mywebsvrComms.ControlModbusIO(1,req.query.reqIOToWrite,255);
+                    //     }else{
+                    //         mywebsvrComms.ControlModbusIO(1,req.query.reqIOToWrite,0);
+                    //     }
+                    // }else{
+                    //     mywebsvrComms.ControlModbusIO(1,'DigOut',0);
+                    // }
+                    // //res.write('Done');
+                    // //response.content = 'Okay';
+                    // res.json(response);
                 });
 
                 //more routes for our API will happen here
@@ -160,52 +169,101 @@ try{
     }
 
 
-    rtu.initWeb(function(err){
-        console.log('rtu error: ', err);
-    });
-
-    var Debug = 1;
 
 
+    // function readSetting(args){
+    //     var deferred = Q.defer();
 
-    var myIO = new io.rmcio;
-    myIO.init();
+    //     // settings.readSetting(function(){
+    //     //     deferred.resolve(args);
+    //     // });
+    //     deferred.resolve(args);
 
-    //---------------------------Modbus Slave---------------------------//
-    var settingsModbusSlave = settings.modbusslave;
-    if(settingsModbusSlave.enabled == 1){
-        var ioModbustcpslave = new modbusslave.ioModbusTCPSlave;
-        ioModbustcpslave.init(myIO,1);
+        
+    //     return deferred.promise;
+
+    // }
+
+    function init(args){
+        var deferred = Q.defer();
+
+        settings.getSettings(args)
+        .then(otherInit,null)
+        .then(function(args){
+            // console.log('args',args);
+            deferred.resolve(args);
+        },function(args){
+            // console.log('args error',args);
+            deferred.reject(args);
+            console.log('promise error');
+        })
+
+        return deferred.promise;
     }
-    //---------------------------Modbus Slave---------------------------//
+    function otherInit(args){
+        var deferred = Q.defer();
+
+        settings = args.settings;
+
+        rtu.initWeb(function(err){
+            console.log('rtu error: ', err);
+        });
+
+        var Debug = 1;
 
 
-    //--------------------------- Log    ---------------------------//
-    var myRTULog = new rtulog.rmcLog;
-    myRTULog.init(myIO,1);
-    //---------------------------End Log---------------------------//
+
+        myIO = new io.rmcio;
+        myIO.init();
+
+        //---------------------------Modbus Slave---------------------------//
+        var settingsModbusSlave = settings.value.modbusslave;
+        if(settingsModbusSlave.enabled == 1){
+            var ioModbustcpslave = new modbusslave.ioModbusTCPSlave;
+            ioModbustcpslave.init(myIO,1);
+        }
+        //---------------------------Modbus Slave---------------------------//
+
+
+        //--------------------------- Log    ---------------------------//
+        var myRTULog = new rtulog.rmcLog;
+        myRTULog.init(myIO,1);
+        //---------------------------End Log---------------------------//
 
 
 
-    //---------------------------Remote Web Server---------------------------//
-    var settingsRemoteWebserver = settings.remotewebserver;
-    var remoteServerTCPClient = new tcpClient.rmcTCP;
-    remoteServerTCPClient.init(function(err){
-        console.log('remoteServerTCPClient error', err);
-    },settingsRemoteWebserver.ipAddress,settingsRemoteWebserver.port,Debug);
+        //---------------------------Remote Web Server---------------------------//
+        var settingsRemoteWebserver = settings.value.remotewebserver;
+        var remoteServerTCPClient = new tcpClient.rmcTCP;
+        remoteServerTCPClient.init(function(err){
+            console.log('remoteServerTCPClient error', err);
+        },settingsRemoteWebserver.ipAddress,settingsRemoteWebserver.port,Debug);
 
-    var mywebsvrComms = new websvrcomms.webSVRComms;
-    mywebsvrComms.init(remoteServerTCPClient,myRTULog,myIO,Debug);
-    //---------------------------END Remote Web Server---------------------------//
-
-
-    var myPlc = new plc.rmcplc;
-    myPlc.init(myIO,myRTULog,1);
+        var mywebsvrComms = new websvrcomms.webSVRComms;
+        mywebsvrComms.init(remoteServerTCPClient,myRTULog,myIO,Debug);
+        //---------------------------END Remote Web Server---------------------------//
 
 
-    // console.log('RS232');
-    // var myrs232 = new rs232.rmcRS232;
-    // myrs232.init(1);
+        var myPlc = new plc.rmcplc;
+        myPlc.init(myIO,myRTULog,1);
+
+
+        // console.log('RS232');
+        // var myrs232 = new rs232.rmcRS232;
+        // myrs232.init(1);
+
+        //deferred.resolve(args);
+
+        return deferred.promise;
+    }
+
+    var myIO;
+    var x = {'settings': ''};
+    init(x);
+
+
+
+
 
 
 

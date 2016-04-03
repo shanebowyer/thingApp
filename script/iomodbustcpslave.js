@@ -1,7 +1,8 @@
 
 
 
-var settings = require(__base + '/config.js');
+// var settings = require(__base + '/config.js');
+// var settings    = require(__base + './script/settings.js').settings;
 
 
 var EventEmitter = require( "events" ).EventEmitter;
@@ -125,8 +126,8 @@ var sbModule = function() {
         }
     }
 
-    ModbusComms.init(settings.localwebserver.ipAddress,settings.modbusslave.port,1);
-    console.log('Listening for MODBUS on: ' + settings.modbusslave.port);
+    ModbusComms.init(settings.value.localwebserver.ipAddress,settings.value.modbusslave.port,1);
+    console.log('Listening for MODBUS on: ' + settings.value.modbusslave.port);
 
     return pubIOModbusTCPSlave
 

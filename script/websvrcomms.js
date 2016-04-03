@@ -3,7 +3,8 @@
  */
 
 
-var settings = require(__base + '/config.js');
+// var settings = require(__base + '/config.js');
+// var settings    = require(__base + './script/settings.js').settings;
 var rtulog = require(__base + '/script/rtulog.js');
 var tcpClient = require(__base + '/script/tcpclient.js');
 
@@ -118,7 +119,7 @@ var sbModule = function() {
                 return;
             }
             var Start = '%S';
-            var SerialNumber = settings.rtuId;
+            var SerialNumber = settings.value.rtuId;
             var End = '*';
             var strOutput = ''
                 + Start
@@ -156,7 +157,7 @@ var sbModule = function() {
 
     setInterval(pubWebSVR.SendWebSvrLogon,5000);
 
-    var FixedTxTime = settings.fixedTxTime;
+    var FixedTxTime = settings.value.fixedTxTime;
     pubWebSVR.fixedTxTime;
 
     setInterval(pubWebSVR.checkRTULogForMessagesToSend,(1000));

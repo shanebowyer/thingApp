@@ -1,7 +1,8 @@
 
 
 
-var settings = require(__base + '/config.js');
+// var settings = require(__base + '/config.js');
+// var settings    = require(__base + './script/settings.js').settings;
 
 var EventEmitter = require( "events" ).EventEmitter;
 var util = require('util');

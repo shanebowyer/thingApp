@@ -5,7 +5,7 @@
 
 
 
-var settings = require(__base + '/config.js');
+// var settings = require(__base + '/config.js').settings;
 
 
 var EventEmitter = require( "events" ).EventEmitter;
@@ -26,7 +26,7 @@ var sbModule = function() {
         var currentLogIndex = 0;
         var myIO;
 
-        var timezone = settings.timeZone;
+        var timezone = settings.value.timeZone;
 
         var pubRTULog = {
             log: [],
@@ -35,8 +35,8 @@ var sbModule = function() {
                     'Sent': 0,
                     'ID': 1,
                     'Start': '%1',
-                    'VersionNumber': settings.version,
-                    'SerialNumber': settings.localwebserver.rtuId,
+                    'VersionNumber': settings.value.version,
+                    'SerialNumber': settings.value.localwebserver.rtuId,
                     'MessageID': thisMessageID,
                     'DateTime': 22351140,
                     'TxFlag': 1,
@@ -172,8 +172,8 @@ var sbModule = function() {
                 return vDateValue;
             },
             convertJsonToOutput: function(jsonData){
-                jsonData.VersionNumber = settings.version;
-                jsonData.SerialNumber = settings.rtuId;
+                jsonData.VersionNumber = settings.value.version;
+                jsonData.SerialNumber = settings.value.rtuId;
                 var strOutput = ''
                     + jsonData.Start
                     + ' ' + jsonData.VersionNumber
@@ -218,7 +218,7 @@ var sbModule = function() {
             }
         }
 
-
+        debugger;
         return pubRTULog
     }
     catch(error){

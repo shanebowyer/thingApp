@@ -1,7 +1,91 @@
-<div>
-	{{io}}
+<div data-ng-init="init()">
 
-	<input type="button" value="send socketio data" ng-click="SendWebSocketData()"></input>
+    <div id="divProviders" class="container">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h2 class="panel-title">{{description}}</h2>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+
+					<table class="table table-hover">
+						<tr>
+							<th>
+								Description
+							</th>
+							<th>
+								ioType
+							</th>
+							<th>
+								IpAddress
+							</th>
+							<th>
+								Port
+							</th>
+							<th>
+								Enabled
+							</th>
+						</tr>
+						<tr ng-repeat="x in io" ng-click="selectTable(x,'edit')">
+							<td>{{ x.description }}</td>
+							<td>{{ x.ioType }}</td>
+							<td>{{ x.ipAddress }}</td>
+							<td>{{ x.port }}</td>
+							<td>{{ x.enabled }}</td>
+							<td><input type="button" class="btn btn-default" ng-click="ioDelete(x,'delete')" value="X"></input></td>
+						</tr>
+					</table>
+                </div>
+                <hr/>
+	            <div class="form-group">
+	            	<label for="Description">Description:</label>
+	            	<input id="Description" class="form-control" ng-model="selecteddescription"></input>
+
+	            	<label for="ioType">ioType:</label>
+
+<!-- 					<input list="ioType" name="ioTypes" class="form-control" ng-model="selectedioType">
+					<datalist id="ioType">
+						<option value="TCP-MODMUX-DIO8">TCP-MODMUX-DIO8</option>
+						<option value="TCP-MODMUX-AI8">TCP-MODMUX-AI8</option>
+						<option value="GAR-FEP">GAR-FEP</option>
+					</datalist>
+ -->
+					<select ng-model="selectedioType" class="form-control">
+						<option value="TCP-MODMUX-DIO8">TCP-MODMUX-DIO8</option>
+						<option value="TCP-MODMUX-AI8">TCP-MODMUX-AI8</option>
+						<option value="GAR-FEP">GAR-FEP</option>
+					</select>
+	            	<!-- <input id="ioTYpe" class="form-control" ng-model="selectedioType"></input> -->
+
+	            	<label for="ipAddress">ipAddress:</label>
+	            	<input id="ipAddress" class="form-control" ng-model="selectedipAddress"></input>
+
+	            	<label for="port">Port:</label>
+	            	<input id="port" class="form-control" ng-model="selectedport"></input>
+
+<!-- 	            	<label for="enabled">enabled:</label>
+	            	<input id="enabled" type="checkbox" class="form-control" ng-model="selectedenabled"></input>
+ -->
+					<label class="checkbox-inline"><input type="checkbox" ng-model="selectedenabled">Enabled</label>	            	
+
+					<div>
+						<hr/>
+		            	<input type="button" class="btn btn-default" value="Add" ng-click="ioAdd()"></input>
+		            	<input type="button" class="btn btn-default" value="Update" ng-click="ioUpdate()"></input>
+		            	<input type="button" class="btn btn-default" value="Cancel" ng-click="init()"></input>
+					</div>
+	            </div>
+
+            </div>
+        </div>
+
+        <div>
+        	<input type="button" class="btn btn-warning" value="SAVE" ng-click="save()"></input>
+        </div>
+
+    </div>
+
+
 <!-- 	<ul>
 	  <li ng-repeat="x	in io">
 	    {{ x.description }}
