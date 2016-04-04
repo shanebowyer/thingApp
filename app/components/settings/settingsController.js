@@ -91,6 +91,15 @@ angular.module('myApp')
 		});
 	}
 
+	$scope.readIO = function(){
+		api.readIO(function(done){
+			console.log('readIO res',done.content);
+		}, function(err){
+			console.log('error',err);
+			api.showMessage('Error readIO',true);
+		});
+	}
+
 
 	// $scope.SendWebSocketData = function(){
 	// 	io.sendData();

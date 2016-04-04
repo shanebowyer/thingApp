@@ -34,6 +34,19 @@ angular.module('myApp')
             error(reason);
         });
     };
+    function readIO(done, error){
+        console.log('reading io')
+        var DTO = { 'myData': {'reqOption': 'read'} };
+        $http.post(url, DTO)
+        .success(function(data){
+            // $rootScope.settings = data;
+            done(data);
+        })
+        .error(function(reason){
+            // $rootScope.settings = {};
+            error(reason);
+        });
+    };    
 
     function sendWebSocketData(err,done){
         var data = {
@@ -66,7 +79,8 @@ angular.module('myApp')
         getAbsolutePath:getAbsolutePath,
         getSettings:getSettings,
         showMessage:showMessage,
-        saveSettings:saveSettings
+        saveSettings:saveSettings,
+        readIO:readIO
     }
 
 }])

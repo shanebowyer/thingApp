@@ -214,7 +214,7 @@ try{
 
 
         myIO = new io.rmcio;
-        myIO.init();
+        myIO.init(0);
 
         //---------------------------Modbus Slave---------------------------//
         var settingsModbusSlave = settings.value.modbusslave;

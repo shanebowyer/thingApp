@@ -25,24 +25,76 @@ var sbModule = function() {
 
     var thisdebug = 0;
     var myTCPClient;
+    var arrIO = [];
 
     //var settings    = Settings.settings();
 
 
     var pubIO = {
+        init: function(debug){
+            thisdebug = debug;
+
+            console.log('Starting io');
+            // console.log('settings',settings.value);
+
+            var myIO = settings.value.io;
+            var i = 0;
+            for(i=0;i<myIO.length;i++){
+                if(myIO[i].enabled == 1){
+                    if(myIO[i].ioType == 'TCP-MODMUX-AI8' || myIO[i].ioType == 'TCP-MODMUX-DIO8') 
+                    {
+                        var ioTCPClient = new tcpClient.rmcTCP;
+                        ioTCPClient.init(function(err){
+                            console.log('io error',err);
+                        }, myIO[i].ipAddress,myIO[i].port,0);
+
+
+                        var ioModbus = new iomodbustcp.ioModbus(myIO[i].ioType);
+                        
+                        ioModbus.init(ioTCPClient,0);
+
+                        ioModbus.on('data',function(data){
+                            pubIO.processData(data);
+                        });
+                        var ioItem = {'id': myIO[i].id, 'io': ioModbus};
+                        arrIO.push(ioItem);
+
+                    }
+
+                    if(myIO[i].ioType == 'GAR-FEP')
+                    {
+                        var ioRS232 = new rs232.rmcRS232(function(err){
+                            console.log('rs232 GAR-FEP error',err);
+                        });
+                        ioRS232.init(myIO[i].commPort,myIO[i].baudRate,1);
+
+                        var ioGARFEP = new iomodbusserial.ioModbusSerial(myIO[i].ioType);
+                        ioGARFEP.init(ioRS232,0);
+
+                        ioGARFEP.on('data',function(data){
+                            pubIO.processData(data);
+                        });
+                        var ioItem = {'id': myIO[i].id, 'io': ioGARFEP};
+                        arrIO.push(ioItem);
+
+                    }
+                }
+            }
+
+
+        },        
         processAPICall: function(req,res){
             try{
-                console.log('in processAPICall');
                 var response={header:{result:{}},content:{}};
                 var cs = pubIO.getIOStatus(1);
 
-                switch(req.query.reqIOToWrite){
+                switch(req.query.reqIOToWrite){ //ModuleAddress,IOToWrite,ValueToWrite,Permanent
                     case('DigOut'):
                         response.content = cs.DigitalsExt;
                         if(cs.DigitalsExt == 0){
-                            pubIO.WriteRegister(1,req.query.reqIOToWrite,255);
+                            pubIO.WriteRegister(req.query.reqModuleAddress,req.query.reqIOToWrite,255);
                         }else{
-                            pubIO.WriteRegister(1,req.query.reqIOToWrite,0);
+                            pubIO.WriteRegister(req.query.reqModuleAddress,req.query.reqIOToWrite,0);
                         }
                         response.header.result = 'success';
                         response.content = 'Done';
@@ -58,8 +110,11 @@ var sbModule = function() {
 
                 switch(req.body.myData.reqOption){
                     case('read'):
+                        // pubIO.arrCurrentStatus.forEach(function(item){
+                        //     console.log('CurrentStatuses', item);
+                        // });
                         response.header.result = 'success';
-                        response.content = cs.Digitals;
+                        response.content = cs.DigitalsExt;
                         res.json(response);
                         return;
                     case('settings'):
@@ -73,14 +128,12 @@ var sbModule = function() {
 
                             settings.saveSettings(args)
                             .then(function(args){
-                                console.log('sammmmmmmmmmmmmm');
                                 response.header.result = 'success';
                                 response.content = args.settings;
                                 var res = args.reqres[1];
                                 res.json(response);
 
                             }, function(args){
-                                console.log('sammmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm error');
                                 response.header.result = 'error';
                                 response.content = err;
                                 var res = args.reqres[1];
@@ -91,22 +144,8 @@ var sbModule = function() {
 
                             return deferred.promise;
                         }
-                        console.log('sb');
                         var args = {'reqres': [req,res] };
                         doit(args);
-                        // pubIO.saveSettings(req,res,function(req,res,done){
-                        //     console.log('done',done);
-                        //     response.header.result = 'success';
-                        //     response.content = done;
-                        //     res.json(response);
-                        //     return;
-
-                        // }, function(req,res,err){
-                        //     response.header.result = 'error';
-                        //     response.content = err;
-                        //     res.json(response);
-                        //     return;
-                        // })
                         return;
                     default:
                         response.header.result = 'error';
@@ -125,7 +164,6 @@ var sbModule = function() {
 
         },
         saveSettings: function(req,res,done,error){
-            console.log('ab');
             settings.writeSettings(req,res,function(req,res,data){
                 done(req,res,data);
             });
@@ -168,10 +206,6 @@ var sbModule = function() {
                     'End': '*'
             }
             return ioStatus;
-        },
-
-        init: function(debug){
-            thisdebug = debug;
         },
         getIOStatus: function(Address){
             var i = 0;
@@ -224,11 +258,10 @@ var sbModule = function() {
             switch(data.IOType){
                 case('TCP-MODMUX-DIO8'):
                     if(thisdebug == 1){
-                        console.log('IO-myIOModbus data: ' + data.ResponseTo);
+                        console.log('IO-myIOModbus DIO8 data: ' + data.ResponseTo);
                     }
 
                     if (data.data.length == 12 && data.data[7] == 16) {
-                        //console.log('response to modbus write');
                         return;
                     }
                     var Address = data.data[6];
@@ -363,7 +396,14 @@ var sbModule = function() {
 
         },
         WriteRegister: function(ModuleAddress,IOToWrite,ValueToWrite){
-            myIOModbusTCP_DIO8.WriteRegister(ModuleAddress,IOToWrite,ValueToWrite,0);   //0 = Not permamnent
+            arrIO.forEach(function(item){
+                if(typeof item != 'undefined'){
+                    if(item.id == ModuleAddress){
+                        item.io.WriteRegister(ModuleAddress,IOToWrite,ValueToWrite,0);
+                    }                    
+                }
+
+            });
         },
         on: function(strEvent,callbackFunction){
             self.on(strEvent,function(data){
@@ -372,44 +412,23 @@ var sbModule = function() {
         }
     }
 
-    console.log('Starting io');
-    // console.log('settings',settings.value);
 
-    var myIO = settings.value.io;
-    var i = 0;
-    for(i=0;i<myIO.length;i++){
-        if(myIO[i].enabled == 1){
-            if(myIO[i].ioType == 'TCP-MODMUX-AI8' || myIO[i].ioType == 'TCP-MODMUX-DIO8') 
-            {
-                var ioTCPClient = new tcpClient.rmcTCP;
-                ioTCPClient.init(function(err){
-                    console.log('io error',err);
-                }, myIO[i].ipAddress,myIO[i].port,0);
+              // function stripper(arryPropsToKeep, arrToParse){
+              //           var newArr = [];
 
-                var ioModbus = new iomodbustcp.ioModbus('TCP-MODMUX-AI8');
-                ioModbus.init(ioTCPClient,0);
+              //           newArr = arrToParse.map(function(obj){
+              //                   var tmp = {};
 
-                ioModbus.on('data',function(data){
-                    pubIO.processData(data);
-                });
-            }
+              //                   arryPropsToKeep.forEach(function(propertyName){
+              //                           if(typeof obj[propertyName] !== 'undefined')
+              //                           tmp[propertyName] = obj[propertyName];
+              //                   });
+              //                   return tmp;
+              //           });
+              //           return newArr;
+              //   }
 
-            if(myIO[i].ioType == 'GAR-FEP')
-            {
-                var ioRS232 = new rs232.rmcRS232(function(err){
-                    console.log('rs232 GAR-FEP error',err);
-                });
-                ioRS232.init(myIO[i].commPort,myIO[i].baudRate,1);
-
-                var ioGARFEP = new iomodbusserial.ioModbusSerial('GAR-FEP');
-                ioGARFEP.init(ioRS232,0);
-
-                ioGARFEP.on('data',function(data){
-                    pubIO.processData(data);
-                });
-            }
-        }
-    }
+              //   args.data[0] = stripper(args.arrResponseFilter, args.data[0]);
 
 
     return pubIO;

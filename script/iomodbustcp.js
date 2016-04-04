@@ -124,6 +124,8 @@ var sbModule = function(IOType) {
             var arrayReturn;
             var StartRegister = 0;
             var NumberOfRegisters;
+            console.log('ModuleAddress',ModuleAddress);
+            console.log('thisIOType',thisIOType);
             if(thisIOType == 'TCP-MODMUX-DIO8'){
                 if(IOToWrite == 'DigOut'){
                     StartRegister = 2;
@@ -159,7 +161,7 @@ var sbModule = function(IOType) {
                 pubIOModbus.arrToSend.push(doWrite);
             }
 
-
+            console.log('WriteRegister done');
         },
         BuildModbusRegisterToWrite: function(RTUAddress, FunctionCode, StartModbusAddress, NumberOfRegisters, vValue){
             var arrayReturn;
