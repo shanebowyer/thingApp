@@ -3,6 +3,7 @@
 
 // var settings = require(__base + '/config.js');
 // var settings    = require(__base + './script/settings.js').settings;
+var Q       = require('q');
 var iomodbustcp = require(__base + '/script/iomodbustcp.js');
 var tcpClient = require(__base + '/script/tcpclient.js');
 
@@ -37,6 +38,14 @@ var sbModule = function() {
             thisdebug = debug;
             io = ioPassedThrough;
             myLog = log;
+        },
+        processMessageIn: function(args){
+            var deferred = new Q.defer();
+
+            args[2] = io.arrCurrentStatus;
+
+            deferred.resolve(args);
+            return deferred.promise;
         },
         runPLCLogic: function(runSpeedMilliseconds){
             setInterval(function(){

@@ -10,11 +10,12 @@ var util = require('util');
 var net = require('net');
 
 
-var sbModule = function(IOType) {
+var sbModule = function(IOType,IOid) {
     var self = this;
 
     var thisdebug = 0;
     var thisIOType = IOType;
+    var thisIOid = IOid;
     var myTCPClient;
     var thisIdentifier = 0;
     var toSendIndex = 0;
@@ -51,6 +52,7 @@ var sbModule = function(IOType) {
                         {
                             'ResponseTo': 'Read',
                             'IOType': thisIOType,
+                            'IOid': thisIOid,
                             'data': data
                         });
 
@@ -58,7 +60,9 @@ var sbModule = function(IOType) {
 
                 }
                 catch (e) {
-                    console.log('iomodbustcp data error: ' + e);
+                    if(thisdebug === 1){
+                        console.log('iomodbustcp data error: ' + e);
+                    }
                 }
             });
 

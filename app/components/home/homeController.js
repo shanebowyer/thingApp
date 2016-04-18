@@ -4,7 +4,18 @@
 // }]);
 
 angular.module('myApp')
-.controller('homeCtrl', function($scope,$state) {
+.controller('homeCtrl', function($scope,$state,api) {
     $scope.firstName= "John";
     $scope.lastName= "Doe";
+
+    $scope.getRTUStatuses = function(){
+    	api.sendRTUMessage(function(data){
+    		$scope.rtuData = data.content;
+    		console.log('sendRTUMessage response',data);
+    	},function(err){
+			console.log('Error sendRTUMessage response',err);
+    	});
+    };
+
+
 });

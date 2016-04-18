@@ -34,9 +34,9 @@ angular.module('myApp')
             error(reason);
         });
     };
-    function readIO(done, error){
-        console.log('reading io')
-        var DTO = { 'myData': {'reqOption': 'read'} };
+    function sendRTUMessage(done, error){
+        console.log('Sending rtuMessage')
+        var DTO = { 'myData': {'reqOption': 'rtuMessage'} };
         $http.post(url, DTO)
         .success(function(data){
             // $rootScope.settings = data;
@@ -80,7 +80,7 @@ angular.module('myApp')
         getSettings:getSettings,
         showMessage:showMessage,
         saveSettings:saveSettings,
-        readIO:readIO
+        sendRTUMessage:sendRTUMessage
     }
 
 }])

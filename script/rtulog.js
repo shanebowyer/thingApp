@@ -218,7 +218,6 @@ var sbModule = function() {
             }
         }
 
-        debugger;
         return pubRTULog
     }
     catch(error){

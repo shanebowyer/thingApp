@@ -2,5 +2,12 @@
 
 <div>
 	homeView
-	{{firstName}}
+	<input type="button" ng-click="getRTUStatuses()" value="readIOs"></input>
+	<div>
+	  <ul>
+	    <li ng-repeat="item in rtuData">
+	      {{ item.ioType }} - {{item.DigitalsExt}}
+	    </li>
+	  </ul>
+	</div>
 </div>

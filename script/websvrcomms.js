@@ -62,6 +62,10 @@ var sbModule = function() {
                         myRTULog.processMessageIn(data.toString());
                     }
 
+                    var dataReq = {
+                        
+                    }
+
 
 
                 }

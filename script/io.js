@@ -49,7 +49,7 @@ var sbModule = function() {
                         }, myIO[i].ipAddress,myIO[i].port,0);
 
 
-                        var ioModbus = new iomodbustcp.ioModbus(myIO[i].ioType);
+                        var ioModbus = new iomodbustcp.ioModbus(myIO[i].ioType, myIO[i].id);
                         
                         ioModbus.init(ioTCPClient,0);
 
@@ -68,7 +68,7 @@ var sbModule = function() {
                         });
                         ioRS232.init(myIO[i].commPort,myIO[i].baudRate,1);
 
-                        var ioGARFEP = new iomodbusserial.ioModbusSerial(myIO[i].ioType);
+                        var ioGARFEP = new iomodbusserial.ioModbusSerial(myIO[i].ioType, myIO[i].id);
                         ioGARFEP.init(ioRS232,0);
 
                         ioGARFEP.on('data',function(data){
@@ -80,94 +80,101 @@ var sbModule = function() {
                     }
                 }
             }
-
-
         },        
-        processAPICall: function(req,res){
-            try{
-                var response={header:{result:{}},content:{}};
-                var cs = pubIO.getIOStatus(1);
+        // processAPICall: function(args,done,err){
+        //     var apiRespone = {header:{result:{}},content:{}};
+        //     try{
+        //         var req = args[0];
+        //         var cs = pubIO.arrCurrentStatus[0];
+        //         console.log('arrcs',pubIO.arrCurrentStatus[0]);
 
-                switch(req.query.reqIOToWrite){ //ModuleAddress,IOToWrite,ValueToWrite,Permanent
-                    case('DigOut'):
-                        response.content = cs.DigitalsExt;
-                        if(cs.DigitalsExt == 0){
-                            pubIO.WriteRegister(req.query.reqModuleAddress,req.query.reqIOToWrite,255);
-                        }else{
-                            pubIO.WriteRegister(req.query.reqModuleAddress,req.query.reqIOToWrite,0);
-                        }
-                        response.header.result = 'success';
-                        response.content = 'Done';
-                        res.json(response);
+        //         switch(req.query.reqIOToWrite){
+        //             case('DigOut'):
+        //                 response.content = cs.DigitalsExt;
+        //                 if(cs.DigitalsExt == 0){
+        //                     pubIO.WriteRegister(req.query.reqModuleAddress,req.query.reqIOToWrite,255);
+        //                 }else{
+        //                     pubIO.WriteRegister(req.query.reqModuleAddress,req.query.reqIOToWrite,0);
+        //                 }
+        //                 apiRespone.header.result = 'success';
+        //                 apiRespone.content = 'Done';
+        //                 args[2] = apiRespone;
 
-                        return;
-                    default:
-                        // response.header.result = 'error';
-                        // response.content = 'Error. Not sure which io to control';
-                        // res.json(response);
-                        break;
-                }
+        //                 done(args);
+        //             default:
+        //                 // response.header.result = 'error';
+        //                 // response.content = 'Error. Not sure which io to control';
+        //                 // res.json(response);
+        //                 break;
+        //         }
 
-                switch(req.body.myData.reqOption){
-                    case('read'):
-                        // pubIO.arrCurrentStatus.forEach(function(item){
-                        //     console.log('CurrentStatuses', item);
-                        // });
-                        response.header.result = 'success';
-                        response.content = cs.DigitalsExt;
-                        res.json(response);
-                        return;
-                    case('settings'):
-                        response.header.result = 'success';
-                        response.content = settings;
-                        res.json(response);                        
-                        return;
-                    case('settingsSave'):
-                        function doit(args){
-                            var deferred = Q.defer();
+        //         console.log('req.body.myData.reqOption',req.body.myData.reqOption);
 
-                            settings.saveSettings(args)
-                            .then(function(args){
-                                response.header.result = 'success';
-                                response.content = args.settings;
-                                var res = args.reqres[1];
-                                res.json(response);
+        //         // switch(req.body.myData.reqOption){
+        //         //     case('read'):
+        //         //         // pubIO.arrCurrentStatus.forEach(function(item){
+        //         //         //     console.log('CurrentStatuses', item);
+        //         //         // });
+        //         //         apiRespone.header.result = 'success';
+        //         //         apiRespone.content = cs.DigitalsExt;
+        //         //         done(args);
+        //         //     case('settings'):
+        //         //         apiRespone.header.result = 'success';
+        //         //         apiRespone.content = settings;
+        //         //         args[2] = apiRespone;
+        //         //         done(args);
+        //         //     case('settingsSave'):
+        //         //         function doit(args){
+        //         //             var deferred = Q.defer();
 
-                            }, function(args){
-                                response.header.result = 'error';
-                                response.content = err;
-                                var res = args.reqres[1];
-                                res.json(response);
-
-                            })
+        //         //             console.log('line 3');
+        //         //             var apiRespone = {};
 
 
-                            return deferred.promise;
-                        }
-                        var args = {'reqres': [req,res] };
-                        doit(args);
-                        return;
-                    default:
-                        response.header.result = 'error';
-                        response.content = 'Error. Not sure which io to read';
-                        return;
-                }
+        //         //             settings.saveSettings(args)
+        //         //             .then(function(args){
+        //         //                 console.log('line1');
+        //         //                 apiRespone.header.result = 'success';
+        //         //                 apiRespone.content = args.settings;
+        //         //                 args[2] = apiRespone;
+        //         //                 done(args);
+
+        //         //             }, function(args){
+        //         //                 console.log('line2');
+        //         //                 apiRespone.header.result = 'error';
+        //         //                 apiRespone.content = err;
+        //         //                 args[2] = apiRespone;
+        //         //                 done(args);
+
+        //         //             })
 
 
-            }
-            catch(e){
-                console.log('error',e);
-                response.header.result = 'error';
-                response.content = e.message.toString();
-                res.json(response);
-            }
+        //         //             return deferred.promise;
+        //         //         }
+        //         //         //var args = {'reqres': [req,res] };
+        //         //         doit(args);
+                        
+        //         //     default:
+        //         //         apiRespone.header.result = 'error';
+        //         //         apiRespone.content = 'Error. Not sure which io to read';
+        //         //         args[2] = apiRespone;
+        //         //         done(args);
+        //         // }
 
-        },
+
+        //     }
+        //     catch(e){
+        //         console.log('error1',e);
+        //         apiRespone.header.result = 'error';
+        //         apiRespone.content = e.message.toString();
+        //         args[2] = apiRespone;
+        //         err(args);
+        //     }
+        // },
         saveSettings: function(req,res,done,error){
             settings.writeSettings(req,res,function(req,res,data){
                 done(req,res,data);
             });
-
         },
         arrCurrentStatus: [],
         ioTemplateStatus: function(){
@@ -176,6 +183,8 @@ var sbModule = function() {
                     'Start': '%1',
                     'VersionNumber': settings.value.version,
                     'SerialNumber': settings.value.rtuId,       //ModbusReg = 1
+                    'rawData': [],
+                    'ioType': '',
                     'MessageID': 0,                                         //ModbusReg = 2
                     'DateTime': 22351140,                                         //ModbusReg = 3
                     'TxFlag': 1,                                         //ModbusReg = 4
@@ -257,14 +266,20 @@ var sbModule = function() {
         processData: function(data){
             switch(data.IOType){
                 case('TCP-MODMUX-DIO8'):
+                case('TCP-MODMUX-AI8'):
+
+
+
                     if(thisdebug == 1){
-                        console.log('IO-myIOModbus DIO8 data: ' + data.ResponseTo);
+                        console.log('IO-myIOModbus AI8/DIO8 data: ' + data.ResponseTo);
                     }
 
                     if (data.data.length == 12 && data.data[7] == 16) {
                         return;
                     }
-                    var Address = data.data[6];
+                    // var Address = data.data[6];
+                    var Address = data.IOid;
+                    var IOType = data.IOType;
                     var i = 0;
                     var bFound = 0;
                     for (i = 0; i < pubIO.arrCurrentStatus.length; i++) {
@@ -275,72 +290,78 @@ var sbModule = function() {
                     }
                     if (bFound == 0) {
                         var newIO = new pubIO.ioTemplateStatus();
+                        //var newIO = {};
                         newIO.ID = Address;
-                        pubIO.arrCurrentStatus.push(newIO);
-                        i = pubIO.arrCurrentStatus.length;
-                    }
-
-                    pubIO.arrCurrentStatus[i].Digitals = data.data[9];
-                    pubIO.arrCurrentStatus[i].Digitals <<= 8;
-                    pubIO.arrCurrentStatus[i].Digitals += data.data[10];
-
-                    pubIO.arrCurrentStatus[i].DigitalsExt = data.data[11];
-                    pubIO.arrCurrentStatus[i].DigitalsExt <<= 8;
-                    pubIO.arrCurrentStatus[i].DigitalsExt += data.data[12];
-
-                    //console.log('Digitals: ' + pubIO.arrCurrentStatus[i].Digitals);
-
-
-                    pubIO.arrCurrentStatus[i].Counter0 = data.data[13];
-                    pubIO.arrCurrentStatus[i].Counter0 <<= 8;
-                    pubIO.arrCurrentStatus[i].Counter0 += data.data[14];
-                    pubIO.arrCurrentStatus[i].Counter0 <<= 8;
-                    pubIO.arrCurrentStatus[i].Counter0 += data.data[15];
-                    pubIO.arrCurrentStatus[i].Counter0 <<= 8;
-                    pubIO.arrCurrentStatus[i].Counter0 += data.data[16];
-
-                    pubIO.arrCurrentStatus[i].Counter1 = data.data[17];
-                    pubIO.arrCurrentStatus[i].Counter1 <<= 8;
-                    pubIO.arrCurrentStatus[i].Counter1 += data.data[18];
-                    pubIO.arrCurrentStatus[i].Counter1 <<= 8;
-                    pubIO.arrCurrentStatus[i].Counter1 += data.data[19];
-                    pubIO.arrCurrentStatus[i].Counter1 <<= 8;
-                    pubIO.arrCurrentStatus[i].Counter1 += data.data[20];
-                    break;
-                case('TCP-MODMUX-AI8'):
-
-                    if(thisdebug == 1){
-                        console.log('IO-myIOModbusTCP_AI8 data: ' + data.ResponseTo);
-                    }
-
-                    //if (data.data.length == 12 && data.data[7] == 16) {
-                    //    //console.log('response to modbus write');
-                    //    return;
-                    //}
-                    var Address = data.data[6];
-                    var i = 0;
-                    var bFound = 0;
-                    for (i = 0; i < pubIO.arrCurrentStatus.length; i++) {
-                        if (pubIO.arrCurrentStatus[i].ID == Address) {
-                            bFound = 1;
-                            break;
-                        }
-                    }
-                    if (bFound == 0) {
-                        var newIO = new pubIO.ioTemplateStatus();
-                        newIO.ID = Address;
+                        newIO.ioType = IOType;
+                        console.log('Address',Address);
                         pubIO.arrCurrentStatus.push(newIO);
                         i = pubIO.arrCurrentStatus.length;
                     }
 
 
-                    pubIO.arrCurrentStatus[i].Analog0 = data.data[9];
-                    pubIO.arrCurrentStatus[i].Analog0 <<= 8;
-                    pubIO.arrCurrentStatus[i].Analog0 += data.data[10];
 
-                    pubIO.arrCurrentStatus[i].Analog1 = data.data[11];
-                    pubIO.arrCurrentStatus[i].Analog1 <<= 8;
-                    pubIO.arrCurrentStatus[i].Analog1 += data.data[12];
+                    pubIO.arrCurrentStatus[i].rawData = data.data;
+
+
+                    // pubIO.arrCurrentStatus[i].Digitals = data.data[9];
+                    // pubIO.arrCurrentStatus[i].Digitals <<= 8;
+                    // pubIO.arrCurrentStatus[i].Digitals += data.data[10];
+
+                    // pubIO.arrCurrentStatus[i].DigitalsExt = data.data[11];
+                    // pubIO.arrCurrentStatus[i].DigitalsExt <<= 8;
+                    // pubIO.arrCurrentStatus[i].DigitalsExt += data.data[12];
+
+                    // pubIO.arrCurrentStatus[i].Counter0 = data.data[13];
+                    // pubIO.arrCurrentStatus[i].Counter0 <<= 8;
+                    // pubIO.arrCurrentStatus[i].Counter0 += data.data[14];
+                    // pubIO.arrCurrentStatus[i].Counter0 <<= 8;
+                    // pubIO.arrCurrentStatus[i].Counter0 += data.data[15];
+                    // pubIO.arrCurrentStatus[i].Counter0 <<= 8;
+                    // pubIO.arrCurrentStatus[i].Counter0 += data.data[16];
+
+                    // pubIO.arrCurrentStatus[i].Counter1 = data.data[17];
+                    // pubIO.arrCurrentStatus[i].Counter1 <<= 8;
+                    // pubIO.arrCurrentStatus[i].Counter1 += data.data[18];
+                    // pubIO.arrCurrentStatus[i].Counter1 <<= 8;
+                    // pubIO.arrCurrentStatus[i].Counter1 += data.data[19];
+                    // pubIO.arrCurrentStatus[i].Counter1 <<= 8;
+                    // pubIO.arrCurrentStatus[i].Counter1 += data.data[20];
+
+                    // break;
+                // case('TCP-MODMUX-AI8'):
+
+                //     if(thisdebug == 1){
+                //         console.log('IO-myIOModbusTCP_AI8 data: ' + data.ResponseTo);
+                //     }
+
+                //     //if (data.data.length == 12 && data.data[7] == 16) {
+                //     //    //console.log('response to modbus write');
+                //     //    return;
+                //     //}
+                //     var Address = data.data[6];
+                //     var i = 0;
+                //     var bFound = 0;
+                //     for (i = 0; i < pubIO.arrCurrentStatus.length; i++) {
+                //         if (pubIO.arrCurrentStatus[i].ID == Address) {
+                //             bFound = 1;
+                //             break;
+                //         }
+                //     }
+                //     if (bFound == 0) {
+                //         var newIO = new pubIO.ioTemplateStatus();
+                //         newIO.ID = Address;
+                //         pubIO.arrCurrentStatus.push(newIO);
+                //         i = pubIO.arrCurrentStatus.length;
+                //     }
+
+
+                //     pubIO.arrCurrentStatus[i].Analog0 = data.data[9];
+                //     pubIO.arrCurrentStatus[i].Analog0 <<= 8;
+                //     pubIO.arrCurrentStatus[i].Analog0 += data.data[10];
+
+                //     pubIO.arrCurrentStatus[i].Analog1 = data.data[11];
+                //     pubIO.arrCurrentStatus[i].Analog1 <<= 8;
+                //     pubIO.arrCurrentStatus[i].Analog1 += data.data[12];
 
                     break;
                 case('GAR-FEP'):
@@ -393,7 +414,30 @@ var sbModule = function() {
                     break;
 
             }
+            pubIO.makeSenseOfRawData(Address);
+        },
+        makeSenseOfRawData: function(address){
+            pubIO.arrCurrentStatus.forEach(function(item){
+                if(item.ID == address){
+                    switch(item.ioType){
+                        case('TCP-MODMUX-DIO8'):
+                            var DigitalsExt = 0;
+                            DigitalsExt = data.data[11];
+                            DigitalsExt <<= 8;
+                            DigitalsExt += data.data[12];
 
+                            console.log('DigitalsExt', DigitalsExt);
+
+                            break;
+
+                        default:
+                            // console.log('Unhandled ioType here5',item.ioType);
+                            break;
+                    }
+
+                    return;
+                }
+            });
         },
         WriteRegister: function(ModuleAddress,IOToWrite,ValueToWrite){
             arrIO.forEach(function(item){
@@ -408,9 +452,9 @@ var sbModule = function() {
         on: function(strEvent,callbackFunction){
             self.on(strEvent,function(data){
                 callbackFunction(data);
-            })
+            });
         }
-    }
+    };
 
 
               // function stripper(arryPropsToKeep, arrToParse){
@@ -434,7 +478,7 @@ var sbModule = function() {
     return pubIO;
 
 
-}
+};
 util.inherits(sbModule, EventEmitter);
 exports.rmcio = sbModule;
 
