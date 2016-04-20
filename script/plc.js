@@ -39,12 +39,72 @@ var sbModule = function() {
             io = ioPassedThrough;
             myLog = log;
         },
+        sendCurrentStatus: function(){
+            var msgOut = {
+                sourceAddress: global.settings.rtuId,
+                destinationAddress: 0,
+                msgId: 0,
+                msgType: 'status',
+                status: io.arrCurrentStatus[0]
+            };
+            myLog.add(msgOut,0,0);
+        },
         processMessageIn: function(args){
             var deferred = new Q.defer();
 
-            args[2] = io.arrCurrentStatus;
+            var msgIn = {
 
-            deferred.resolve(args);
+                dateTime: '2016/01/01',
+                messageId: 789,
+                payLoad: {
+                    sourceAddress: 1,
+                    destinationAddress: 2,
+                    msgId: 123,
+                    dateTime: '2016/01/01 12:13:14',
+                    msgType: 'control',
+                    write: {
+                        destinationIO: 1,
+                        io: 'digOut',
+                        value: 1
+                    }
+                }
+            };
+
+            if(global.settings.rtuId === msgIn.destinationAddress){
+                if(msgIn.msgType === 'handshake'){
+                    myLog.processMessageIn(msgIn);
+                    args[2] = io.makeSenseOfRawData(msgIn.address);
+                    deferred.resolve(args);
+                }
+                else if(msgIn.msgType === 'control'){
+                    io.writeRegister(msgIn.write.destinationIO,msgIn.write.io,msgIn.write.value);
+                    var msgResponse = {
+                        sourceAddress: global.settings.rtuId,
+                        destinationAddress: msgIn.sourceAddress,
+                        msgId: msgIn.msgId,
+                        msgType: 'handshake'
+                    };
+                    myLog.add(msgResponse,1,1);
+                    args[2] = io.makeSenseOfRawData(msgIn.address);
+                    deferred.resolve(args);
+                }
+                else{
+                    console.log('What should I do with this message. Sending status for shits and giggles');
+                    var msgResponse1 = {
+                        sourceAddress: global.settings.rtuId,
+                        destinationAddress: msgIn.sourceAddress,
+                        msgId: msgIn.msgId,
+                        msgType: 'status',
+                        io: io.makeSenseOfRawData(msgIn.address)
+                    };
+                    args[2] = msgResponse1;
+                    deferred.resolve(args);
+                }
+            }
+            else{
+                deferred.reject(args);
+            }
+
             return deferred.promise;
         },
         runPLCLogic: function(runSpeedMilliseconds){
@@ -56,19 +116,19 @@ var sbModule = function() {
                         //    testDig = 0;
                         //}
                         //var digVal = io.arrCurrentStatus[0].Digitals;
-                        //io.WriteRegister(1,'DigOut',testDig);
-                        //io.WriteRegister(1,'Counter0',testDig);
+                        //io.writeRegister(1,'DigOut',testDig);
+                        //io.writeRegister(1,'Counter0',testDig);
 
 
                         //if(io.arrCurrentStatus[0].Analog0 > 1000){
-                        //    io.WriteRegister(1,'DigOut',1);
+                        //    io.writeRegister(1,'DigOut',1);
                         //}else{
-                        //    io.WriteRegister(1,'DigOut',0);
+                        //    io.writeRegister(1,'DigOut',0);
                         //}
                         //if(io.arrCurrentStatus[0].Analog1 > 1000){
-                        //    io.WriteRegister(1,'DigOut',3);
+                        //    io.writeRegister(1,'DigOut',3);
                         //}else{
-                        //    io.WriteRegister(1,'DigOut',0);
+                        //    io.writeRegister(1,'DigOut',0);
                         //}
 
                     }

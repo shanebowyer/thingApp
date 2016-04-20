@@ -27,9 +27,6 @@ var sbModule = function() {
     var myTCPClient;
     var arrIO = [];
 
-    //var settings    = Settings.settings();
-
-
     var pubIO = {
         init: function(debug){
             thisdebug = debug;
@@ -81,102 +78,44 @@ var sbModule = function() {
                 }
             }
         },        
-        // processAPICall: function(args,done,err){
-        //     var apiRespone = {header:{result:{}},content:{}};
-        //     try{
-        //         var req = args[0];
-        //         var cs = pubIO.arrCurrentStatus[0];
-        //         console.log('arrcs',pubIO.arrCurrentStatus[0]);
-
-        //         switch(req.query.reqIOToWrite){
-        //             case('DigOut'):
-        //                 response.content = cs.DigitalsExt;
-        //                 if(cs.DigitalsExt == 0){
-        //                     pubIO.WriteRegister(req.query.reqModuleAddress,req.query.reqIOToWrite,255);
-        //                 }else{
-        //                     pubIO.WriteRegister(req.query.reqModuleAddress,req.query.reqIOToWrite,0);
-        //                 }
-        //                 apiRespone.header.result = 'success';
-        //                 apiRespone.content = 'Done';
-        //                 args[2] = apiRespone;
-
-        //                 done(args);
-        //             default:
-        //                 // response.header.result = 'error';
-        //                 // response.content = 'Error. Not sure which io to control';
-        //                 // res.json(response);
-        //                 break;
-        //         }
-
-        //         console.log('req.body.myData.reqOption',req.body.myData.reqOption);
-
-        //         // switch(req.body.myData.reqOption){
-        //         //     case('read'):
-        //         //         // pubIO.arrCurrentStatus.forEach(function(item){
-        //         //         //     console.log('CurrentStatuses', item);
-        //         //         // });
-        //         //         apiRespone.header.result = 'success';
-        //         //         apiRespone.content = cs.DigitalsExt;
-        //         //         done(args);
-        //         //     case('settings'):
-        //         //         apiRespone.header.result = 'success';
-        //         //         apiRespone.content = settings;
-        //         //         args[2] = apiRespone;
-        //         //         done(args);
-        //         //     case('settingsSave'):
-        //         //         function doit(args){
-        //         //             var deferred = Q.defer();
-
-        //         //             console.log('line 3');
-        //         //             var apiRespone = {};
-
-
-        //         //             settings.saveSettings(args)
-        //         //             .then(function(args){
-        //         //                 console.log('line1');
-        //         //                 apiRespone.header.result = 'success';
-        //         //                 apiRespone.content = args.settings;
-        //         //                 args[2] = apiRespone;
-        //         //                 done(args);
-
-        //         //             }, function(args){
-        //         //                 console.log('line2');
-        //         //                 apiRespone.header.result = 'error';
-        //         //                 apiRespone.content = err;
-        //         //                 args[2] = apiRespone;
-        //         //                 done(args);
-
-        //         //             })
-
-
-        //         //             return deferred.promise;
-        //         //         }
-        //         //         //var args = {'reqres': [req,res] };
-        //         //         doit(args);
-                        
-        //         //     default:
-        //         //         apiRespone.header.result = 'error';
-        //         //         apiRespone.content = 'Error. Not sure which io to read';
-        //         //         args[2] = apiRespone;
-        //         //         done(args);
-        //         // }
-
-
-        //     }
-        //     catch(e){
-        //         console.log('error1',e);
-        //         apiRespone.header.result = 'error';
-        //         apiRespone.content = e.message.toString();
-        //         args[2] = apiRespone;
-        //         err(args);
-        //     }
-        // },
         saveSettings: function(req,res,done,error){
             settings.writeSettings(req,res,function(req,res,data){
                 done(req,res,data);
             });
         },
-        arrCurrentStatus: [],
+        currentStatus: {
+            rtuAddress: 0,
+            io: [
+                {
+                    id: 0,
+                    rawData: '',
+                    data: {}
+                }
+            ]
+        },
+        ioTemplateTCPMODMUXDIO8: function(){
+            return {
+                id: 0,
+                ioType: 'TCP-MODMUX-DIO8',
+                digitalsIn: 0,
+                digitalsOut: 0,
+                digitalsOutWriteValue: 0
+            };
+        },
+        ioTemplateTCPMODMUXAI8: function(){
+            return {
+                id: 0,
+                ioType: 'TCP-MODMUX-AI8',
+                AI1: 0,
+                AI2: 0,
+                AI3: 0,
+                AI4: 0,
+                AI5: 0,
+                AI6: 0,
+                AI7: 0,
+                AI8: 0
+            };
+        },
         ioTemplateStatus: function(){
             ioStatus = {
                 'ID': 1,
@@ -414,36 +353,47 @@ var sbModule = function() {
                     break;
 
             }
-            pubIO.makeSenseOfRawData(Address);
+            // pubIO.makeSenseOfRawData(Address);
         },
         makeSenseOfRawData: function(address){
+            var arrAllIO = [];
             pubIO.arrCurrentStatus.forEach(function(item){
                 if(item.ID == address){
                     switch(item.ioType){
                         case('TCP-MODMUX-DIO8'):
-                            var DigitalsExt = 0;
-                            DigitalsExt = data.data[11];
-                            DigitalsExt <<= 8;
-                            DigitalsExt += data.data[12];
-
-                            console.log('DigitalsExt', DigitalsExt);
-
+                            var TCPMODMUXDIO8 = pubIO.ioTemplateTCPMODMUXDIO8();
+                            TCPMODMUXDIO8.id = item.ID;
+                            TCPMODMUXDIO8.ioType = item.ioType;
+                            TCPMODMUXDIO8.DigitalsIn = item.rawData[11];
+                            TCPMODMUXDIO8.DigitalsIn <<= 8;
+                            TCPMODMUXDIO8.DigitalsIn += item.rawData[12];
+                            console.log('TCPMODMUXDIO8.DigitalsIn', TCPMODMUXDIO8.DigitalsIn);
+                            arrAllIO.push(TCPMODMUXDIO8);
                             break;
-
+                        case('TCP-MODMUX-AI8'):
+                            var TCPMODMUXAI8 = pubIO.ioTemplateTCPMODMUXAI8();
+                            TCPMODMUXAI8.id = item.ID;
+                            TCPMODMUXAI8.ioType = item.ioType;
+                            TCPMODMUXAI8.AI1 = item.rawData[9];
+                            TCPMODMUXAI8.AI1 <<= 8;
+                            TCPMODMUXAI8.AI1 += item.rawData[10];
+                            console.log('TCPMODMUXAI8.AI1', TCPMODMUXAI8.AI1);
+                            arrAllIO.push(TCPMODMUXAI8);
+                            break;
                         default:
-                            // console.log('Unhandled ioType here5',item.ioType);
                             break;
+                            // console.log('Unhandled ioType here5',item.ioType);
+                            // return  null;
                     }
-
-                    return;
                 }
             });
+            return arrAllIO;
         },
-        WriteRegister: function(ModuleAddress,IOToWrite,ValueToWrite){
+        writeRegister: function(ModuleAddress,IOToWrite,ValueToWrite){
             arrIO.forEach(function(item){
                 if(typeof item != 'undefined'){
                     if(item.id == ModuleAddress){
-                        item.io.WriteRegister(ModuleAddress,IOToWrite,ValueToWrite,0);
+                        item.io.writeRegister(ModuleAddress,IOToWrite,ValueToWrite,0);
                     }                    
                 }
 
@@ -456,28 +406,7 @@ var sbModule = function() {
         }
     };
 
-
-              // function stripper(arryPropsToKeep, arrToParse){
-              //           var newArr = [];
-
-              //           newArr = arrToParse.map(function(obj){
-              //                   var tmp = {};
-
-              //                   arryPropsToKeep.forEach(function(propertyName){
-              //                           if(typeof obj[propertyName] !== 'undefined')
-              //                           tmp[propertyName] = obj[propertyName];
-              //                   });
-              //                   return tmp;
-              //           });
-              //           return newArr;
-              //   }
-
-              //   args.data[0] = stripper(args.arrResponseFilter, args.data[0]);
-
-
     return pubIO;
-
-
 };
 util.inherits(sbModule, EventEmitter);
 exports.rmcio = sbModule;

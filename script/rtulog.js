@@ -71,27 +71,31 @@ var sbModule = function() {
                 myIO = io;
                 thisdebug = debug;
             },
-            add: function(jsonRecord,sendImmediatly,fireAndForget) {
+            add: function(payLoad,sendImmediatly,fireAndForget) {
                 if(thisMessageID > 999){
                     thisMessageID = 0;
                 }
                 thisMessageID += 1;
-
-
-
                 if (pubRTULog.log.length > thisMessageID){
                     pubRTULog.log.splice(thisMessageID, 1);
                 }
-                jsonRecord.DateTime = pubRTULog.compressDate();
-                jsonRecord.MessageID = thisMessageID;
+
+                var msgOut = {
+                    dateTime: '2016/01/01',
+                    messageId: thisMessageID,
+                    payLoad: payLoad
+                };
+                // jsonRecord.DateTime = pubRTULog.compressDate();
 
                 var logEntry = {
                     'Sent': 0,
                     'fireAndForget': fireAndForget,
                     'retries': 5,
                     'DateAndTime': '2015-01-01',
-                    'strMessage': pubRTULog.convertJsonToOutput(jsonRecord)
-                }
+                    'msgOut': msgOut
+                };
+                    // 'strMessage': pubRTULog.convertJsonToOutput(jsonRecord)
+
                 if(sendImmediatly == 1){
                     pubRTULog.log.unshift(logEntry);
                     console.log('added rtulog to beggining');
@@ -101,21 +105,36 @@ var sbModule = function() {
                 }
 
             },
-            processMessageIn: function(data){
-                var thisData = data;
-                var arrIn = [];
-                arrIn = thisData.split([' ']);
-                if(arrIn[0] == '%1'){
-                    if(currentLogIndex > -1){
-                        console.log('Log Marked As Sent');
-                        pubRTULog.log[currentLogIndex].Sent = 1;
+            processMessageIn: function(msgIn){
+                if(msgIn.msgType === 'handshake'){
+                    for(var i=0;i<pubRTULog.length;i++){
+                        if(pubRTULog[i].msgOut.messageId === msgIn.payLoad.msgId){
+                            pubRTULog[i].Sent = 1;
+                            return;
+                        }
                     }
+                }
 
-                }
-                if(arrIn[0] == '%5'){
-                    //rtulog.currentstatus.Start = '%2';
-                    pubRTULog.add(myIO.getIOStatus(1),1,1);
-                }
+
+
+
+
+
+
+                // var thisData = data;
+                // var arrIn = [];
+                // arrIn = thisData.split([' ']);
+                // if(arrIn[0] == '%1'){
+                //     if(currentLogIndex > -1){
+                //         console.log('Log Marked As Sent');
+                //         pubRTULog.log[currentLogIndex].Sent = 1;
+                //     }
+
+                // }
+                // if(arrIn[0] == '%5'){
+                //     //rtulog.currentstatus.Start = '%2';
+                //     pubRTULog.add(myIO.getIOStatus(1),1,1);
+                // }
 
             },
             readLog: function() {

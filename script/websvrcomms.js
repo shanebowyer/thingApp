@@ -24,40 +24,40 @@ var sbModule = function() {
     var SETINGS;
     var LoggedOnToWebServer = false;
     var thisdebug;
-    var myIO;
+    var myPLC;
     var myRTULog;
 
 
     var pubWebSVR = {
 
-        init: function(myWebSvrTCPClient,rtulog,io,debug){
+        init: function(myWebSvrTCPClient,rtulog,plc,debug){
             thismyWebSvrTCPClient = myWebSvrTCPClient;
             myRTULog = rtulog;
             thisdebug = debug;
-            myIO = io;
+            myPLC = plc;
 
             thismyWebSvrTCPClient.on('data', function (data) {
                 try {
                     if(thisdebug == 1){
-                        console.log('plc websvrcomms received: '+ data);
+                        console.log('websvrcomms received: '+ data);
                     }
 
                     if(data.toString() == '%S *'){
                         LoggedOnToWebServer = true;
                         if(thisdebug == 1){
-                            console.log('plc Unit Logged Onto WebServer');
+                            console.log('Unit Logged Onto WebServer');
                         }
                     }
                     if(data.toString() == '%5 *'){
                         LoggedOnToWebServer = true;
                         if(thisdebug == 1){
-                            console.log('plc Unit Poll recieved from Server');
+                            console.log('Unit Poll recieved from Server');
                         }
                         myRTULog.processMessageIn(data.toString());
                     }
                     if(data.toString().indexOf('%1') >= 0){
                         if(thisdebug == 1){
-                            console.log('plc message from Server');
+                            console.log('message from Server');
                         }
                         myRTULog.processMessageIn(data.toString());
                     }
@@ -141,12 +141,6 @@ var sbModule = function() {
             if(strOutput != ''){
                 thismyWebSvrTCPClient.SendData(strOutput);
             }
-        },
-        getIOStatus: function(Address){
-            return myIO.getIOStatus(Address);
-        },
-        ControlModbusIO: function(RTUAddress, IOToWrite, vValue){
-            myIO.WriteRegister(RTUAddress, IOToWrite, vValue);
         },
         on: function(strEvent,callbackFunction){
             self.on(strEvent,function(data){

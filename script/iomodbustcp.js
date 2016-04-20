@@ -56,7 +56,7 @@ var sbModule = function(IOType,IOid) {
                             'data': data
                         });
 
-                    pubIOModbus.Start(); //SB! Add this back
+                    pubIOModbus.start(); //SB! Add this back
 
                 }
                 catch (e) {
@@ -69,7 +69,7 @@ var sbModule = function(IOType,IOid) {
             setTimeout(pubIOModbus.Start,3000);
 
         },
-        Start: function(){
+        start: function(){
             var i = 0;
 
             for(i=0;i<pubIOModbus.arrToSend.length;i++){
@@ -99,16 +99,16 @@ var sbModule = function(IOType,IOid) {
 
         },
 
-        ReadRegister: function(Permanent) {
+        readRegister: function(Permanent) {
             console.log('ReadModbus Sent');
             var arrayReturn;
             //arrayReturn = pubIOModbus.BuildModbusRegisterToRead(1,3,1,1);
             if(thisIOType == 'TCP-MODMUX-DIO8') {
-                arrayReturn = pubIOModbus.BuildModbusRegisterToRead(1, 3, 1, 20);
+                arrayReturn = pubIOModbus.buildModbusRegisterToRead(1, 3, 1, 20);
             }else if(thisIOType == 'TCP-MODMUX-AI8'){
-                arrayReturn = pubIOModbus.BuildModbusRegisterToRead(1, 3, 1, 9);
+                arrayReturn = pubIOModbus.buildModbusRegisterToRead(1, 3, 1, 9);
             }else{
-                arrayReturn = pubIOModbus.BuildModbusRegisterToRead(1,3,2,1);
+                arrayReturn = pubIOModbus.buildModbusRegisterToRead(1,3,2,1);
             }
 
             var doRead = new pubIOModbus.templatearrToSend;
@@ -124,31 +124,31 @@ var sbModule = function(IOType,IOid) {
 
             return;
         },
-        WriteRegister: function(ModuleAddress,IOToWrite,ValueToWrite,Permanent){
+        writeRegister: function(ModuleAddress,IOToWrite,ValueToWrite,Permanent){
             var arrayReturn;
             var StartRegister = 0;
             var NumberOfRegisters;
             console.log('ModuleAddress',ModuleAddress);
             console.log('thisIOType',thisIOType);
             if(thisIOType == 'TCP-MODMUX-DIO8'){
-                if(IOToWrite == 'DigOut'){
+                if(IOToWrite == 'digOut'){
                     StartRegister = 2;
                     NumberOfRegisters = 1;
-                }else if(IOToWrite.substring(0,7) == 'Counter'){
+                }else if(IOToWrite.substring(0,7) == 'counter'){
                     var counterNumber = 0;
                     counterNumber = IOToWrite.substring(7,IOToWrite.length);
                     StartRegister = (Number(counterNumber)*2) + 3;
-                    NumberOfRegisters = 2
+                    NumberOfRegisters = 2;
                 }else if(IOToWrite == 'Counter1'){
                     StartRegister = 4;
-                    NumberOfRegisters = 2
+                    NumberOfRegisters = 2;
                 }else
                 {
                     console.log('iomodbustcp-WriteRegister IOToWrite invalid');
                     return;
                 }
 
-                arrayReturn = pubIOModbus.BuildModbusRegisterToWrite(ModuleAddress,16,StartRegister, NumberOfRegisters,ValueToWrite);
+                arrayReturn = pubIOModbus.buildModbusRegisterToWrite(ModuleAddress,16,StartRegister, NumberOfRegisters,ValueToWrite);
             }else{
                 //arrayReturn = pubIOModbus.BuildModbusRegisterToWrite(ModuleAddress,16,StartRegister,ValueToWrite);
                 console.log('iomodbustcp-WriteRegister IOType invalid');
@@ -167,7 +167,7 @@ var sbModule = function(IOType,IOid) {
 
             console.log('WriteRegister done');
         },
-        BuildModbusRegisterToWrite: function(RTUAddress, FunctionCode, StartModbusAddress, NumberOfRegisters, vValue){
+        buildModbusRegisterToWrite: function(RTUAddress, FunctionCode, StartModbusAddress, NumberOfRegisters, vValue){
             var arrayReturn;
             var ByteCount;
             var x = 0;
@@ -234,7 +234,7 @@ var sbModule = function(IOType,IOid) {
             return arrayReturn;
         },
 
-        BuildModbusRegisterToRead: function(RTUAddress, FunctionCode, StartModbusAddress, ModbusLength){
+        buildModbusRegisterToRead: function(RTUAddress, FunctionCode, StartModbusAddress, ModbusLength){
             var arrayReturn = new Buffer(12);
 
             thisIdentifier += 1;
@@ -254,7 +254,7 @@ var sbModule = function(IOType,IOid) {
             return arrayReturn;
         },
 
-        CalculateCRC: function(ByteData){
+        calculateCRC: function(ByteData){
             var x;
             var crc;
             var y;
