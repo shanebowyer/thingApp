@@ -1,0 +1,756 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"cmdCan",
+				"cmdCancel"
+			],
+			[
+				"new",
+				"polyObjectNew"
+			],
+			[
+				"poly",
+				"polygon"
+			],
+			[
+				"po",
+				"polyId"
+			],
+			[
+				"this",
+				"thisPoly"
+			],
+			[
+				"cmdC",
+				"cmdCancelEdit"
+			],
+			[
+				"txt",
+				"txtZoneNameEnabled"
+			],
+			[
+				"de",
+				"description"
+			],
+			[
+				"drawing",
+				"drawingService"
+			],
+			[
+				"cmdDra",
+				"cmdDrawVisible"
+			],
+			[
+				"ar",
+				"args"
+			],
+			[
+				"trim",
+				"trimStrings"
+			],
+			[
+				"trip",
+				"trips"
+			],
+			[
+				"cu",
+				"currentDateAndTime"
+			],
+			[
+				"curr",
+				"current"
+			],
+			[
+				"proce",
+				"processData"
+			],
+			[
+				"apiReal",
+				"apiRealControl"
+			],
+			[
+				"CE",
+				"CREDIT"
+			],
+			[
+				"port",
+				"postUrl"
+			],
+			[
+				"mod",
+				"modelData"
+			],
+			[
+				"arrT",
+				"arrToKeep"
+			],
+			[
+				"arr",
+				"arrResponseFilter"
+			],
+			[
+				"proc",
+				"processLogin"
+			],
+			[
+				"par",
+				"parameters"
+			],
+			[
+				"res",
+				"resultError"
+			],
+			[
+				"get",
+				"getAll"
+			],
+			[
+				"ins",
+				"insertId"
+			],
+			[
+				"web",
+				"webServiceURL"
+			],
+			[
+				"p",
+				"params"
+			],
+			[
+				"or",
+				"origin"
+			],
+			[
+				"we",
+				"webServiceURL"
+			],
+			[
+				"getA",
+				"getAbsolutePath"
+			],
+			[
+				"c",
+				"content"
+			],
+			[
+				"xa",
+				"xastrisID"
+			],
+			[
+				"x",
+				"xastrisID"
+			],
+			[
+				"lo",
+				"LogData"
+			],
+			[
+				"Pay",
+				"PayAccDesc"
+			],
+			[
+				"Acc",
+				"AccountNumber"
+			],
+			[
+				"Meter",
+				"MeterNumber"
+			],
+			[
+				"CustC",
+				"CustCanVend"
+			],
+			[
+				"CustA",
+				"CustAddress"
+			],
+			[
+				"Cust",
+				"CustName"
+			],
+			[
+				"fon",
+				"font-size"
+			],
+			[
+				"back",
+				"background-color"
+			],
+			[
+				"ba",
+				"background-color"
+			],
+			[
+				"Pin",
+				"Pin1"
+			],
+			[
+				"Deb",
+				"DebtRecoveryBalance"
+			],
+			[
+				"Ser",
+				"SerialNumber"
+			],
+			[
+				"pr",
+				"printHtml"
+			],
+			[
+				"disp",
+				"displayVoucher"
+			],
+			[
+				"process",
+				"processAPICall"
+			],
+			[
+				"der",
+				"deferred"
+			],
+			[
+				"et",
+				"externalID"
+			],
+			[
+				"WB",
+				"WEB_PARAM"
+			],
+			[
+				"pro",
+				"promise"
+			],
+			[
+				"W",
+				"WEB_PARAM"
+			],
+			[
+				"__",
+				"__xaf_User"
+			],
+			[
+				"fun",
+				"function"
+			],
+			[
+				"Sys",
+				"SystemSettings"
+			],
+			[
+				"PA",
+				"PARAMS"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 159.0,
+		"last_filter": "install",
+		"selected_items":
+		[
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"listp",
+				"Package Control: List Packages"
+			],
+			[
+				"Package Control:lis",
+				"Package Control: List Packages"
+			],
+			[
+				"Package Control: ins",
+				"Package Control: Install Package"
+			],
+			[
+				"jslin",
+				"JSLint"
+			],
+			[
+				"update",
+				"SVN: (File) Update"
+			],
+			[
+				"rever",
+				"File: Revert"
+			],
+			[
+				"commi",
+				"SVN: (File) Commit"
+			],
+			[
+				"com",
+				"SVN: (File) Commit"
+			],
+			[
+				"commit",
+				"SVN: (File) Commit"
+			],
+			[
+				"lock",
+				"SVN: (File) Lock"
+			],
+			[
+				"Package Control: install",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 467.0
+	},
+	"console":
+	{
+		"height": 139.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/shane/Documents/GitCode/rtu"
+	],
+	"file_history":
+	[
+		"/home/shane/Documents/GitCode/xastris/logs/xastris.log",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/xastris_PrepaidAPIUserManagement/Script/services.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/xastris_PrepaidAPIUserManagement/Script/config.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Script/ClientConfig.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/xastris_PrepaidAPIUserManagement/Script/AppCore.js",
+		"/home/shane/Documents/GitCode/xastris/parser/pre/mssqlRealTrack.js",
+		"/home/shane/Documents/GitCode/realtrack/app/Script/zones/zonesService.js",
+		"/home/shane/Documents/GitCode/realtrack/app/default.html",
+		"/home/shane/Documents/GitCode/realtrack/app/Script/app.js",
+		"/home/shane/Documents/GitCode/realtrack/app/Script/map/map.html",
+		"/home/shane/Documents/GitCode/realtrack/app/Script/vehicles/vehicles.html",
+		"/home/shane/Documents/GitCode/realtrack/app/Script/zones/zoneEdit.html",
+		"/home/shane/Documents/GitCode/realtrack/app/Script/vehicles/backupShaneVehicles.html",
+		"/home/shane/Documents/GitCode/realtrack/app/Script/zones/zones.html",
+		"/home/shane/Documents/GitCode/realtrack/app/Script/zones/zoneEditController.js",
+		"/home/shane/Documents/GitCode/realtrack/app/Script/zones/zonesDrawingManager.js",
+		"/home/shane/Documents/GitCode/realtrack/app/Script/zones/zonesController.js",
+		"/home/shane/Documents/GitCode/realtrack/app/Style/Style.css",
+		"/home/shane/Documents/GitCode/realtrack/app/Script/vehicles/vehicleCache.js",
+		"/home/shane/Documents/GitCode/realtrack/.gitignore",
+		"/home/shane/Documents/GitCode/realtrack/app/Script/vehicles/vehicles.module.js",
+		"/home/shane/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
+		"/home/shane/.config/sublime-text-3/Packages/JSHint Gutter/JSHint.sublime-settings",
+		"/home/shane/.config/sublime-text-3/Packages/User/JSLint.sublime-settings",
+		"/home/shane/Documents/GitCode/realtrack/app/Script/vehicles/[cmd: ['node', '/home/shane/.config/sublime-text-2/Packages/JSLint/linter.js', '--bitwise', '--browser', '--es6', '--eval', '--for', '--fudge', '--node', '--this', '/home/shane/Documents/GitCode/realtrack/app/Script/vehicles/vehicleCache.js']]",
+		"/home/shane/.config/sublime-text-3/Packages/JSHint Gutter/.jshintrc",
+		"/home/shane/Documents/GitCode/realtrack/gulpfile.js",
+		"/home/shane/Documents/GitCode/realtrack/.jshintrc",
+		"/home/shane/.config/sublime-text-3/Packages/JSLint/JSLint.sublime-settings",
+		"/home/shane/.config/sublime-text-3/Packages/JSLint/jslint.js",
+		"/home/shane/.config/sublime-text-3/Packages/JSLint/linter.js",
+		"/home/shane/.config/sublime-text-3/Packages/JSLint/Default.sublime-keymap",
+		"/home/shane/Documents/GitCode/xastris/ServerConfig.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/ShaneTest/Script/App.js",
+		"/home/shane/Documents/GitCode/xastris/tmp.js",
+		"/home/shane/Documents/GitCode/xastris/X-Astris_Shane.js",
+		"/home/shane/Documents/GitCode/xastris/.gitignore",
+		"/home/shane/Documents/GitCode/xastris/parser/pre/mssqlRealControl.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/ShaneTest/Resources/index.html",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/ShaneTest/default.html",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/ShaneTest/Resources/app.html",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/ShaneTest/Resources/map.html",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/PrePaidVendingV1/Script/PrePaidVendingV1.js",
+		"/home/shane/Documents/GitCode/xastris/parser/pre/userLogin.js",
+		"/home/shane/Documents/GitCode/xastris/parser/pre/userAuth.js",
+		"/home/shane/Documents/GitCode/xastris/parser/pre/prePrePaidVendingV1.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/PrePaidVendingV1/default.html",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/DataCapture/default.html",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/DataCapture/Script/Resources.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/DataCapture/Script/DataCapture.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/AppHome/Script/Resources.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/AppInstaller2/Script/factories.js",
+		"/home/shane/Documents/GitCode/xastris_test/.gitignore",
+		"/home/shane/Documents/GitCode/xastris_test/local_resources/Apps/ShaneTest/default.html",
+		"/home/shane/Documents/GitCode/xastris_test/X-Astris_Shane.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/xastris_PrepaidAPIUserManagement/Resources/app.html",
+		"/home/shane/Documents/GitCode/xastris/parser/pre/writeAsset.js",
+		"/home/shane/Documents/GitCode/xastris/parser/pre/registerUser.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/xastris_PrepaidAPIUserManagement/Script/Script.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/ShaneTest/Script/AppCore.js",
+		"/home/shane/Documents/GitCode/xastris/parser/pre/updateAsset.js",
+		"/home/shane/Documents/GitCode/xastris/parser/__xaf_Parser.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/DataCapture/Script/AppCore.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/Login/Script/AppCore.js",
+		"/home/shane/Documents/GitCode/xastris/Framework/ApplicationCore/Script/AppCore.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/DataEntry/Script/DataEntry.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/Login/Script/TestOTP.js",
+		"/home/shane/Documents/GitCode/xastris/database/shaneBackup1.sql",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/xastris_RTUDetails/Script/AppCore.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/xastris_RCSysAdmin/Script/AppCore.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/eWalletTest/Script/AppCore.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/eWalletRich/Script/AppCore.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/TemplateManager/Script/AppCore.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/Selector/Script/AppCore.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/ReverseBilling/Script/AppCore.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/RCSettings/Script/AppCore.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/PrePaidVendingV1/Script/AppCore.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/PaulApp/Script/AppCore.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/LogReader/Script/AppCore.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/Locator/Script/AppCore.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/AppHome/Script/AppCore.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/AppInstaller2/Script/AppCore.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/AssetMap/Script/AppCore.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/DataEntry/Script/AppCore.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Script/framework.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/AssetMap/Script/AssetMap.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/DataCapture/Resources/assets.html",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/Login/Script/LoginScript.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/Login/default.html",
+		"/home/shane/Documents/GitCode/xastris/database/shaneBackup.sql",
+		"/home/shane/Documents/GitCode/xastris/database/patch_1.0.1.sql",
+		"/home/shane/Documents/GitCode/xastris/framework_modules/serverSideAPI.js",
+		"/home/shane/Documents/GitCode/xastris/logs/log4js.json",
+		"/home/shane/Documents/GitCode/xastris/framework_modules/logger.js",
+		"/home/shane/Documents/GitCode/xastris/framework_drivers/PrePaidTCPDriver.js",
+		"/home/shane/Documents/GitCode/xastris/ServerConfig.js.template",
+		"/home/shane/Documents/GitCode/xastris_tmp/ServerConfig.js",
+		"/home/shane/Documents/GitCode/xastris/framework_modules/PrePaidProtocol.js",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/PrePaidVendingV1/test.html",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/PrePaidVendingV1/Script/test.js",
+		"/home/shane/sambashared/PowerHub Compliance/xml req res.txt",
+		"/home/shane/Documents/GitCode/xastris/local_resources/Apps/PrePaidVendingV1/gulpfile.js",
+		"/home/shane/Documents/GitCode/xastris/parser/pre/rts_ws_v1.js",
+		"/home/shane/Documents/GitCode/xastris/ServiceHandler.js",
+		"/home/shane/Documents/GitCode/xastris/ShaneTest.js",
+		"/home/shane/Documents/GitCode/xastris/framework_modules/externalServerAPI.js",
+		"/tmp/sublime-svn-1458290420/SVN",
+		"/home/shane/Documents/SVN Code/xastris/ServerConfig.js",
+		"/home/shane/Documents/SVN Code/xastris/parser/pre/prePrePaidVendingV1.js",
+		"/home/shane/Documents/SVN Code/xastris/framework_modules/serverSideAPI.js",
+		"/home/shane/Documents/SVN Code/xastris/framework_modules/tcpServer.js",
+		"/home/shane/Documents/SVN Code/xastris/local_resources/Apps/xastris_PrepaidAPIUserManagement/Script/Script.js",
+		"/home/shane/Documents/SVN Code/xastris/framework_drivers/PrePaidTCPDriver.js",
+		"/home/shane/Documents/SVN Code/xastris/X-Astris_Shane.js",
+		"/tmp/sublime-svn-1457445964/SVN",
+		"/tmp/sublime-svn-1457445921/SVN",
+		"/home/shane/Documents/SVN Code/xastris/local_resources/Apps/xastris_PrepaidAPIUserManagement/Script/serviceController.js",
+		"/tmp/sublime-svn-1457328483/SVN",
+		"/tmp/sublime-svn-1457098402/SVN",
+		"/tmp/sublime-svn-1457098384/SVN",
+		"/tmp/sublime-svn-1457095503/SVN",
+		"/home/shane/Documents/SVN Code/xastris/ServiceHandler.js",
+		"/tmp/sublime-svn-1457095425/SVN",
+		"/home/shane/Documents/SVN Code/xastris/logs/xastris.log",
+		"/tmp/sublime-svn-1457090122/SVN",
+		"/tmp/sublime-svn-1457084586/SVN",
+		"/tmp/sublime-svn-1457083613/SVN",
+		"/tmp/sublime-svn-1457080364/SVN"
+	],
+	"find":
+	{
+		"height": 25.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			"/home/shane/Documents/GitCode/xastris/local_resources",
+			"/home/shane/Documents/GitCode/xastris",
+			"/home/shane/Documents/GitCode/xastris/local_resources/Apps",
+			"/home/shane/Documents/GitCode/xastris/local_resources/Apps/PrePaidVendingV1",
+			"/home/shane/Documents/GitCode/xastris",
+			"/home/shane/Documents/GitCode/xastris/local_resources/Apps/xastris_PrepaidAPIUserManagement",
+			"/home/shane/Documents/GitCode/realtrack/app/Script",
+			"/home/shane/Documents/GitCode/realtrack/app",
+			"/home/shane/Documents/GitCode/realtrack",
+			"/home/shane/Documents/GitCode/realtrack/app",
+			"/home/shane/Documents/GitCode/realtrack/app/Script",
+			"/home/shane/Documents/GitCode/realtrack/app/Script/zones",
+			"/home/shane/Documents/GitCode/xastris/local_resources",
+			"/home/shane/Documents/GitCode/xastris/local_resources/Apps/xastris_PrepaidAPIUserManagement",
+			"/home/shane/Documents/GitCode/xastris/local_resources/Apps/ShaneTest",
+			"/home/shane/Documents/GitCode/xastris/local_resources/Apps",
+			"/home/shane/Documents/GitCode/xastris",
+			"/home/shane/Documents/GitCode/xastris/local_resources",
+			"/home/shane/Documents/GitCode/xastris",
+			"/home/shane/Documents/GitCode/xastris/",
+			"/home/shane/Documents/GitCode/xastris/local_resources",
+			"/home/shane/Documents/GitCode/xastris",
+			"/home/shane/Documents/GitCode/xastris/local_resources/Apps/DataCapture/Resources",
+			"/home/shane/Documents/GitCode/xastris",
+			"/home/shane/Documents/GitCode/xastris/local_resources/Apps/AssetMap",
+			"/home/shane/Documents/GitCode/xastris/local_resources/Apps/AssetMap/Script",
+			"/home/shane/Documents/GitCode/xastris",
+			"/home/shane/Documents/SVN Code/xastris/local_resources/Apps/xastris_PrepaidAPIUserManagement",
+			"/home/shane/Documents/SVN Code/xastris"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"__xaf_Config",
+			"443",
+			":443",
+			"__xaf_Config",
+			" //\"http://192.168.1.224:3004/api/services\"",
+			"xmlhttp.send(JSON.stringify(DTO));",
+			"appCtrl",
+			"443",
+			"https",
+			"!",
+			"tow",
+			"cancelDrawing",
+			"setNewDescription",
+			"cancelDrawing",
+			"showDrawingTools",
+			"initDrawing",
+			"insertAllZones",
+			"setEditable",
+			"setNewDescription",
+			"cancelDrawing",
+			"showDrawingTools",
+			"getDrawingManager",
+			"initDrawing",
+			"disableEdit",
+			"updatePoly",
+			"setPoly",
+			"getPoly",
+			"setEditable:",
+			"poly = ",
+			"key",
+			"api",
+			"Savezone",
+			"polyId =",
+			"saveZoneToDB",
+			"poly = ",
+			"editable",
+			"zones.module",
+			"zonesController",
+			"configuration",
+			"primary",
+			"cancelDrawing",
+			"setEditable",
+			"disableEdit",
+			"DrawingManager",
+			"initDrawing",
+			"Cache",
+			"zoneWriter",
+			"zoneWriter:",
+			"apiV1_zoneUpdate:",
+			"deferred.reject(args);",
+			"reject",
+			".Trim()",
+			" + ',' +",
+			".ToString() + ',' +",
+			"displayEDSAPayAccount",
+			"selectde",
+			"processRedeemVoucher",
+			"redeemVoucher",
+			"redeem",
+			"callapi",
+			"redeemvoucher",
+			"flagassold",
+			"__xaf_resources",
+			"http",
+			"rts_small.png",
+			"rts_samll.png",
+			"webServiceUsers",
+			"history",
+			"histtory",
+			"writeHistoryLocal",
+			"localstorage.",
+			"options",
+			"console.",
+			"console.log",
+			");\n",
+			"0",
+			"getAssets",
+			"DataCapture",
+			"dataCaptureApp",
+			"writeData",
+			"processRow",
+			"processEndPoints",
+			"mssqlRealControl.js",
+			"$scope.assetInput = ",
+			"update",
+			"base32tohex",
+			"/*ALL CODE WHICH MUST EXECUTE IMMEDIATELY GOES IN THE FOLLOWING SECTION*/",
+			"webServiceURL:",
+			"webServiceURL",
+			"save token failed",
+			": \"UpdateAsset\"",
+			"dt = ",
+			"Request: \"UpdateAsset\"",
+			"UpdateAsset",
+			"__xaf_Parser",
+			"sysCall",
+			"syscall",
+			"Request: \"UpdateAsset\"",
+			"updateAsset",
+			"undefined",
+			"$scope.fields",
+			"$scope.assetInput = ",
+			"sysCall",
+			"processRow",
+			"processEndPoints",
+			"rowData",
+			"processEndPoints",
+			"update",
+			"row",
+			"writeData",
+			"processRow",
+			"getEndpointByColumnName",
+			"console.log",
+			"password",
+			"pasword",
+			"update",
+			"eat",
+			"debugger;",
+			"getParameters",
+			"__xaf_Config",
+			"local.params",
+			"local.",
+			"/*Parameter settings*/",
+			"3004",
+			"console.log('here')",
+			"Here",
+			"successcb",
+			"224:443"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"zonesDrawingManager",
+			""
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 25.0
+	},
+	"input":
+	{
+		"height": 33.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 45.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "rtu.sublime-project",
+	"replace":
+	{
+		"height": 46.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"assetmap",
+				"local_resources/Apps/AssetMap/Script/AssetMap.js"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 259.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

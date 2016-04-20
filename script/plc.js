@@ -41,7 +41,7 @@ var sbModule = function() {
         },
         sendCurrentStatus: function(){
             var msgOut = {
-                sourceAddress: global.settings.rtuId,
+                sourceAddress: __settings.value.rtuId,
                 destinationAddress: 0,
                 msgId: 0,
                 msgType: 'status',
@@ -70,7 +70,7 @@ var sbModule = function() {
                 }
             };
 
-            if(global.settings.rtuId === msgIn.destinationAddress){
+            if(__settings.value.rtuId === msgIn.destinationAddress){
                 if(msgIn.msgType === 'handshake'){
                     myLog.processMessageIn(msgIn);
                     args[2] = io.makeSenseOfRawData(msgIn.address);
@@ -79,7 +79,7 @@ var sbModule = function() {
                 else if(msgIn.msgType === 'control'){
                     io.writeRegister(msgIn.write.destinationIO,msgIn.write.io,msgIn.write.value);
                     var msgResponse = {
-                        sourceAddress: global.settings.rtuId,
+                        sourceAddress: __settings.value.rtuId,
                         destinationAddress: msgIn.sourceAddress,
                         msgId: msgIn.msgId,
                         msgType: 'handshake'
@@ -91,7 +91,7 @@ var sbModule = function() {
                 else{
                     console.log('What should I do with this message. Sending status for shits and giggles');
                     var msgResponse1 = {
-                        sourceAddress: global.settings.rtuId,
+                        sourceAddress: __settings.value.rtuId,
                         destinationAddress: msgIn.sourceAddress,
                         msgId: msgIn.msgId,
                         msgType: 'status',
@@ -110,7 +110,7 @@ var sbModule = function() {
         runPLCLogic: function(runSpeedMilliseconds){
             setInterval(function(){
                 pubPLC.checkCOFS(function(COFS){
-                    if(io.arrCurrentStatus[0] != undefined){
+                    if(io.currentStatus[__settings.value.rtuId] != undefined){
                         //testDig += 1;
                         //if(testDig > 255){
                         //    testDig = 0;
@@ -140,50 +140,50 @@ var sbModule = function() {
             var bCOFS = 0;
             var TxFlag = 0;
 
-            if(io.arrCurrentStatus[0] != undefined){
-                if(arrCOFS != undefined){
-                    if(arrCOFS.length > 0){
-                        //console.log('DIGITAL: ' + io.arrCurrentStatus[0].Digitals);
+            // if(io.arrCurrentStatus[0] != undefined){
+            //     if(arrCOFS != undefined){
+            //         if(arrCOFS.length > 0){
+            //             //console.log('DIGITAL: ' + io.arrCurrentStatus[0].Digitals);
 
-                        //DIGITALS
-                        if(arrCOFS[0].DigitalsMask > 0){
-                            var CurrentDigitalStatusWithMask = io.arrCurrentStatus[0].Digitals & arrCOFS[0].DigitalsMask;
-                            if(CurrentDigitalStatusWithMask != arrCOFS[0].DigitalsLastStatus){
-                                arrCOFS[0].DigitalsLastStatus = io.arrCurrentStatus[0].Digitals  & arrCOFS[0].DigitalsMask;
-                                TxFlag += Math.pow(2,1);
-                                console.log('Digital COFS');
-                                bCOFS = 1;
-                            }
-                        }
-                        //DIGITALS EXT(Digital Outputs on tcp modmux unit)
-                        if(arrCOFS[0].DigitalsExtMask > 0){
-                            var CurrentDigitalExtStatusWithMask = io.arrCurrentStatus[0].DigitalsExt & arrCOFS[0].DigitalsExtMask;
-                            if(CurrentDigitalExtStatusWithMask != arrCOFS[0].DigitalsExtLastStatus){
-                                arrCOFS[0].DigitalsExtLastStatus = io.arrCurrentStatus[0].DigitalsExt  & arrCOFS[0].DigitalsExtMask;
-                                TxFlag += Math.pow(2,1);
-                                console.log('DigitalExt COFS');
-                                bCOFS = 1;
-                            }
-                        }
+            //             //DIGITALS
+            //             if(arrCOFS[0].DigitalsMask > 0){
+            //                 var CurrentDigitalStatusWithMask = io.arrCurrentStatus[0].Digitals & arrCOFS[0].DigitalsMask;
+            //                 if(CurrentDigitalStatusWithMask != arrCOFS[0].DigitalsLastStatus){
+            //                     arrCOFS[0].DigitalsLastStatus = io.arrCurrentStatus[0].Digitals  & arrCOFS[0].DigitalsMask;
+            //                     TxFlag += Math.pow(2,1);
+            //                     console.log('Digital COFS');
+            //                     bCOFS = 1;
+            //                 }
+            //             }
+            //             //DIGITALS EXT(Digital Outputs on tcp modmux unit)
+            //             if(arrCOFS[0].DigitalsExtMask > 0){
+            //                 var CurrentDigitalExtStatusWithMask = io.arrCurrentStatus[0].DigitalsExt & arrCOFS[0].DigitalsExtMask;
+            //                 if(CurrentDigitalExtStatusWithMask != arrCOFS[0].DigitalsExtLastStatus){
+            //                     arrCOFS[0].DigitalsExtLastStatus = io.arrCurrentStatus[0].DigitalsExt  & arrCOFS[0].DigitalsExtMask;
+            //                     TxFlag += Math.pow(2,1);
+            //                     console.log('DigitalExt COFS');
+            //                     bCOFS = 1;
+            //                 }
+            //             }
 
-                        //COUNTER0
-                        if(arrCOFS[0].Counter0Mask > 0){
-                            if((io.arrCurrentStatus[0].Counter0 - arrCOFS[0].Counter0LastStatus >= arrCOFS[0].Counter0Mask) || (arrCOFS[0].Counter0LastStatus - io.arrCurrentStatus[0].Counter0  >= arrCOFS[0].Counter0Mask)){
-                                arrCOFS[0].Counter0LastStatus = io.arrCurrentStatus[0].Counter0;
-                                TxFlag += Math.pow(2,2);
-                                console.log('Counter0 COFS');
-                                bCOFS = 1;
-                            }
-                        }
-                    }
-                }
-            }
-            if(bCOFS == 1){
-                console.log('COFS TXFlag = ' + TxFlag);
-                io.arrCurrentStatus[0].TxFlag = TxFlag;
-                var jsonRecord = io.arrCurrentStatus[0];
-                myLog.add(jsonRecord,1,1);
-            }
+            //             //COUNTER0
+            //             if(arrCOFS[0].Counter0Mask > 0){
+            //                 if((io.arrCurrentStatus[0].Counter0 - arrCOFS[0].Counter0LastStatus >= arrCOFS[0].Counter0Mask) || (arrCOFS[0].Counter0LastStatus - io.arrCurrentStatus[0].Counter0  >= arrCOFS[0].Counter0Mask)){
+            //                     arrCOFS[0].Counter0LastStatus = io.arrCurrentStatus[0].Counter0;
+            //                     TxFlag += Math.pow(2,2);
+            //                     console.log('Counter0 COFS');
+            //                     bCOFS = 1;
+            //                 }
+            //             }
+            //         }
+            //     }
+            // }
+            // if(bCOFS == 1){
+            //     console.log('COFS TXFlag = ' + TxFlag);
+            //     io.arrCurrentStatus[0].TxFlag = TxFlag;
+            //     var jsonRecord = io.arrCurrentStatus[0];
+            //     myLog.add(jsonRecord,1,1);
+            // }
             done(bCOFS);
         },
         on: function(strEvent,callbackFunction){

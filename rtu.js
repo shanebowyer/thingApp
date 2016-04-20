@@ -10,7 +10,7 @@ global.__base = __dirname + '/';
 var Q       = require('q');
 
 var Settings    = require(__base + './script/settings.js');
-global.settings = new Settings.settings();
+global.__settings = new Settings.settings();
 
 var rtulog = require(__base + './script/rtulog.js');
 var websvrcomms = require(__base + './script/websvrcomms.js');
@@ -20,6 +20,7 @@ var plc = require(__base + './script/plc.js');
 var modbusslave = require(__base + './script/iomodbustcpslave.js');
 
 //var rs232 = require(__base + './script/rs232.js');
+
 
 
 
@@ -172,7 +173,7 @@ try{
                     deferred.resolve(args);
                     break;
                 case('settingsSave'):
-                    settings.saveSettings(args)
+                    __settings.saveSettings(args)
                     .then(function(args){
                         apiRespone.header.result = 'success';
                         apiRespone.content = args.settings;
@@ -198,10 +199,11 @@ try{
         },
         init: function(args){
             var deferred = Q.defer();
-            settings.getSettings(args)
+            __settings.getSettings(args)
             .then(rtu.otherInit,null)
             .then(function(args){
                 // console.log('args',args);
+
                 deferred.resolve(args);
             },function(args){
                 // console.log('args error',args);
@@ -223,13 +225,15 @@ try{
 
             var Debug = 1;
 
+            console.log('settings rtuid',__settings.value.rtuId);
+
 
 
             myIO = new io.rmcio;
             myIO.init(0);
 
             //---------------------------Modbus Slave---------------------------//
-            var settingsModbusSlave = settings.value.modbusslave;
+            var settingsModbusSlave = __settings.value.modbusslave;
             if(settingsModbusSlave.enabled == 1){
                 var ioModbustcpslave = new modbusslave.ioModbusTCPSlave;
                 ioModbustcpslave.init(myIO,1);
@@ -243,21 +247,21 @@ try{
             //---------------------------End Log---------------------------//
 
 
+            myPlc = new plc.rmcplc;
+            myPlc.init(myIO,myRTULog,0);
 
             //---------------------------Remote Web Server---------------------------//
-            var settingsRemoteWebserver = settings.value.remotewebserver;
+            var settingsRemoteWebserver = __settings.value.remotewebserver;
             var remoteServerTCPClient = new tcpClient.rmcTCP;
             remoteServerTCPClient.init(function(err){
                 console.log('remoteServerTCPClient error', err);
             },settingsRemoteWebserver.ipAddress,settingsRemoteWebserver.port,Debug);
 
             var mywebsvrComms = new websvrcomms.webSVRComms;
-            mywebsvrComms.init(remoteServerTCPClient,myRTULog,myIO,Debug);
+            mywebsvrComms.init(remoteServerTCPClient,myRTULog,myPlc,Debug);
             //---------------------------END Remote Web Server---------------------------//
 
 
-            myPlc = new plc.rmcplc;
-            myPlc.init(myIO,myRTULog,0);
 
 
             // console.log('RS232');

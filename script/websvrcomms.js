@@ -123,7 +123,7 @@ var sbModule = function() {
                 return;
             }
             var Start = '%S';
-            var SerialNumber = settings.value.rtuId;
+            var SerialNumber = __settings.value.rtuId;
             var End = '*';
             var strOutput = ''
                 + Start
@@ -155,7 +155,7 @@ var sbModule = function() {
 
     setInterval(pubWebSVR.SendWebSvrLogon,5000);
 
-    var FixedTxTime = settings.value.fixedTxTime;
+    var FixedTxTime = __settings.value.fixedTxTime;
     pubWebSVR.fixedTxTime;
 
     setInterval(pubWebSVR.checkRTULogForMessagesToSend,(1000));

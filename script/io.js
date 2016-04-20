@@ -30,11 +30,16 @@ var sbModule = function() {
     var pubIO = {
         init: function(debug){
             thisdebug = debug;
+            // thisdebug = 1;
 
             console.log('Starting io');
+
+            if(typeof __settings === 'undefined'){
+                console.log('settings undefined');
+            }
             // console.log('settings',settings.value);
 
-            var myIO = settings.value.io;
+            var myIO = __settings.value.io;
             var i = 0;
             for(i=0;i<myIO.length;i++){
                 if(myIO[i].enabled == 1){
@@ -56,42 +61,54 @@ var sbModule = function() {
                         var ioItem = {'id': myIO[i].id, 'io': ioModbus};
                         arrIO.push(ioItem);
 
+
+                        if(typeof pubIO.currentStatus[__settings.value.rtuId] === 'undefined'){
+                            var currentStatus = {};
+                            currentStatus.rtuAddress = __settings.value.rtuId;
+                            var id = myIO[i].id;
+                            // var obj = { id: myIO[i].id, ioType: myIO[i].ioType, rawData: '', data: {} };
+                            currentStatus.io = {};
+                            // currentStatus.io[id] = obj;
+                            pubIO.currentStatus[__settings.value.rtuId] = currentStatus;
+                        }
+
+                        if(typeof pubIO.currentStatus[__settings.value.rtuId].io[myIO[i].IOid] === 'undefined'){
+                            var id = myIO[i].id;
+                            var obj = { id: myIO[i].id, ioType: myIO[i].ioType, rawData: '', data: {} };
+                            var io = {};
+                            pubIO.currentStatus[__settings.value.rtuId].io[id] = obj;
+                        }
+
                     }
 
-                    if(myIO[i].ioType == 'GAR-FEP')
-                    {
-                        var ioRS232 = new rs232.rmcRS232(function(err){
-                            console.log('rs232 GAR-FEP error',err);
-                        });
-                        ioRS232.init(myIO[i].commPort,myIO[i].baudRate,1);
+                    // if(myIO[i].ioType == 'GAR-FEP')
+                    // {
+                    //     var ioRS232 = new rs232.rmcRS232(function(err){
+                    //         console.log('rs232 GAR-FEP error',err);
+                    //     });
+                    //     ioRS232.init(myIO[i].commPort,myIO[i].baudRate,1);
 
-                        var ioGARFEP = new iomodbusserial.ioModbusSerial(myIO[i].ioType, myIO[i].id);
-                        ioGARFEP.init(ioRS232,0);
+                    //     var ioGARFEP = new iomodbusserial.ioModbusSerial(myIO[i].ioType, myIO[i].id);
+                    //     ioGARFEP.init(ioRS232,0);
 
-                        ioGARFEP.on('data',function(data){
-                            pubIO.processData(data);
-                        });
-                        var ioItem = {'id': myIO[i].id, 'io': ioGARFEP};
-                        arrIO.push(ioItem);
+                    //     ioGARFEP.on('data',function(data){
+                    //         pubIO.processData(data);
+                    //     });
+                    //     var ioItem = {'id': myIO[i].id, 'io': ioGARFEP};
+                    //     arrIO.push(ioItem);
 
-                    }
+                    // }
                 }
             }
         },        
         saveSettings: function(req,res,done,error){
-            settings.writeSettings(req,res,function(req,res,data){
+            __settings.writeSettings(req,res,function(req,res,data){
                 done(req,res,data);
             });
         },
         currentStatus: {
             rtuAddress: 0,
-            io: [
-                {
-                    id: 0,
-                    rawData: '',
-                    data: {}
-                }
-            ]
+            io: {}  //{ id: myIO[i].id, ioType: '', rawData: [], data: {} }
         },
         ioTemplateTCPMODMUXDIO8: function(){
             return {
@@ -120,8 +137,8 @@ var sbModule = function() {
             ioStatus = {
                 'ID': 1,
                     'Start': '%1',
-                    'VersionNumber': settings.value.version,
-                    'SerialNumber': settings.value.rtuId,       //ModbusReg = 1
+                    'VersionNumber': __settings.value.version,
+                    'SerialNumber': __settings.value.rtuId,       //ModbusReg = 1
                     'rawData': [],
                     'ioType': '',
                     'MessageID': 0,                                         //ModbusReg = 2
@@ -210,36 +227,132 @@ var sbModule = function() {
 
 
                     if(thisdebug == 1){
-                        console.log('IO-myIOModbus AI8/DIO8 data: ' + data.ResponseTo);
+                        console.log('IO-myIOModbus AI8/DIO8 data: ' + data.IOType);
                     }
 
                     if (data.data.length == 12 && data.data[7] == 16) {
                         return;
                     }
-                    // var Address = data.data[6];
                     var Address = data.IOid;
                     var IOType = data.IOType;
-                    var i = 0;
-                    var bFound = 0;
-                    for (i = 0; i < pubIO.arrCurrentStatus.length; i++) {
-                        if (pubIO.arrCurrentStatus[i].ID == Address) {
-                            bFound = 1;
+
+
+                    debugger;
+                    pubIO.currentStatus[__settings.value.rtuId].io[data.IOid].rawData = data.data;
+
+
+
+                    break;
+                case('GAR-FEP'):
+                    // if(thisdebug == 1){
+                    //     console.log('IO-myIOModbusSerial_GARFEP data: ' + data.ResponseTo);
+                    // }
+
+                    // //if (data.data.length == 12 && data.data[7] == 16) {
+                    // //    //console.log('response to modbus write');
+                    // //    return;
+                    // //}
+                    // var Address = data.data[3];
+                    // var i = 0;
+                    // var bFound = 0;
+                    // for (i = 0; i < pubIO.arrCurrentStatus.length; i++) {
+                    //     if (pubIO.arrCurrentStatus[i].ID == Address) {
+                    //         bFound = 1;
+                    //         break;
+                    //     }
+                    // }
+                    // if (bFound == 0) {
+                    //     var newIO = new pubIO.ioTemplateStatus();
+                    //     newIO.ID = Address;
+                    //     pubIO.arrCurrentStatus.push(newIO);
+                    //     i = pubIO.arrCurrentStatus.length - 1;
+                    // }
+
+                    // pubIO.arrCurrentStatus[i].Digitals = data.data[74];
+                    // pubIO.arrCurrentStatus[i].DigitalsExt = data.data[76];
+
+                    // // console.log(pubIO.arrCurrentStatus[i].Digitals);
+                    // // console.log(pubIO.arrCurrentStatus[i].DigitalsExt);
+
+                    // pubIO.arrCurrentStatus[i].Analog0 = data.data[51];
+                    // pubIO.arrCurrentStatus[i].Analog0 <<= 8;
+                    // pubIO.arrCurrentStatus[i].Analog0 += data.data[50];
+                    // // console.log(pubIO.arrCurrentStatus[i].Analog0);
+
+
+                    // pubIO.arrCurrentStatus[i].Analog1 = data.data[53];
+                    // pubIO.arrCurrentStatus[i].Analog1 <<= 8;
+                    // pubIO.arrCurrentStatus[i].Analog1 += data.data[52];
+                    // // console.log(pubIO.arrCurrentStatus[i].Analog1);
+
+                    // //arrCurrentStatus[i].Counter0 = (data.data[11]*256)+data.data[12];
+                    // //pubIO.arrCurrentStatus[i].Counter2 = (data.data[13]*256)+data.data[14];
+                    break;
+                default:
+                    console.log('io-Unknown IOType');
+                    break;
+
+            }
+            // pubIO.makeSenseOfRawData(Address);
+        },
+        makeSenseOfRawData: function(){
+            pubIO.currentStatus[__settings.value.rtuId].io.forEach(function(item){
+                if(item.ID == address){
+                    switch(item.ioType){
+                        case('TCP-MODMUX-DIO8'):
+                            var TCPMODMUXDIO8 = pubIO.ioTemplateTCPMODMUXDIO8();
+                            TCPMODMUXDIO8.id = item.id;
+                            TCPMODMUXDIO8.ioType = item.ioType;
+                            TCPMODMUXDIO8.DigitalsIn = item.rawData[11];
+                            TCPMODMUXDIO8.DigitalsIn <<= 8;
+                            TCPMODMUXDIO8.DigitalsIn += item.rawData[12];
+                            pubIO.currentStatus[__settings.value.rtuId].io[item.ID].data = TCPMODMUXDIO8;
                             break;
-                        }
+                        case('TCP-MODMUX-AI8'):
+                            var TCPMODMUXAI8 = pubIO.ioTemplateTCPMODMUXAI8();
+                            TCPMODMUXAI8.id = item.ID;
+                            TCPMODMUXAI8.ioType = item.ioType;
+                            TCPMODMUXAI8.AI1 = item.rawData[9];
+                            TCPMODMUXAI8.AI1 <<= 8;
+                            TCPMODMUXAI8.AI1 += item.rawData[10];
+                            pubIO.currentStatus[__settings.value.rtuId].io[item.ID].data = TCPMODMUXAI8;
+                            break;
+                        default:
+                            break;
+                            // console.log('Unhandled ioType here5',item.ioType);
+                            // return  null;
                     }
-                    if (bFound == 0) {
-                        var newIO = new pubIO.ioTemplateStatus();
-                        //var newIO = {};
-                        newIO.ID = Address;
-                        newIO.ioType = IOType;
-                        console.log('Address',Address);
-                        pubIO.arrCurrentStatus.push(newIO);
-                        i = pubIO.arrCurrentStatus.length;
-                    }
+                }
+            });
+            console.log('makeSenseOfRawData pubIO.currentStatus[__settings.value.rtuId]', pubIO.currentStatus[__settings.value.rtuId]);
+        },
+        writeRegister: function(ModuleAddress,IOToWrite,ValueToWrite){
+            arrIO.forEach(function(item){
+                if(typeof item != 'undefined'){
+                    if(item.id == ModuleAddress){
+                        item.io.writeRegister(ModuleAddress,IOToWrite,ValueToWrite,0);
+                    }                    
+                }
+
+            });
+        },
+        on: function(strEvent,callbackFunction){
+            self.on(strEvent,function(data){
+                callbackFunction(data);
+            });
+        }
+    };
+
+    return pubIO;
+};
+util.inherits(sbModule, EventEmitter);
+exports.rmcio = sbModule;
 
 
 
-                    pubIO.arrCurrentStatus[i].rawData = data.data;
+
+
+
 
 
                     // pubIO.arrCurrentStatus[i].Digitals = data.data[9];
@@ -301,113 +414,3 @@ var sbModule = function() {
                 //     pubIO.arrCurrentStatus[i].Analog1 = data.data[11];
                 //     pubIO.arrCurrentStatus[i].Analog1 <<= 8;
                 //     pubIO.arrCurrentStatus[i].Analog1 += data.data[12];
-
-                    break;
-                case('GAR-FEP'):
-                    if(thisdebug == 1){
-                        console.log('IO-myIOModbusSerial_GARFEP data: ' + data.ResponseTo);
-                    }
-
-                    //if (data.data.length == 12 && data.data[7] == 16) {
-                    //    //console.log('response to modbus write');
-                    //    return;
-                    //}
-                    var Address = data.data[3];
-                    var i = 0;
-                    var bFound = 0;
-                    for (i = 0; i < pubIO.arrCurrentStatus.length; i++) {
-                        if (pubIO.arrCurrentStatus[i].ID == Address) {
-                            bFound = 1;
-                            break;
-                        }
-                    }
-                    if (bFound == 0) {
-                        var newIO = new pubIO.ioTemplateStatus();
-                        newIO.ID = Address;
-                        pubIO.arrCurrentStatus.push(newIO);
-                        i = pubIO.arrCurrentStatus.length - 1;
-                    }
-
-                    pubIO.arrCurrentStatus[i].Digitals = data.data[74];
-                    pubIO.arrCurrentStatus[i].DigitalsExt = data.data[76];
-
-                    // console.log(pubIO.arrCurrentStatus[i].Digitals);
-                    // console.log(pubIO.arrCurrentStatus[i].DigitalsExt);
-
-                    pubIO.arrCurrentStatus[i].Analog0 = data.data[51];
-                    pubIO.arrCurrentStatus[i].Analog0 <<= 8;
-                    pubIO.arrCurrentStatus[i].Analog0 += data.data[50];
-                    // console.log(pubIO.arrCurrentStatus[i].Analog0);
-
-
-                    pubIO.arrCurrentStatus[i].Analog1 = data.data[53];
-                    pubIO.arrCurrentStatus[i].Analog1 <<= 8;
-                    pubIO.arrCurrentStatus[i].Analog1 += data.data[52];
-                    // console.log(pubIO.arrCurrentStatus[i].Analog1);
-
-                    //arrCurrentStatus[i].Counter0 = (data.data[11]*256)+data.data[12];
-                    //pubIO.arrCurrentStatus[i].Counter2 = (data.data[13]*256)+data.data[14];
-                    break;
-                default:
-                    console.log('io-Unknown IOType');
-                    break;
-
-            }
-            // pubIO.makeSenseOfRawData(Address);
-        },
-        makeSenseOfRawData: function(address){
-            var arrAllIO = [];
-            pubIO.arrCurrentStatus.forEach(function(item){
-                if(item.ID == address){
-                    switch(item.ioType){
-                        case('TCP-MODMUX-DIO8'):
-                            var TCPMODMUXDIO8 = pubIO.ioTemplateTCPMODMUXDIO8();
-                            TCPMODMUXDIO8.id = item.ID;
-                            TCPMODMUXDIO8.ioType = item.ioType;
-                            TCPMODMUXDIO8.DigitalsIn = item.rawData[11];
-                            TCPMODMUXDIO8.DigitalsIn <<= 8;
-                            TCPMODMUXDIO8.DigitalsIn += item.rawData[12];
-                            console.log('TCPMODMUXDIO8.DigitalsIn', TCPMODMUXDIO8.DigitalsIn);
-                            arrAllIO.push(TCPMODMUXDIO8);
-                            break;
-                        case('TCP-MODMUX-AI8'):
-                            var TCPMODMUXAI8 = pubIO.ioTemplateTCPMODMUXAI8();
-                            TCPMODMUXAI8.id = item.ID;
-                            TCPMODMUXAI8.ioType = item.ioType;
-                            TCPMODMUXAI8.AI1 = item.rawData[9];
-                            TCPMODMUXAI8.AI1 <<= 8;
-                            TCPMODMUXAI8.AI1 += item.rawData[10];
-                            console.log('TCPMODMUXAI8.AI1', TCPMODMUXAI8.AI1);
-                            arrAllIO.push(TCPMODMUXAI8);
-                            break;
-                        default:
-                            break;
-                            // console.log('Unhandled ioType here5',item.ioType);
-                            // return  null;
-                    }
-                }
-            });
-            return arrAllIO;
-        },
-        writeRegister: function(ModuleAddress,IOToWrite,ValueToWrite){
-            arrIO.forEach(function(item){
-                if(typeof item != 'undefined'){
-                    if(item.id == ModuleAddress){
-                        item.io.writeRegister(ModuleAddress,IOToWrite,ValueToWrite,0);
-                    }                    
-                }
-
-            });
-        },
-        on: function(strEvent,callbackFunction){
-            self.on(strEvent,function(data){
-                callbackFunction(data);
-            });
-        }
-    };
-
-    return pubIO;
-};
-util.inherits(sbModule, EventEmitter);
-exports.rmcio = sbModule;
-

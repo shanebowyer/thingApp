@@ -21,6 +21,7 @@ var sbModule = function() {
 
     var pubTCP = {
         init: function (retErr,Server, Port, Debug) {
+            // Debug = 1;
             if(Debug == 1){
                 console.log('tcpclient.js init',Server);
             }
@@ -46,7 +47,7 @@ var sbModule = function() {
                 newclient.connect(thisPort, thisServer, function () {
                     RMCSocket.Status = 'CONNECTED';
                     if (thisdebug == 1) {
-                        console.log('RMCSocket - CONNECTED');
+                        console.log('RMCSocket - CONNECTED',thisServer);
                     }
 
                     thisclient = newclient;
@@ -57,7 +58,7 @@ var sbModule = function() {
                     //Establish an async function to handle data from RTU
                     newclient.on('data', function (data) {
                         if (thisdebug == 1) {
-                            console.log('clientRMC - Received: ');
+                            console.log('clientRMC - Received: ',thisServer);
                         }
 
                         try {
@@ -108,6 +109,9 @@ var sbModule = function() {
         SendData: function (strData) {
             try {
                 if(thisclient != undefined){
+                    if (thisdebug == 1) {
+                        console.log('sending data to ',thisServer);
+                    }
                     thisclient.write(strData);
                 }
             }

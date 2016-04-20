@@ -66,7 +66,7 @@ var sbModule = function(IOType,IOid) {
                 }
             });
 
-            setTimeout(pubIOModbus.Start,3000);
+            setTimeout(pubIOModbus.start,3000);
 
         },
         start: function(){
@@ -286,12 +286,12 @@ var sbModule = function(IOType,IOid) {
     setInterval(function(){
         vCommsTimeOut -= 1;
         if(vCommsTimeOut <= 0){
-            pubIOModbus.Start();
+            pubIOModbus.start();
         }
     },1000);
 
     //pubIOModbus.ReadRegister(0);
-    pubIOModbus.ReadRegister(1);
+    pubIOModbus.readRegister(1);
 
     return pubIOModbus
 

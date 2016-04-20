@@ -90,7 +90,7 @@ var settings = function(){
 				var date = new Date();
 
 				var fs1 = require('fs');
-				fs1.writeFile(__base + "/config_" + date +".bak", data, function(err) {
+				fs1.writeFile(__base + "/logs/config_" + date +".bak", data, function(err) {
 				    if(err) {
 				    	console.log('error writing settings file');
 				        deferred.reject(args);
