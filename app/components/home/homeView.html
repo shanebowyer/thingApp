@@ -2,12 +2,18 @@
 
 <div>
 	homeView
-	<input type="button" ng-click="getRTUStatuses()" value="readIOs"></input>
+	<input type="button" ng-click="getRTUStatuses()" value="readIO"></input>
 	<div>
 	  <ul>
-	    <li ng-repeat="item in rtuData">
-	      {{ item.ioType }} - {{item.DigitalsExt}}
+	    <li ng-repeat="item in rtuData.io.io">
+	      {{ item.data }} - {{item.ioType}}
 	    </li>
 	  </ul>
 	</div>
+</div>
+
+<div>
+	<input type="button" ng-click="controlIO()" value="controlIO"></input>
+	<input type="text" ng-model="valueToWrite"></input>
+	
 </div>

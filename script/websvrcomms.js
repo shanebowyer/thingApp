@@ -62,9 +62,18 @@ var sbModule = function() {
                         myRTULog.processMessageIn(data.toString());
                     }
 
+                    var msgIn = JSON.parse(data);
+                    var args = [null,null,msgIn];
+                    myPLC.processMessageIn(args)
+                    .then(function(data){
+                        console.log('We do not responde here. We load the response into the myRTULog. The following response was loaded for sending',data);
+                    },function(err){
+                        console.log('Not responding for a reason. Response would cause noise',err);
+                    });
+
                     var dataReq = {
                         
-                    }
+                    };
 
 
 

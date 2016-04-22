@@ -51,57 +51,64 @@ var sbModule = function() {
         },
         processMessageIn: function(args){
             var deferred = new Q.defer();
+            // var msgIn = {
+            //     dateTime: '2016/01/01',
+            //     messageId: 789,
+            //     payLoad: {
+            //         sourceAddress: 1,
+            //         destinationAddress: 2,
+            //         msgId: 123,
+            //         dateTime: '2016/01/01 12:13:14',
+            //         msgType: 'control',
+            //         write: {
+            //             destinationIO: 1,
+            //             io: 'digOut',
+            //             value: 1
+            //         }
+            //     }
+            // };
 
-            var msgIn = {
-
-                dateTime: '2016/01/01',
-                messageId: 789,
-                payLoad: {
-                    sourceAddress: 1,
-                    destinationAddress: 2,
-                    msgId: 123,
-                    dateTime: '2016/01/01 12:13:14',
-                    msgType: 'control',
-                    write: {
-                        destinationIO: 1,
-                        io: 'digOut',
-                        value: 1
-                    }
-                }
-            };
-
-            if(__settings.value.rtuId === msgIn.destinationAddress){
+            var msgIn = args[2];
+            // console.log('msgIn',msgIn);
+            debugger;
+            if(__settings.value.rtuId === msgIn.payLoad.destinationAddress){
                 if(msgIn.msgType === 'handshake'){
                     myLog.processMessageIn(msgIn);
-                    args[2] = io.makeSenseOfRawData(msgIn.address);
+                    args[2] = io.makeSenseOfRawData(__settings.value.rtuId);
                     deferred.resolve(args);
                 }
-                else if(msgIn.msgType === 'control'){
-                    io.writeRegister(msgIn.write.destinationIO,msgIn.write.io,msgIn.write.value);
+                else if(msgIn.payLoad.msgType === 'control'){
+                    io.writeRegister(msgIn.payLoad.write.destinationIO,msgIn.payLoad.write.io,msgIn.payLoad.write.value);
                     var msgResponse = {
                         sourceAddress: __settings.value.rtuId,
-                        destinationAddress: msgIn.sourceAddress,
-                        msgId: msgIn.msgId,
-                        msgType: 'handshake'
+                        destinationAddress: msgIn.payLoad.sourceAddress,
+                        msgId: msgIn.payLoad.msgId,
+                        msgType: 'handshake',
+                        io: io.makeSenseOfRawData(__settings.value.rtuId)
                     };
                     myLog.add(msgResponse,1,1);
-                    args[2] = io.makeSenseOfRawData(msgIn.address);
+                    args[2] = msgResponse;
+                    deferred.resolve(args);
+                }
+                else if(msgIn.payLoad.msgType === 'status'){
+                    var msgResponse2 = {
+                        sourceAddress: __settings.value.rtuId,
+                        destinationAddress: msgIn.payLoad.sourceAddress,
+                        msgId: msgIn.messageId,
+                        msgType: 'status',
+                        io: io.makeSenseOfRawData(__settings.value.rtuId)
+                    };
+                    args[2] = msgResponse2;
                     deferred.resolve(args);
                 }
                 else{
-                    console.log('What should I do with this message. Sending status for shits and giggles');
-                    var msgResponse1 = {
-                        sourceAddress: __settings.value.rtuId,
-                        destinationAddress: msgIn.sourceAddress,
-                        msgId: msgIn.msgId,
-                        msgType: 'status',
-                        io: io.makeSenseOfRawData(msgIn.address)
-                    };
-                    args[2] = msgResponse1;
-                    deferred.resolve(args);
+                    console.log('Ignored MessageIn');
+                    args[2] = 'Ignored MessageIn';
+                    deferred.reject(args);
                 }
             }
             else{
+                args[2] = 'The message in does not match this rtu address';
                 deferred.reject(args);
             }
 

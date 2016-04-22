@@ -65,7 +65,8 @@ try{
                     res.header("Access-Control-Allow-Origin", "*");
                     res.header("Access-Control-Allow-Headers", "X-Requested-With");
 
-                    var data = {};
+                    // console.log('api req',req);
+                    var data = req.body.myData.data;
                     var args = [req,res,data];
                     rtu.processAPICall(args)
                     .then(function(args){
@@ -79,7 +80,6 @@ try{
                 app.get('/api',function(req,res){
                         var data = {};
                         var args = [req,res,data];
-
                         rtu.processAPICall(args)
                         .then(function(args){
                             args[1].json(args[2]);

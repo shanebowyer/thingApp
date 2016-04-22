@@ -34,9 +34,28 @@ angular.module('myApp')
             error(reason);
         });
     };
-    function sendRTUMessage(done, error){
-        console.log('Sending rtuMessage')
-        var DTO = { 'myData': {'reqOption': 'rtuMessage'} };
+    function sendRTUMessage(msgOut, done, error){
+        console.log('Sending rtuMessage');
+
+        // var msgOut = {
+        //     dateTime: '2016/01/01',
+        //     messageId: 789,
+        //     payLoad: {
+        //         sourceAddress: 2,
+        //         destinationAddress: 1,
+        //         msgId: 123,
+        //         dateTime: '2016/01/01 12:13:14',
+        //         msgType: 'control',
+        //         write: {
+        //             destinationIO: 1,
+        //             io: 'digOut',
+        //             value: 1
+        //         }
+        //     }
+        // };
+
+
+        var DTO = { 'myData': {'reqOption': 'rtuMessage', data: msgOut} };
         $http.post(url, DTO)
         .success(function(data){
             // $rootScope.settings = data;

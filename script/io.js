@@ -74,7 +74,7 @@ var sbModule = function() {
 
                         if(typeof pubIO.currentStatus[__settings.value.rtuId].io[myIO[i].IOid] === 'undefined'){
                             var id = myIO[i].id;
-                            var obj = { id: myIO[i].id, ioType: myIO[i].ioType, rawData: '', data: {} };
+                            var obj = { id: myIO[i].id, ioType: myIO[i].ioType, rawData: [], data: {} };
                             var io = {};
                             pubIO.currentStatus[__settings.value.rtuId].io[id] = obj;
                         }
@@ -237,7 +237,6 @@ var sbModule = function() {
                     var IOType = data.IOType;
 
 
-                    debugger;
                     pubIO.currentStatus[__settings.value.rtuId].io[data.IOid].rawData = data.data;
 
 
@@ -296,8 +295,9 @@ var sbModule = function() {
             // pubIO.makeSenseOfRawData(Address);
         },
         makeSenseOfRawData: function(){
-            pubIO.currentStatus[__settings.value.rtuId].io.forEach(function(item){
-                if(item.ID == address){
+            for (var key in pubIO.currentStatus[__settings.value.rtuId].io) {
+                if (pubIO.currentStatus[__settings.value.rtuId].io.hasOwnProperty(key)) {
+                    var item = pubIO.currentStatus[__settings.value.rtuId].io[key];
                     switch(item.ioType){
                         case('TCP-MODMUX-DIO8'):
                             var TCPMODMUXDIO8 = pubIO.ioTemplateTCPMODMUXDIO8();
@@ -306,7 +306,7 @@ var sbModule = function() {
                             TCPMODMUXDIO8.DigitalsIn = item.rawData[11];
                             TCPMODMUXDIO8.DigitalsIn <<= 8;
                             TCPMODMUXDIO8.DigitalsIn += item.rawData[12];
-                            pubIO.currentStatus[__settings.value.rtuId].io[item.ID].data = TCPMODMUXDIO8;
+                            pubIO.currentStatus[__settings.value.rtuId].io[item.id].data = TCPMODMUXDIO8;
                             break;
                         case('TCP-MODMUX-AI8'):
                             var TCPMODMUXAI8 = pubIO.ioTemplateTCPMODMUXAI8();
@@ -315,7 +315,7 @@ var sbModule = function() {
                             TCPMODMUXAI8.AI1 = item.rawData[9];
                             TCPMODMUXAI8.AI1 <<= 8;
                             TCPMODMUXAI8.AI1 += item.rawData[10];
-                            pubIO.currentStatus[__settings.value.rtuId].io[item.ID].data = TCPMODMUXAI8;
+                            pubIO.currentStatus[__settings.value.rtuId].io[item.id].data = TCPMODMUXAI8;
                             break;
                         default:
                             break;
@@ -323,8 +323,9 @@ var sbModule = function() {
                             // return  null;
                     }
                 }
-            });
-            console.log('makeSenseOfRawData pubIO.currentStatus[__settings.value.rtuId]', pubIO.currentStatus[__settings.value.rtuId]);
+            }            
+            // console.log('makeSenseOfRawData pubIO.currentStatus[__settings.value.rtuId]', pubIO.currentStatus[__settings.value.rtuId]);
+            return pubIO.currentStatus[__settings.value.rtuId];
         },
         writeRegister: function(ModuleAddress,IOToWrite,ValueToWrite){
             arrIO.forEach(function(item){

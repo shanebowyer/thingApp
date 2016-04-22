@@ -9,13 +9,50 @@ angular.module('myApp')
     $scope.lastName= "Doe";
 
     $scope.getRTUStatuses = function(){
-    	api.sendRTUMessage(function(data){
+        var msgOut = {
+            dateTime: '2016/01/01',
+            messageId: 789,
+            payLoad: {
+                sourceAddress: 2,
+                destinationAddress: 1,
+                msgId: 123,
+                dateTime: '2016/01/01 12:13:14',
+                msgType: 'status'
+            }
+        };
+    	api.sendRTUMessage(msgOut, function(data){
     		$scope.rtuData = data.content;
     		console.log('sendRTUMessage response',data);
     	},function(err){
 			console.log('Error sendRTUMessage response',err);
     	});
     };
+
+    $scope.controlIO = function(){
+        var msgOut = {
+            dateTime: '2016/01/01',
+            messageId: 789,
+            payLoad: {
+                sourceAddress: 2,
+                destinationAddress: 1,
+                msgId: 123,
+                dateTime: '2016/01/01 12:13:14',
+                msgType: 'control',
+                write: {
+                    destinationIO: 1,
+                    io: 'digOut',
+                    value: $scope.valueToWrite
+                }
+            }
+        };
+        api.sendRTUMessage(msgOut, function(data){
+            $scope.rtuData = data.content;
+            console.log('sendRTUMessage response',data);
+        },function(err){
+            console.log('Error sendRTUMessage response',err);
+        });
+    };
+
 
 
 });
