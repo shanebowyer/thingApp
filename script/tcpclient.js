@@ -112,11 +112,11 @@ var sbModule = function() {
                     if (thisdebug == 1) {
                         console.log('sending data to ',thisServer);
                     }
-                    thisclient.write(strData);
+                    thisclient.write(JSON.stringify(strData));
                 }
             }
             catch (e) {
-                console.log('tcpclient error: ' + e.message);
+                console.log('tcpclient error1: ' + e.message);
 
             }
 

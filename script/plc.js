@@ -49,6 +49,28 @@ var sbModule = function() {
             };
             myLog.add(msgOut,0,0);
         },
+        testControl: function(){
+            console.log('Loading test control');
+            var msgOut = {
+                dateTime: '2016/01/01',
+                messageId: 789,
+                payLoad: {
+                    sourceAddress: 2,
+                    destinationAddress: 1,
+                    msgId: 123,
+                    dateTime: '2016/01/01 12:13:14',
+                    msgType: 'control',
+                    write: {
+                        destinationIO: 1,
+                        io: 'digOut',
+                        value: 255
+                    }
+                }
+            };
+            console.log('Loading this into log',JSON.stringify(msgOut));
+            myLog.add(JSON.stringify(msgOut),1,0);
+        },
+
         processMessageIn: function(args){
             var deferred = new Q.defer();
             // var msgIn = {
@@ -68,9 +90,16 @@ var sbModule = function() {
             //     }
             // };
 
+            console.log('Processing PLC processMessageIn',args);
+
             var msgIn = args[2];
-            // console.log('msgIn',msgIn);
-            debugger;
+
+            if(__settings.value.rtuId === msgIn.payLoad.sourceAddress){
+                //dont chat this is echo from server
+                deferred.reject(args);
+                return deferred.promise;
+            }
+
             if(__settings.value.rtuId === msgIn.payLoad.destinationAddress){
                 if(msgIn.msgType === 'handshake'){
                     myLog.processMessageIn(msgIn);
@@ -210,6 +239,7 @@ var sbModule = function() {
     arrCOFS.push(myCOFS);
 
     pubPLC.runPLCLogic(1000);
+
 
     return pubPLC;
 

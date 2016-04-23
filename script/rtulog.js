@@ -147,7 +147,8 @@ var sbModule = function() {
                             RTUMessages[i].Sent = 1;
                             currentLogIndex = -1;
                         }
-                        return RTUMessages[i].strMessage;
+                        // return RTUMessages[i].strMessage;
+                        return RTUMessages[i].msgOut;
                     }
 
                 }

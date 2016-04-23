@@ -12,6 +12,7 @@ var Q       = require('q');
 var Settings    = require(__base + './script/settings.js');
 global.__settings = new Settings.settings();
 
+var server = require(__base + './script/server.js');
 var rtulog = require(__base + './script/rtulog.js');
 var websvrcomms = require(__base + './script/websvrcomms.js');
 var tcpClient = require(__base + './script/tcpclient.js');
@@ -218,6 +219,10 @@ try{
 
             console.log('other init');
             settings = args.settings;
+
+            var myServer = new server.rmcServer;
+            myServer.init();
+
 
             rtu.initWeb(function(err){
                 console.log('rtu error: ', err);

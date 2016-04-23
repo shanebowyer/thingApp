@@ -42,11 +42,12 @@ var sbModule = function() {
                         console.log('websvrcomms received: '+ data);
                     }
 
-                    if(data.toString() == '%S *'){
+                    if(data.toString() == '%S 1 *'){
                         LoggedOnToWebServer = true;
                         if(thisdebug == 1){
                             console.log('Unit Logged Onto WebServer');
                         }
+                        return;
                     }
                     if(data.toString() == '%5 *'){
                         LoggedOnToWebServer = true;
@@ -54,22 +55,26 @@ var sbModule = function() {
                             console.log('Unit Poll recieved from Server');
                         }
                         myRTULog.processMessageIn(data.toString());
+                        return;
                     }
                     if(data.toString().indexOf('%1') >= 0){
                         if(thisdebug == 1){
                             console.log('message from Server');
                         }
                         myRTULog.processMessageIn(data.toString());
+                        return;
                     }
 
-                    var msgIn = JSON.parse(data);
-                    var args = [null,null,msgIn];
-                    myPLC.processMessageIn(args)
-                    .then(function(data){
-                        console.log('We do not responde here. We load the response into the myRTULog. The following response was loaded for sending',data);
-                    },function(err){
-                        console.log('Not responding for a reason. Response would cause noise',err);
-                    });
+                    // console.log('about to json');
+                    // var msgIn = JSON.parse(data);
+                    // console.log('done json');
+                    // var args = [null,null,msgIn];
+                    // myPLC.processMessageIn(args)
+                    // .then(function(data){
+                    //     console.log('We do not respond here. We load the response into the myRTULog. The following response was loaded for sending',data);
+                    // },function(err){
+                    //     console.log('Not responding for a reason. Response would cause noise',err);
+                    // });
 
                     var dataReq = {
                         
@@ -148,6 +153,7 @@ var sbModule = function() {
 
             strOutput = myRTULog.readLog();
             if(strOutput != ''){
+                console.log('Sending This Data',strOutput);
                 thismyWebSvrTCPClient.SendData(strOutput);
             }
         },
@@ -163,6 +169,10 @@ var sbModule = function() {
     //pubWebSVR.readConfig();
 
     setInterval(pubWebSVR.SendWebSvrLogon,5000);
+    setTimeout(function(){
+        console.log('about to test');
+        myPLC.testControl();
+    },5000);
 
     var FixedTxTime = __settings.value.fixedTxTime;
     pubWebSVR.fixedTxTime;
