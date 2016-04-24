@@ -8,13 +8,14 @@ angular.module('myApp')
     $scope.firstName= "John";
     $scope.lastName= "Doe";
 
-    $scope.getRTUStatuses = function(){
+    $scope.getRTUStatuses = function(subAddress){
         var msgOut = {
             dateTime: '2016/01/01',
             messageId: 789,
             payLoad: {
-                sourceAddress: 2,
+                sourceAddress: 200,
                 destinationAddress: 1,
+                subAddress: subAddress,
                 msgId: 123,
                 msgType: 'status'
             }

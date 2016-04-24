@@ -21,7 +21,7 @@ var sbModule = function() {
 
     var pubTCP = {
         init: function (retErr,Server, Port, Debug) {
-            Debug = 1;
+            Debug = 0;
             if(Debug == 1){
                 console.log('tcpclient.js init',Server);
             }
@@ -111,13 +111,17 @@ var sbModule = function() {
                 if(thisclient != undefined){
                     if (thisdebug == 1) {
                         console.log('sending data to ',thisServer);
+                        console.log('strData',strData);
                     }
-                    thisclient.write(JSON.stringify(strData));
+
+                    if(strData instanceof Buffer == false){
+                        strData = JSON.stringify(strData);
+                    }
+                    thisclient.write(strData);
                 }
             }
             catch (e) {
-                console.log('tcpclient error1: ' + e.message);
-
+                console.log('tcpclient error11: ' + e);
             }
 
         },

@@ -43,7 +43,7 @@ var settings = function(){
             var fs = require('fs');
             fs.writeFile(__base + "/config.js", 'var settings = ' + JSON.stringify(mysettings), function(err) {
                 if(err) {
-                	console.log('error writing settings file');
+                	console.log('error writing settings file',err);
                     deferred.reject(args);
                     return deferred.promise;
                 }
@@ -90,9 +90,9 @@ var settings = function(){
 				var date = new Date();
 
 				var fs1 = require('fs');
-				fs1.writeFile(__base + "/logs/config_" + date +".bak", data, function(err) {
+				fs1.writeFile(__base + "config/config_" + date +".bak", data, function(err) {
 				    if(err) {
-				    	console.log('error writing settings file');
+				    	console.log('error writing settings file',err);
 				        deferred.reject(args);
 				        return deferred.promise;
 				    }

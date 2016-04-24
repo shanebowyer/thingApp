@@ -50,7 +50,7 @@ var sbModule = function() {
                             console.log('io error',err);
                         }, myIO[i].ipAddress,myIO[i].port,0);
 
-
+                        console.log('loaded ioType',myIO[i].ioType);
                         var ioModbus = new iomodbustcp.ioModbus(myIO[i].ioType, myIO[i].id);
                         
                         ioModbus.init(ioTCPClient,0);
@@ -238,6 +238,8 @@ var sbModule = function() {
 
 
                     pubIO.currentStatus[__settings.value.rtuId].io[data.IOid].rawData = data.data;
+                    // debugger;
+                    pubIO.makeSenseOfRawData();
 
 
 

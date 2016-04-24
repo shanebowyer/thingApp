@@ -1,6 +1,5 @@
 <div data-ng-init="init()">
 
-<input type="button" class="btn btn-default" ng-click="readIO()" value="readIO">
     <div id="divProviders" class="container">
         <div class="panel panel-primary">
             <div class="panel-heading">
@@ -41,34 +40,18 @@
 	            <div class="form-group">
 	            	<label for="Description">Description:</label>
 	            	<input id="Description" class="form-control" ng-model="selecteddescription"></input>
-
 	            	<label for="ioType">ioType:</label>
-
-<!-- 					<input list="ioType" name="ioTypes" class="form-control" ng-model="selectedioType">
-					<datalist id="ioType">
-						<option value="TCP-MODMUX-DIO8">TCP-MODMUX-DIO8</option>
-						<option value="TCP-MODMUX-AI8">TCP-MODMUX-AI8</option>
-						<option value="GAR-FEP">GAR-FEP</option>
-					</datalist>
- -->
 					<select ng-model="selectedioType" class="form-control">
 						<option value="TCP-MODMUX-DIO8">TCP-MODMUX-DIO8</option>
 						<option value="TCP-MODMUX-AI8">TCP-MODMUX-AI8</option>
 						<option value="GAR-FEP">GAR-FEP</option>
 					</select>
-	            	<!-- <input id="ioTYpe" class="form-control" ng-model="selectedioType"></input> -->
-
 	            	<label for="ipAddress">ipAddress:</label>
 	            	<input id="ipAddress" class="form-control" ng-model="selectedipAddress"></input>
 
 	            	<label for="port">Port:</label>
 	            	<input id="port" class="form-control" ng-model="selectedport"></input>
-
-<!-- 	            	<label for="enabled">enabled:</label>
-	            	<input id="enabled" type="checkbox" class="form-control" ng-model="selectedenabled"></input>
- -->
 					<label class="checkbox-inline"><input type="checkbox" ng-model="selectedenabled">Enabled</label>	            	
-
 					<div>
 						<hr/>
 		            	<input type="button" class="btn btn-default" value="Add" ng-click="ioAdd()"></input>
@@ -76,9 +59,69 @@
 		            	<input type="button" class="btn btn-default" value="Cancel" ng-click="init()"></input>
 					</div>
 	            </div>
-
             </div>
         </div>
+
+
+
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h2 class="panel-title">Control</h2>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+
+					<table class="table table-hover">
+						<tr>
+							<th>
+								Description
+							</th>
+							<th>
+								controlType
+							</th>
+						</tr>
+						<tr ng-repeat="x in control" ng-click="selectControlTable(x,'edit')">
+							<td>{{ x.description }}</td>
+							<td>{{ x.controlType }}</td>
+							<td><input type="button" class="btn btn-default" ng-click="controlDelete(x,'delete')" value="X"></input></td>
+						</tr>
+					</table>
+                </div>
+                <hr/>
+	            <div class="form-group">
+	            	<img src="./assets/img/ResPump.png">
+	            	<br/>
+	            	<label for="selectedControlDescription">Description:</label>
+	            	<input id="selectedControlDescription" class="form-control" ng-model="selectedControlDescription"></input>
+	            	<label for="selectedControlType">controlType:</label>
+					<select ng-model="selectedControlType" class="form-control">
+						<option value="reservoir">reservoir</option>
+						<option value="sewagesump">sewagesump</option>
+						<option value="other">other</option>
+					</select>
+					<h4>Setpoints</h4>
+	            	<label for="selectedControlSPLow">low:</label>
+	            	<input id="selectedControlSPLow" class="form-control" ng-model="selectedControlSPLow"></input>
+	            	<label for="selectedControlSPHi">hi:</label>
+	            	<input id="selectedControlSPHi" class="form-control" ng-model="selectedControlSPHi"></input>
+	            	<label for="selectedControlSPSourceIO">SourceIO:</label>
+	            	<input id="selectedControlSPSourceIO" class="form-control" ng-model="selectedControlSPSourceIO"></input>
+	            	<label for="selectedControlSPIO">IO:</label>
+	            	<input id="selectedControlSPIO" class="form-control" ng-model="selectedControlSPIO"></input>
+					<label class="checkbox-inline"><input type="checkbox" ng-model="selectedControlEnabled">Enabled</label>	            	
+					<div>
+						<hr/>
+		            	<input type="button" class="btn btn-default" value="Add" ng-click="controlAdd()"></input>
+		            	<input type="button" class="btn btn-default" value="Update" ng-click="controlUpdate()"></input>
+		            	<input type="button" class="btn btn-default" value="Cancel" ng-click="init()"></input>
+					</div>
+	            </div>
+            </div>
+        </div>
+
+
+
 
         <div>
         	<input type="button" class="btn btn-warning" value="SAVE" ng-click="save()"></input>

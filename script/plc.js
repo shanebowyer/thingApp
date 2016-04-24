@@ -45,7 +45,7 @@ var sbModule = function() {
                 destinationAddress: 0,
                 msgId: payLoad.msgId,
                 msgType: 'handshake',
-                io: io.makeSenseOfRawData(__settings.value.rtuId)
+                io: io.currentStatus[__settings.value.rtuId]
             };
             myLog.add(msgResponse,1,1);
             args[2] = msgResponse;
@@ -71,8 +71,6 @@ var sbModule = function() {
         processMessageIn: function(args){
             var deferred = new Q.defer();
 
-            console.log('Processing PLC processMessageIn');
-
             function ObjectLength( object ) {
                 var length = 0;
                 for( var key in object ) {
@@ -83,20 +81,20 @@ var sbModule = function() {
                 }
                 return length;
             };
-            console.log('Memory size', ObjectLength(io.currentStatus));
+            // console.log('Memory size', ObjectLength(io.currentStatus));
 
             var msgIn = args[2];
-            console.log('msgIn',msgIn);
+            // console.log('msgIn',msgIn);
             var payLoad = msgIn.payLoad;
-            console.log('payLoad',payLoad);
+            // console.log('payLoad',payLoad);
 
             if(__settings.value.rtuId === payLoad.sourceAddress){
                 //dont chat this is echo from server
                 deferred.reject(args);
                 return deferred.promise;
             }
-            console.log('rtuID',__settings.value.rtuId);
-            console.log('destinationAddress',payLoad.destinationAddress);
+            // console.log('rtuID',__settings.value.rtuId);
+            // console.log('destinationAddress',payLoad.destinationAddress);
             if(payLoad.destinationAddress === 0){
                 //the other rtu is sending a status broadcast. just save its status here
                 if(typeof payLoad.io !== 'undefined'){
@@ -112,17 +110,23 @@ var sbModule = function() {
             }
 
             if(__settings.value.rtuId === payLoad.destinationAddress){
-                if(msgIn.msgType === 'handshake'){
+                console.log('Processing PLC processMessageIn',msgIn);
+
+                if(payLoad.msgType === 'handshake'){
+                    //Use below to test handshake from simulatedevice.exe
+                    //{"payLoad":{"sourceAddress":2,"destinationAddress":1,"msgId":2,"msgType":"handshake","io":{"rtuAddress":1,"io":{"1":{"id":1,"ioType":"TCP-MODMUX-DIO8","rawData":[],"data":{"id":1,"ioType":"TCP-MODMUX-DIO8","digitalsIn":0,"digitalsOut":0,"digitalsOutWriteValue":0,"DigitalsIn":null}},"2":{"id":2,"ioType":"TCP-MODMUX-AI8","rawData":[],"data":{"ioType":"TCP-MODMUX-AI8","AI1":null,"AI2":0,"AI3":0,"AI4":0,"AI5":0,"AI6":0,"AI7":0,"AI8":8}}}}}}
                     console.log('Handshake recieved');
                     myLog.processMessageIn(msgIn);
-                    args[2] = io.makeSenseOfRawData(__settings.value.rtuId);
+                    args[2] = io.currentStatus[__settings.value.rtuId];
                     deferred.resolve(args);
+                    if(typeof payLoad.io !== 'undefined'){
+                        io.currentStatus[payLoad.sourceAddress] = payLoad.io;
+                    }
                     //myLog.add(JSON.stringify(args),1,1);
                 }
                 else if(payLoad.msgType === 'control'){
-                    console.log('doing Control');
+                    // console.log('doing Control');
                     io.writeRegister(payLoad.write.destinationIO,payLoad.write.io,payLoad.write.value);
-                    debugger;
                     if(typeof payLoad.io !== 'undefined'){
                         //Save the senders io to memory
                         var memIO = {
@@ -136,20 +140,20 @@ var sbModule = function() {
                         destinationAddress: payLoad.sourceAddress,
                         msgId: payLoad.msgId,
                         msgType: 'handshake',
-                        io: io.makeSenseOfRawData(__settings.value.rtuId)
+                        io: io.currentStatus[__settings.value.rtuId]
                     };
                     myLog.add(msgResponse,1,1);
                     args[2] = msgResponse;
                     deferred.resolve(args);
                 }
                 else if(payLoad.msgType === 'status'){
-                    console.log('maiing sense of data');
+                    // console.log('maiing sense of data');
                     var msgResponse2 = {
                         sourceAddress: __settings.value.rtuId,
                         destinationAddress: payLoad.sourceAddress,
                         msgId: msgIn.messageId,
                         msgType: 'status',
-                        io: io.makeSenseOfRawData(__settings.value.rtuId)
+                        io: io.currentStatus[payLoad.subAddress]
                     };
                     args[2] = msgResponse2;
                     deferred.resolve(args);
@@ -180,26 +184,32 @@ var sbModule = function() {
             setInterval(function(){
                 pubPLC.checkCOFS(function(COFS){
                     if(io.currentStatus[__settings.value.rtuId] != undefined){
-                        //testDig += 1;
-                        //if(testDig > 255){
-                        //    testDig = 0;
-                        //}
-                        //var digVal = io.arrCurrentStatus[0].Digitals;
-                        //io.writeRegister(1,'DigOut',testDig);
-                        //io.writeRegister(1,'Counter0',testDig);
 
-
-                        //if(io.arrCurrentStatus[0].Analog0 > 1000){
-                        //    io.writeRegister(1,'DigOut',1);
-                        //}else{
-                        //    io.writeRegister(1,'DigOut',0);
-                        //}
-                        //if(io.arrCurrentStatus[0].Analog1 > 1000){
-                        //    io.writeRegister(1,'DigOut',3);
-                        //}else{
-                        //    io.writeRegister(1,'DigOut',0);
-                        //}
-
+                    }
+                });
+                myControl.forEach(function(item){
+                    switch(item.controlType){
+                        case('reservoir'):
+                            var ioMonitor = io.currentStatus[__settings.value.rtuId].io[item.setPoints.sourceIO].data.AI1;    //item.setPoints.io
+                            var spHi = item.setPoints.hi;
+                            var spLow = item.setPoints.low;
+                            
+                            if(ioMonitor > spHi && item.spHiReached !== true){
+                                console.log('plc Hi Setpoint message loaded');
+                                myLog.add(item.msgOutSetPointHi,1,1);   //SB! Must change this to not be fireandforget. Like this for testing
+                                item.spHiReached = true;
+                                item.spLowReached = false;
+                            }
+                            if(ioMonitor < spLow && item.spLowReached !== true){
+                                console.log('plc Low Setpoint message loaded');
+                                myLog.add(item.msgOutSetPointLow,1,0);   //SB! Must change this to not be fireandforget. Like this for testing
+                                item.spHiReached = false;
+                                item.spLowReached = true;
+                            }
+                            break;
+                        default:
+                            console.log('unhandled controlType');
+                            break;
                     }
                 });
             },runSpeedMilliseconds);
@@ -270,6 +280,8 @@ var sbModule = function() {
     myCOFS.Counter0Mask = 10;
     myCOFS.Counter0LastStatus = 0;
     arrCOFS.push(myCOFS);
+
+    var myControl = __settings.value.control;
 
     pubPLC.runPLCLogic(1000);
 

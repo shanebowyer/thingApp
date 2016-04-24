@@ -174,6 +174,7 @@ try{
                     deferred.resolve(args);
                     break;
                 case('settingsSave'):
+                    debugger;
                     __settings.saveSettings(args)
                     .then(function(args){
                         apiRespone.header.result = 'success';
@@ -241,7 +242,7 @@ try{
             var settingsModbusSlave = __settings.value.modbusslave;
             if(settingsModbusSlave.enabled == 1){
                 var ioModbustcpslave = new modbusslave.ioModbusTCPSlave;
-                ioModbustcpslave.init(myIO,1);
+                ioModbustcpslave.init(myIO,0);
             }
             //---------------------------Modbus Slave---------------------------//
 
