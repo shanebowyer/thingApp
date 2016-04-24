@@ -36,12 +36,13 @@ var sbModule = function(IOType,IOid) {
 
 
         init: function(TCPClient,debug){
-            thisdebug = debug;
+            thisdebug = 1;
             myTCPClient = TCPClient;
 
 
             myTCPClient.on('data', function (data) {
                 try {
+                    
                     vCommsTimeOut = cCommsTimeOut;
                     bCommsTimedOut = 0;
                     if(thisdebug == 1){
@@ -87,6 +88,7 @@ var sbModule = function(IOType,IOid) {
 
                 if(myTCPClient != undefined && toSend != undefined){
                     try{
+                        console.log('senging',toSend);
                         myTCPClient.SendData(toSend);
                     }
                     catch(e){

@@ -109,32 +109,12 @@ var sbModule = function() {
                 if(msgIn.msgType === 'handshake'){
                     for(var i=0;i<pubRTULog.length;i++){
                         if(pubRTULog[i].msgOut.messageId === msgIn.payLoad.msgId){
+                            console.log('rtulog handshake message marked off as sent');
                             pubRTULog[i].Sent = 1;
                             return;
                         }
                     }
                 }
-
-
-
-
-
-
-
-                // var thisData = data;
-                // var arrIn = [];
-                // arrIn = thisData.split([' ']);
-                // if(arrIn[0] == '%1'){
-                //     if(currentLogIndex > -1){
-                //         console.log('Log Marked As Sent');
-                //         pubRTULog.log[currentLogIndex].Sent = 1;
-                //     }
-
-                // }
-                // if(arrIn[0] == '%5'){
-                //     //rtulog.currentstatus.Start = '%2';
-                //     pubRTULog.add(myIO.getIOStatus(1),1,1);
-                // }
 
             },
             readLog: function() {
@@ -251,3 +231,33 @@ exports.rmcLog = sbModule;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                // var thisData = data;
+                // var arrIn = [];
+                // arrIn = thisData.split([' ']);
+                // if(arrIn[0] == '%1'){
+                //     if(currentLogIndex > -1){
+                //         console.log('Log Marked As Sent');
+                //         pubRTULog.log[currentLogIndex].Sent = 1;
+                //     }
+
+                // }
+                // if(arrIn[0] == '%5'){
+                //     //rtulog.currentstatus.Start = '%2';
+                //     pubRTULog.add(myIO.getIOStatus(1),1,1);
+                // }

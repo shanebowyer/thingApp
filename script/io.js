@@ -303,9 +303,9 @@ var sbModule = function() {
                             var TCPMODMUXDIO8 = pubIO.ioTemplateTCPMODMUXDIO8();
                             TCPMODMUXDIO8.id = item.id;
                             TCPMODMUXDIO8.ioType = item.ioType;
-                            TCPMODMUXDIO8.DigitalsIn = item.rawData[11];
-                            TCPMODMUXDIO8.DigitalsIn <<= 8;
-                            TCPMODMUXDIO8.DigitalsIn += item.rawData[12];
+                            TCPMODMUXDIO8.digitalsIn = item.rawData[11];
+                            TCPMODMUXDIO8.digitalsIn <<= 8;
+                            TCPMODMUXDIO8.digitalsIn += item.rawData[12];
                             pubIO.currentStatus[__settings.value.rtuId].io[item.id].data = TCPMODMUXDIO8;
                             break;
                         case('TCP-MODMUX-AI8'):

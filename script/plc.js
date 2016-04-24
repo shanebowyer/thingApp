@@ -40,78 +40,101 @@ var sbModule = function() {
             myLog = log;
         },
         sendCurrentStatus: function(){
-            var msgOut = {
+            var msgResponse = {
                 sourceAddress: __settings.value.rtuId,
                 destinationAddress: 0,
-                msgId: 0,
-                msgType: 'status',
-                status: io.arrCurrentStatus[0]
+                msgId: payLoad.msgId,
+                msgType: 'handshake',
+                io: io.makeSenseOfRawData(__settings.value.rtuId)
             };
-            myLog.add(msgOut,0,0);
+            myLog.add(msgResponse,1,1);
+            args[2] = msgResponse;
+            deferred.resolve(args);
+
+
         },
         testControl: function(){
             console.log('Loading test control');
             var msgOut = {
-                dateTime: '2016/01/01',
-                messageId: 789,
-                payLoad: {
-                    sourceAddress: 2,
-                    destinationAddress: 1,
-                    msgId: 123,
-                    dateTime: '2016/01/01 12:13:14',
-                    msgType: 'control',
-                    write: {
-                        destinationIO: 1,
-                        io: 'digOut',
-                        value: 255
-                    }
+                sourceAddress: 2,
+                destinationAddress: 1,
+                msgType: 'control',
+                write: {
+                    destinationIO: 1,
+                    io: 'digOut',
+                    value: 255
                 }
             };
-            console.log('Loading this into log',JSON.stringify(msgOut));
-            myLog.add(JSON.stringify(msgOut),1,0);
+            myLog.add(msgOut,1,1);
         },
 
         processMessageIn: function(args){
             var deferred = new Q.defer();
-            // var msgIn = {
-            //     dateTime: '2016/01/01',
-            //     messageId: 789,
-            //     payLoad: {
-            //         sourceAddress: 1,
-            //         destinationAddress: 2,
-            //         msgId: 123,
-            //         dateTime: '2016/01/01 12:13:14',
-            //         msgType: 'control',
-            //         write: {
-            //             destinationIO: 1,
-            //             io: 'digOut',
-            //             value: 1
-            //         }
-            //     }
-            // };
 
-            console.log('Processing PLC processMessageIn',args);
+            console.log('Processing PLC processMessageIn');
+
+            function ObjectLength( object ) {
+                var length = 0;
+                for( var key in object ) {
+                    if( object.hasOwnProperty(key) ) {
+                        console.log('key',key);
+                        ++length;
+                    }
+                }
+                return length;
+            };
+            console.log('Memory size', ObjectLength(io.currentStatus));
 
             var msgIn = args[2];
+            console.log('msgIn',msgIn);
+            var payLoad = msgIn.payLoad;
+            console.log('payLoad',payLoad);
 
-            if(__settings.value.rtuId === msgIn.payLoad.sourceAddress){
+            if(__settings.value.rtuId === payLoad.sourceAddress){
                 //dont chat this is echo from server
                 deferred.reject(args);
                 return deferred.promise;
             }
+            console.log('rtuID',__settings.value.rtuId);
+            console.log('destinationAddress',payLoad.destinationAddress);
+            if(payLoad.destinationAddress === 0){
+                //the other rtu is sending a status broadcast. just save its status here
+                if(typeof payLoad.io !== 'undefined'){
+                    //Save the senders io to memory
+                    var memIO = {
+                        rtuAddress: payLoad.sourceAddress,
+                        io: payLoad.io
+                    }
+                    io.currentStatus[payLoad.sourceAddress] = memIO;
+                }
+                deferred.reject(args);
+                return deferred.promise;
+            }
 
-            if(__settings.value.rtuId === msgIn.payLoad.destinationAddress){
+            if(__settings.value.rtuId === payLoad.destinationAddress){
                 if(msgIn.msgType === 'handshake'){
+                    console.log('Handshake recieved');
                     myLog.processMessageIn(msgIn);
                     args[2] = io.makeSenseOfRawData(__settings.value.rtuId);
                     deferred.resolve(args);
+                    //myLog.add(JSON.stringify(args),1,1);
                 }
-                else if(msgIn.payLoad.msgType === 'control'){
-                    io.writeRegister(msgIn.payLoad.write.destinationIO,msgIn.payLoad.write.io,msgIn.payLoad.write.value);
+                else if(payLoad.msgType === 'control'){
+                    console.log('doing Control');
+                    io.writeRegister(payLoad.write.destinationIO,payLoad.write.io,payLoad.write.value);
+                    debugger;
+                    if(typeof payLoad.io !== 'undefined'){
+                        //Save the senders io to memory
+                        var memIO = {
+                            rtuAddress: payLoad.sourceAddress,
+                            io: payLoad.io
+                        }
+                        io.currentStatus[payLoad.sourceAddress] = memIO;
+                    }
                     var msgResponse = {
                         sourceAddress: __settings.value.rtuId,
-                        destinationAddress: msgIn.payLoad.sourceAddress,
-                        msgId: msgIn.payLoad.msgId,
+                        destinationAddress: payLoad.sourceAddress,
+                        msgId: payLoad.msgId,
                         msgType: 'handshake',
                         io: io.makeSenseOfRawData(__settings.value.rtuId)
                     };
@@ -119,10 +142,11 @@ var sbModule = function() {
                     args[2] = msgResponse;
                     deferred.resolve(args);
                 }
-                else if(msgIn.payLoad.msgType === 'status'){
+                else if(payLoad.msgType === 'status'){
+                    console.log('maiing sense of data');
                     var msgResponse2 = {
                         sourceAddress: __settings.value.rtuId,
-                        destinationAddress: msgIn.payLoad.sourceAddress,
+                        destinationAddress: payLoad.sourceAddress,
                         msgId: msgIn.messageId,
                         msgType: 'status',
                         io: io.makeSenseOfRawData(__settings.value.rtuId)
@@ -137,6 +161,15 @@ var sbModule = function() {
                 }
             }
             else{
+                if(typeof payLoad.io !== 'undefined'){
+                    console.log('Saving Other RTU io to memory');
+                    var memIO = {
+                        rtuAddress: payLoad.sourceAddress,
+                        io: payLoad.io
+                    }
+                    io.currentStatus[payLoad.sourceAddress] = memIO;
+
+                }
                 args[2] = 'The message in does not match this rtu address';
                 deferred.reject(args);
             }

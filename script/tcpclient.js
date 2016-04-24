@@ -21,7 +21,7 @@ var sbModule = function() {
 
     var pubTCP = {
         init: function (retErr,Server, Port, Debug) {
-            // Debug = 1;
+            Debug = 1;
             if(Debug == 1){
                 console.log('tcpclient.js init',Server);
             }

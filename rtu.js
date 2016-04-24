@@ -263,7 +263,7 @@ try{
             },settingsRemoteWebserver.ipAddress,settingsRemoteWebserver.port,Debug);
 
             var mywebsvrComms = new websvrcomms.webSVRComms;
-            mywebsvrComms.init(remoteServerTCPClient,myRTULog,myPlc,Debug);
+            mywebsvrComms.init(remoteServerTCPClient,myRTULog,myPlc,0);
             //---------------------------END Remote Web Server---------------------------//
 
 

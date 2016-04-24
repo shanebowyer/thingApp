@@ -16,7 +16,6 @@ angular.module('myApp')
                 sourceAddress: 2,
                 destinationAddress: 1,
                 msgId: 123,
-                dateTime: '2016/01/01 12:13:14',
                 msgType: 'status'
             }
         };
@@ -35,8 +34,6 @@ angular.module('myApp')
             payLoad: {
                 sourceAddress: 2,
                 destinationAddress: 1,
-                msgId: 123,
-                dateTime: '2016/01/01 12:13:14',
                 msgType: 'control',
                 write: {
                     destinationIO: 1,

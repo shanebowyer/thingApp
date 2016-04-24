@@ -38,50 +38,25 @@ var sbModule = function() {
 
             thismyWebSvrTCPClient.on('data', function (data) {
                 try {
+                    LoggedOnToWebServer = true;
                     if(thisdebug == 1){
                         console.log('websvrcomms received: '+ data);
                     }
 
-                    if(data.toString() == '%S 1 *'){
-                        LoggedOnToWebServer = true;
-                        if(thisdebug == 1){
-                            console.log('Unit Logged Onto WebServer');
-                        }
-                        return;
-                    }
-                    if(data.toString() == '%5 *'){
-                        LoggedOnToWebServer = true;
-                        if(thisdebug == 1){
-                            console.log('Unit Poll recieved from Server');
-                        }
-                        myRTULog.processMessageIn(data.toString());
-                        return;
-                    }
-                    if(data.toString().indexOf('%1') >= 0){
-                        if(thisdebug == 1){
-                            console.log('message from Server');
-                        }
-                        myRTULog.processMessageIn(data.toString());
-                        return;
-                    }
-
-                    // console.log('about to json');
-                    // var msgIn = JSON.parse(data);
-                    // console.log('done json');
-                    // var args = [null,null,msgIn];
-                    // myPLC.processMessageIn(args)
-                    // .then(function(data){
-                    //     console.log('We do not respond here. We load the response into the myRTULog. The following response was loaded for sending',data);
-                    // },function(err){
-                    //     console.log('Not responding for a reason. Response would cause noise',err);
-                    // });
-
-                    var dataReq = {
-                        
-                    };
+//{"dateTime":"2016/01/01","messageId":2,"payLoad":{"sourceAddress":2,"destinationAddress":1,"msgType":"control","write":{"destinationIO":1,"io":"digOut","value":255},"io":{"rtuAddress":1,"io":{"1":{"id":1,"ioType":"TCP-MODMUX-DIO8","rawData":[],"data":{"id":1,"ioType":"TCP-MODMUX-DIO8","digitalsIn":0,"digitalsOut":0,"digitalsOutWriteValue":0,"DigitalsIn":null}},"2":{"id":2,"ioType":"TCP-MODMUX-AI8","rawData":[],"data":{"ioType":"TCP-MODMUX-AI8","AI1":null,"AI2":0,"AI3":0,"AI4":0,"AI5":0,"AI6":0,"AI7":0,"AI8":0}}}}}}
 
 
+//{"dateTime":"2016/01/01","messageId":3,"payLoad":{"sourceAddress":1,"destinationAddress":2,"msgType":"handshake","io":{"rtuAddress":1,"io":{"1":{"id":1,"ioType":"TCP-MODMUX-DIO8","rawData":[],"data":{"id":1,"ioType":"TCP-MODMUX-DIO8","digitalsIn":0,"digitalsOut":0,"digitalsOutWriteValue":0,"DigitalsIn":null}},"2":{"id":2,"ioType":"TCP-MODMUX-AI8","rawData":[],"data":{"ioType":"TCP-MODMUX-AI8","AI1":null,"AI2":0,"AI3":0,"AI4":0,"AI5":0,"AI6":0,"AI7":0,"AI8":0}}}}
+//"io":{"rtuAddress":1,"io":{"1":{"id":1,"ioType":"TCP-MODMUX-DIO8","rawData":[],"data":{"id":1,"ioType":"TCP-MODMUX-DIO8","digitalsIn":0,"digitalsOut":0,"digitalsOutWriteValue":0,"DigitalsIn":null}},"2":{"id":2,"ioType":"TCP-MODMUX-AI8","rawData":[],"data":{"ioType":"TCP-MODMUX-AI8","AI1":null,"AI2":0,"AI3":0,"AI4":0,"AI5":0,"AI6":0,"AI7":0,"AI8":0}}}}
 
+                    var msgIn = JSON.parse(data);
+                    var args = [null,null,msgIn];
+                    myPLC.processMessageIn(args)
+                    .then(function(data){
+                        // console.log('We do not respond here. We load the response into the myRTULog.');
+                    },function(err){
+                        // console.log('Not responding for a reason. Response would cause noise',err);
+                    });
                 }
                 catch (e) {
                     console.log('thismyWebSvrTCPClient data error: ' + e);
@@ -92,32 +67,15 @@ var sbModule = function() {
                     if(thisdebug == 1){
                         console.log('plc websvrcomms Socket: '+ data);
                     }
-
                     if(data.toString() != 'CONNECTED'){
                         LoggedOnToWebServer = false;
                     }
-
                 }
                 catch (e) {
                     console.log('socket data error: ' + e);
                 }
             });
-
         },
-
-        //readConfig: function(){
-        //    var fs = require('fs');
-        //    var file = './config/config.json';
-        //    var obj = JSON.parse(fs.readFileSync(file,'utf8'));
-        //    CONFIG = obj;
-        //    SETINGS = CONFIG.settings;
-        //},
-        //searchSettings: function(search){
-        //    var arrFound = SETINGS.filter(function(item) {
-        //        return item.description == search;
-        //    });
-        //    return arrFound[0].value;
-        //},
         fixedTxTime: function(){
             if(LoggedOnToWebServer == false){
                 return;
@@ -150,10 +108,8 @@ var sbModule = function() {
             if(LoggedOnToWebServer == false){
                 return;
             }
-
             strOutput = myRTULog.readLog();
             if(strOutput != ''){
-                console.log('Sending This Data',strOutput);
                 thismyWebSvrTCPClient.SendData(strOutput);
             }
         },
@@ -165,14 +121,14 @@ var sbModule = function() {
     }
 
 
-
+    LoggedOnToWebServer = true;
     //pubWebSVR.readConfig();
 
-    setInterval(pubWebSVR.SendWebSvrLogon,5000);
-    setTimeout(function(){
-        console.log('about to test');
-        myPLC.testControl();
-    },5000);
+    // setInterval(pubWebSVR.SendWebSvrLogon,5000);
+    // setTimeout(function(){
+    //     console.log('about to test');
+    //     myPLC.testControl();
+    // },5000);
 
     var FixedTxTime = __settings.value.fixedTxTime;
     pubWebSVR.fixedTxTime;
@@ -180,10 +136,10 @@ var sbModule = function() {
     setInterval(pubWebSVR.checkRTULogForMessagesToSend,(1000));
 
 
-    return pubWebSVR
+    return pubWebSVR;
 
 
-}
+};
 util.inherits(sbModule, EventEmitter);
 exports.webSVRComms = sbModule;
 
@@ -193,3 +149,62 @@ exports.webSVRComms = sbModule;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+                    // if(data.toString() == '%S 1 *'){
+                    //     LoggedOnToWebServer = true;
+                    //     if(thisdebug == 1){
+                    //         console.log('Unit Logged Onto WebServer');
+                    //     }
+                    //     return;
+                    // }
+                    // if(data.toString() == '%5 *'){
+                    //     LoggedOnToWebServer = true;
+                    //     if(thisdebug == 1){
+                    //         console.log('Unit Poll recieved from Server');
+                    //     }
+                    //     myRTULog.processMessageIn(data.toString());
+                    //     return;
+                    // }
+                    // if(data.toString().indexOf('%1') >= 0){
+                    //     if(thisdebug == 1){
+                    //         console.log('message from Server');
+                    //     }
+                    //     myRTULog.processMessageIn(data.toString());
+                    //     return;
+                    // }
+
+
+
+        //readConfig: function(){
+        //    var fs = require('fs');
+        //    var file = './config/config.json';
+        //    var obj = JSON.parse(fs.readFileSync(file,'utf8'));
+        //    CONFIG = obj;
+        //    SETINGS = CONFIG.settings;
+        //},
+        //searchSettings: function(search){
+        //    var arrFound = SETINGS.filter(function(item) {
+        //        return item.description == search;                    console.log('about to json');
+                    // var msgIn = JSON.parse(data);
+                    // console.log('done json');
+                    // var args = [null,null,msgIn];
+                    // myPLC.processMessageIn(args)
+                    // .then(function(data){
+                    //     console.log('We do not respond here. We load the response into the myRTULog. The following response was loaded for sending',data);
+                    // },function(err){
+                    //     console.log('Not responding for a reason. Response would cause noise',err);
+                    // });
+        //    });
+        //    return arrFound[0].value;
+        //},

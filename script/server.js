@@ -24,7 +24,7 @@ var sbModule = function() {
 
         init: function(){
             console.log('Initted server');
-            thisdebug = 1;
+            thisdebug = 0;
 
             ServerComms.on('data', function(args){
                 try{
@@ -65,7 +65,7 @@ var sbModule = function() {
         }
     }
 
-    ServerComms.init('192.168.1.224',12345,1);
+    ServerComms.init('192.167.1.251',12345,1);
     console.log('Listening for ServerComms on: ' + '12345');
 
     return pubServer
