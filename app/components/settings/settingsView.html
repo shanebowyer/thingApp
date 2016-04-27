@@ -101,6 +101,7 @@
 						<option value="other">other</option>
 					</select>
 					<h4>Setpoints</h4>
+					<hr/>
 	            	<label for="selectedControlSPLow">low:</label>
 	            	<input id="selectedControlSPLow" class="form-control" ng-model="selectedControlSPLow"></input>
 	            	<label for="selectedControlSPHi">hi:</label>
@@ -110,6 +111,38 @@
 	            	<label for="selectedControlSPIO">IO:</label>
 	            	<input id="selectedControlSPIO" class="form-control" ng-model="selectedControlSPIO"></input>
 					<label class="checkbox-inline"><input type="checkbox" ng-model="selectedControlEnabled">Enabled</label>	            	
+
+					<h4>msgOutSetPointLow</h4>
+					<hr/>
+	            	<label for="selectedControlMsgOutSPLowSourceAddress">Source Address:</label>
+	            	<input id="selectedControlMsgOutSPLowSourceAddress" class="form-control" ng-model="selectedControlMsgOutSPLowSourceAddress"></input>
+	            	<label for="selectedControlMsgOutSPLowDestinationAddress">Destination Address:</label>
+	            	<input id="selectedControlMsgOutSPLowDestinationAddress" class="form-control" ng-model="selectedControlMsgOutSPLowDestinationAddress"></input>
+	            	<label for="selectedControlMsgOutSPLowDestinationIO">Destination IO:</label>
+	            	<input id="selectedControlMsgOutSPLowDestinationIO" class="form-control" ng-model="selectedControlMsgOutSPLowDestinationIO"></input>
+	            	<label for="selectedControlMsgOutSPLowIO">IO (ie: digOut):</label>
+	            	<input id="selectedControlMsgOutSPLowIO" class="form-control" ng-model="selectedControlMsgOutSPLowIO"></input>
+	            	<label for="selectedControlMsgOutSPLowWriteMask">Write Mask:</label>
+	            	<input id="selectedControlMsgOutSPLowWriteMask" class="form-control" ng-model="selectedControlMsgOutSPLowWriteMask"></input>
+	            	<label for="selectedControlMsgOutSPLowWriteValue">Write Value:</label>
+	            	<input id="selectedControlMsgOutSPLowWriteValue" class="form-control" ng-model="selectedControlMsgOutSPLowWriteValue"></input>
+
+
+					<h4>msgOutSetPointHi</h4>
+					<hr/>
+	            	<label for="selectedControlMsgOutSPHiSourceAddress">Source Address:</label>
+	            	<input id="selectedControlMsgOutSPHiSourceAddress" class="form-control" ng-model="selectedControlMsgOutSPHiSourceAddress"></input>
+	            	<label for="selectedControlMsgOutSPHiDestinationAddress">Destination Address:</label>
+	            	<input id="selectedControlMsgOutSPHiDestinationAddress" class="form-control" ng-model="selectedControlMsgOutSPHiDestinationAddress"></input>
+	            	<label for="selectedControlMsgOutSPHiDestinationIO">Destination IO:</label>
+	            	<input id="selectedControlMsgOutSPHiDestinationIO" class="form-control" ng-model="selectedControlMsgOutSPHiDestinationIO"></input>
+	            	<label for="selectedControlMsgOutSPHiIO">IO (ie: digOut):</label>
+	            	<input id="selectedControlMsgOutSPHiIO" class="form-control" ng-model="selectedControlMsgOutSPHiIO"></input>
+	            	<label for="selectedControlMsgOutSPHiWriteMask">Write Mask:</label>
+	            	<input id="selectedControlMsgOutSPHiWriteMask" class="form-control" ng-model="selectedControlMsgOutSPHiWriteMask"></input>
+	            	<label for="selectedControlMsgOutSPHiWriteValue">Write Value:</label>
+	            	<input id="selectedControlMsgOutSPHiWriteValue" class="form-control" ng-model="selectedControlMsgOutSPHiWriteValue"></input>
+
 					<div>
 						<hr/>
 		            	<input type="button" class="btn btn-default" value="Add" ng-click="controlAdd()"></input>

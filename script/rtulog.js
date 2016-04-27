@@ -106,7 +106,7 @@ var sbModule = function() {
 
             },
             processMessageIn: function(msgIn){
-                debugger;
+                // debugger;
                 console.log('trying to mark off message',msgIn);
                 if(msgIn.payLoad.msgType === 'handshake'){
                     for(var i=0;i<pubRTULog.log.length;i++){

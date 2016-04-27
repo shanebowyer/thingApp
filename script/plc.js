@@ -190,21 +190,31 @@ var sbModule = function() {
                 myControl.forEach(function(item){
                     switch(item.controlType){
                         case('reservoir'):
+                            // debugger;
                             var ioMonitor = io.currentStatus[__settings.value.rtuId].io[item.setPoints.sourceIO].data.AI1;    //item.setPoints.io
-                            var spHi = item.setPoints.hi;
-                            var spLow = item.setPoints.low;
-                            
-                            if(ioMonitor > spHi && item.spHiReached !== true){
-                                console.log('plc Hi Setpoint message loaded');
-                                myLog.add(item.msgOutSetPointHi,1,1);   //SB! Must change this to not be fireandforget. Like this for testing
-                                item.spHiReached = true;
-                                item.spLowReached = false;
+                            // if(typeof ioMonitor !== 'undefined'){
+                            //     ioMonitor = 99;
+                            // }
+
+                            if(typeof myControlVariables[item.id] === 'undefined'){
+                                myControlVariables[item.id] = {};
                             }
-                            if(ioMonitor < spLow && item.spLowReached !== true){
+                            myControlVariables[item.id].spHi = item.setPoints.hi;
+                            myControlVariables[item.id].spLow = item.setPoints.low;
+                            
+                            if(ioMonitor > myControlVariables[item.id].spHi && myControlVariables[item.id].spHiReached !== true){
+                                // debugger;
+                                console.log('plc Hi Setpoint message loaded');
+                                myLog.add(item.msgOutSetPointHi,1,0);   //SB! Must change this to not be fireandforget. Like this for testing
+                                myControlVariables[item.id].spHiReached = true;
+                                myControlVariables[item.id].spLowReached = false;
+                            }
+                            if(ioMonitor < myControlVariables[item.id].spLow && myControlVariables[item.id].spLowReached !== true){
+                                debugger;
                                 console.log('plc Low Setpoint message loaded');
                                 myLog.add(item.msgOutSetPointLow,1,0);   //SB! Must change this to not be fireandforget. Like this for testing
-                                item.spHiReached = false;
-                                item.spLowReached = true;
+                                myControlVariables[item.id].spHiReached = false;
+                                myControlVariables[item.id].spLowReached = true;
                             }
                             break;
                         default:
@@ -281,6 +291,7 @@ var sbModule = function() {
     myCOFS.Counter0LastStatus = 0;
     arrCOFS.push(myCOFS);
 
+    var myControlVariables = {};
     var myControl = __settings.value.control;
 
     pubPLC.runPLCLogic(1000);

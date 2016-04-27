@@ -98,6 +98,20 @@ angular.module('myApp')
 			$scope.selectedControlSPSourceIO = item.setPoints.sourceIO;
 			$scope.selectedControlSPIO = item.setPoints.io;
 
+			$scope.selectedControlMsgOutSPLowSourceAddress = item.msgOutSetPointLow.sourceAddress;
+			$scope.selectedControlMsgOutSPLowDestinationAddress = item.msgOutSetPointLow.destinationAddress;
+			$scope.selectedControlMsgOutSPLowDestinationIO = item.msgOutSetPointLow.write.destinationIO;
+			$scope.selectedControlMsgOutSPLowIO = item.msgOutSetPointLow.write.io;
+			$scope.selectedControlMsgOutSPLowWriteMask = item.msgOutSetPointLow.write.mask;
+			$scope.selectedControlMsgOutSPLowWriteValue = item.msgOutSetPointLow.write.value;
+
+			$scope.selectedControlMsgOutSPHiSourceAddress = item.msgOutSetPointHi.sourceAddress;
+			$scope.selectedControlMsgOutSPHiDestinationAddress = item.msgOutSetPointHi.destinationAddress;
+			$scope.selectedControlMsgOutSPHiDestinationIO = item.msgOutSetPointHi.write.destinationIO;
+			$scope.selectedControlMsgOutSPHiIO = item.msgOutSetPointHi.write.io;
+			$scope.selectedControlMsgOutSPHiWriteMask = item.msgOutSetPointHi.write.mask;
+			$scope.selectedControlMsgOutSPHiWriteValue = item.msgOutSetPointHi.write.value;
+
 		}
 	};
 
@@ -108,11 +122,19 @@ angular.module('myApp')
 				$scope.control[i].controlType = $scope.selectedControlType;
 				$scope.control[i].setPoints.low = $scope.selectedControlSPLow;
 				$scope.control[i].setPoints.hi = $scope.selectedControlSPHi;
-
 				$scope.control[i].setPoints.sourceIO = $scope.selectedControlSPSourceIO;
 				$scope.control[i].setPoints.io = $scope.selectedControlSPIO;
-
 				$scope.control[i].enabled = $scope.selectedenabled;
+
+				$scope.control[i].msgOutSetPointLow.sourceAddress = $scope.selectedControlMsgOutSPLowSourceAddress;
+				$scope.control[i].msgOutSetPointLow.destinationAddress = $scope.selectedControlMsgOutSPLowDestinationAddress;
+				$scope.control[i].msgOutSetPointLow.msgType = $scope.
+ 
+				$scope.control[i].write.destinationIO = $scope.selectedControlMsgOutSPLowDestinationIO
+				$scope.control[i].write.io = $scope.selectedControlMsgOutSPLowIO
+				$scope.control[i].write.mask = $scope.selectedControlMsgOutSPLowWriteMask
+				$scope.control[i].write.value = $scope.selectedControlMsgOutSPLowWriteValue
+
 				break;
 			}
 		}
