@@ -87,30 +87,50 @@ angular.module('myApp')
 		}
 	};
 
+	$scope.controlUI = {
+		divSetPointsReservoirVisible: false
+	};
+
+	$scope.controlChange = function(){
+		switch($scope.selectedControlType){
+			case('reservoir'):
+				$scope.controlUI.divSetPointsReservoirVisible = true;
+				break;
+			case('sewagesump'):
+				$scope.controlUI.divSetPointsReservoirVisible = false;
+				break;
+			default:
+				break;
+		}
+	};
 
 	$scope.selectControlTable = function(item,button){
 		if(button == 'edit'){
 			$scope.controlItem = item;
 			$scope.selectedControlDescription = item.description;
 			$scope.selectedControlType = item.controlType;
-			$scope.selectedControlSPLow = item.setPoints.low;
-			$scope.selectedControlSPHi = item.setPoints.hi;
-			$scope.selectedControlSPSourceIO = item.setPoints.sourceIO;
-			$scope.selectedControlSPIO = item.setPoints.io;
+			if(item.controlType === 'reservoir'){
+				$scope.selectedControlImg = './assets/img/reservoir.png';
+				$scope.controlUI.divSetPointsReservoirVisible = true;
+				$scope.selectedControlReservoirSPLow = item.setPoints.low;
+				$scope.selectedControlReservoirSPHi = item.setPoints.hi;
+				$scope.selectedControlReservoirSPSourceIO = item.setPoints.sourceIO;
+				$scope.selectedControlReservoirSPIO = item.setPoints.io;
 
-			$scope.selectedControlMsgOutSPLowSourceAddress = item.msgOutSetPointLow.sourceAddress;
-			$scope.selectedControlMsgOutSPLowDestinationAddress = item.msgOutSetPointLow.destinationAddress;
-			$scope.selectedControlMsgOutSPLowDestinationIO = item.msgOutSetPointLow.write.destinationIO;
-			$scope.selectedControlMsgOutSPLowIO = item.msgOutSetPointLow.write.io;
-			$scope.selectedControlMsgOutSPLowWriteMask = item.msgOutSetPointLow.write.mask;
-			$scope.selectedControlMsgOutSPLowWriteValue = item.msgOutSetPointLow.write.value;
+				$scope.selectedControlReservoirMsgOutSPLowSourceAddress = item.msgOutSetPointLow.sourceAddress;
+				$scope.selectedControlReservoirMsgOutSPLowDestinationAddress = item.msgOutSetPointLow.destinationAddress;
+				$scope.selectedControlReservoirMsgOutSPLowDestinationIO = item.msgOutSetPointLow.write.destinationIO;
+				$scope.selectedControlReservoirMsgOutSPLowIO = item.msgOutSetPointLow.write.io;
+				$scope.selectedControlReservoirMsgOutSPLowWriteMask = item.msgOutSetPointLow.write.mask;
+				$scope.selectedControlReservoirMsgOutSPLowWriteValue = item.msgOutSetPointLow.write.value;
 
-			$scope.selectedControlMsgOutSPHiSourceAddress = item.msgOutSetPointHi.sourceAddress;
-			$scope.selectedControlMsgOutSPHiDestinationAddress = item.msgOutSetPointHi.destinationAddress;
-			$scope.selectedControlMsgOutSPHiDestinationIO = item.msgOutSetPointHi.write.destinationIO;
-			$scope.selectedControlMsgOutSPHiIO = item.msgOutSetPointHi.write.io;
-			$scope.selectedControlMsgOutSPHiWriteMask = item.msgOutSetPointHi.write.mask;
-			$scope.selectedControlMsgOutSPHiWriteValue = item.msgOutSetPointHi.write.value;
+				$scope.selectedControlReservoirMsgOutSPHiSourceAddress = item.msgOutSetPointHi.sourceAddress;
+				$scope.selectedControlReservoirMsgOutSPHiDestinationAddress = item.msgOutSetPointHi.destinationAddress;
+				$scope.selectedControlReservoirMsgOutSPHiDestinationIO = item.msgOutSetPointHi.write.destinationIO;
+				$scope.selectedControlReservoirMsgOutSPHiIO = item.msgOutSetPointHi.write.io;
+				$scope.selectedControlReservoirMsgOutSPHiWriteMask = item.msgOutSetPointHi.write.mask;
+				$scope.selectedControlReservoirMsgOutSPHiWriteValue = item.msgOutSetPointHi.write.value;
+			}
 
 		}
 	};
@@ -120,26 +140,36 @@ angular.module('myApp')
 			if($scope.control[i].id == $scope.controlItem.id){
 				$scope.control[i].description = $scope.selectedControlDescription;
 				$scope.control[i].controlType = $scope.selectedControlType;
-				$scope.control[i].setPoints.low = $scope.selectedControlSPLow;
-				$scope.control[i].setPoints.hi = $scope.selectedControlSPHi;
-				$scope.control[i].setPoints.sourceIO = $scope.selectedControlSPSourceIO;
-				$scope.control[i].setPoints.io = $scope.selectedControlSPIO;
 				$scope.control[i].enabled = $scope.selectedenabled;
 
-				$scope.control[i].msgOutSetPointLow.sourceAddress = $scope.selectedControlMsgOutSPLowSourceAddress;
-				$scope.control[i].msgOutSetPointLow.destinationAddress = $scope.selectedControlMsgOutSPLowDestinationAddress;
-				$scope.control[i].msgOutSetPointLow.msgType = $scope.
- 
-				$scope.control[i].write.destinationIO = $scope.selectedControlMsgOutSPLowDestinationIO
-				$scope.control[i].write.io = $scope.selectedControlMsgOutSPLowIO
-				$scope.control[i].write.mask = $scope.selectedControlMsgOutSPLowWriteMask
-				$scope.control[i].write.value = $scope.selectedControlMsgOutSPLowWriteValue
+				$scope.control[i].setPoints.low = $scope.selectedControlReservoirSPLow;
+				$scope.control[i].setPoints.hi = $scope.selectedControlReservoirSPHi;
+				$scope.control[i].setPoints.sourceIO = $scope.selectedControlReservoirSPSourceIO;
+				$scope.control[i].setPoints.io = $scope.selectedControlReservoirSPIO;
+				
+
+				$scope.control[i].msgOutSetPointLow.sourceAddress = $scope.selectedControlReservoirMsgOutSPLowSourceAddress;
+				$scope.control[i].msgOutSetPointLow.destinationAddress = $scope.selectedControlReservoirMsgOutSPLowDestinationAddress;
+				$scope.control[i].msgOutSetPointLow.msgType = 'control';
+ 				$scope.control[i].msgOutSetPointLow.write.destinationIO = $scope.selectedControlReservoirMsgOutSPLowDestinationIO;
+				$scope.control[i].msgOutSetPointLow.write.io = $scope.selectedControlReservoirMsgOutSPLowIO;
+				$scope.control[i].msgOutSetPointLow.write.mask = $scope.selectedControlReservoirMsgOutSPLowWriteMask;
+				$scope.control[i].msgOutSetPointLow.write.value = $scope.selectedControlReservoirMsgOutSPLowWriteValue;
+
+				$scope.control[i].msgOutSetPointHi.sourceAddress = $scope.selectedControlReservoirMsgOutSPHiSourceAddress;
+				$scope.control[i].msgOutSetPointHi.destinationAddress = $scope.selectedControlReservoirMsgOutSPHiDestinationAddress;
+				$scope.control[i].msgOutSetPointHi.msgType = 'control';
+ 				$scope.control[i].msgOutSetPointHi.write.destinationIO = $scope.selectedControlReservoirMsgOutSPHiDestinationIO;
+				$scope.control[i].msgOutSetPointHi.write.io = $scope.selectedControlReservoirMsgOutSPHiIO;
+				$scope.control[i].msgOutSetPointHi.write.mask = $scope.selectedControlReservoirMsgOutSPHiWriteMask;
+				$scope.control[i].msgOutSetPointHi.write.value = $scope.selectedControlReservoirMsgOutSPHiWriteValue;
+
 
 				break;
 			}
 		}
 		console.log($scope.io);
-	}
+	};
 
 
 

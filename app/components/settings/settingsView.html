@@ -90,59 +90,63 @@
                 </div>
                 <hr/>
 	            <div class="form-group">
-	            	<img src="./assets/img/ResPump.png">
+	            	<!-- <img src="./assets/img/reservoir.png"> -->
+	            	<img src={{selectedControlImg}}>
 	            	<br/>
 	            	<label for="selectedControlDescription">Description:</label>
 	            	<input id="selectedControlDescription" class="form-control" ng-model="selectedControlDescription"></input>
 	            	<label for="selectedControlType">controlType:</label>
-					<select ng-model="selectedControlType" class="form-control">
+					<select ng-model="selectedControlType" class="form-control" ng-change="controlChange()">
 						<option value="reservoir">reservoir</option>
 						<option value="sewagesump">sewagesump</option>
 						<option value="other">other</option>
 					</select>
-					<h4>Setpoints</h4>
-					<hr/>
-	            	<label for="selectedControlSPLow">low:</label>
-	            	<input id="selectedControlSPLow" class="form-control" ng-model="selectedControlSPLow"></input>
-	            	<label for="selectedControlSPHi">hi:</label>
-	            	<input id="selectedControlSPHi" class="form-control" ng-model="selectedControlSPHi"></input>
-	            	<label for="selectedControlSPSourceIO">SourceIO:</label>
-	            	<input id="selectedControlSPSourceIO" class="form-control" ng-model="selectedControlSPSourceIO"></input>
-	            	<label for="selectedControlSPIO">IO:</label>
-	            	<input id="selectedControlSPIO" class="form-control" ng-model="selectedControlSPIO"></input>
-					<label class="checkbox-inline"><input type="checkbox" ng-model="selectedControlEnabled">Enabled</label>	            	
+					<div id="divSetPointsReservoir" ng-show="controlUI.divSetPointsReservoirVisible">
+						<h4>Setpoints</h4>
+						<hr/>
+		            	<label for="selectedControlReservoirSPLow">low:</label>
+		            	<input id="selectedControlReservoirSPLow" class="form-control" ng-model="selectedControlReservoirSPLow"></input>
+		            	<label for="selectedControlReservoirSPHi">hi:</label>
+		            	<input id="selectedControlReservoirSPHi" class="form-control" ng-model="selectedControlReservoirSPHi"></input>
+		            	<label for="selectedControlReservoirSPSourceIO">SourceIO:</label>
+		            	<input id="selectedControlReservoirSPSourceIO" class="form-control" ng-model="selectedControlReservoirSPSourceIO"></input>
+		            	<label for="selectedControlReservoirSPIO">IO:</label>
+		            	<input id="selectedControlReservoirSPIO" class="form-control" ng-model="selectedControlReservoirSPIO"></input>
+						<label class="checkbox-inline"><input type="checkbox" ng-model="selectedControlReservoirEnabled">Enabled</label>	            	
 
-					<h4>msgOutSetPointLow</h4>
-					<hr/>
-	            	<label for="selectedControlMsgOutSPLowSourceAddress">Source Address:</label>
-	            	<input id="selectedControlMsgOutSPLowSourceAddress" class="form-control" ng-model="selectedControlMsgOutSPLowSourceAddress"></input>
-	            	<label for="selectedControlMsgOutSPLowDestinationAddress">Destination Address:</label>
-	            	<input id="selectedControlMsgOutSPLowDestinationAddress" class="form-control" ng-model="selectedControlMsgOutSPLowDestinationAddress"></input>
-	            	<label for="selectedControlMsgOutSPLowDestinationIO">Destination IO:</label>
-	            	<input id="selectedControlMsgOutSPLowDestinationIO" class="form-control" ng-model="selectedControlMsgOutSPLowDestinationIO"></input>
-	            	<label for="selectedControlMsgOutSPLowIO">IO (ie: digOut):</label>
-	            	<input id="selectedControlMsgOutSPLowIO" class="form-control" ng-model="selectedControlMsgOutSPLowIO"></input>
-	            	<label for="selectedControlMsgOutSPLowWriteMask">Write Mask:</label>
-	            	<input id="selectedControlMsgOutSPLowWriteMask" class="form-control" ng-model="selectedControlMsgOutSPLowWriteMask"></input>
-	            	<label for="selectedControlMsgOutSPLowWriteValue">Write Value:</label>
-	            	<input id="selectedControlMsgOutSPLowWriteValue" class="form-control" ng-model="selectedControlMsgOutSPLowWriteValue"></input>
+						<h4>msgOutSetPointLow</h4>
+						<hr/>
+		            	<label for="selectedControlReservoirMsgOutSPLowSourceAddress">Source Address:</label>
+		            	<input id="selectedControlReservoirMsgOutSPLowSourceAddress" class="form-control" ng-model="selectedControlReservoirMsgOutSPLowSourceAddress"></input>
+		            	<label for="selectedControlReservoirMsgOutSPLowDestinationAddress">Destination Address:</label>
+		            	<input id="selectedControlReservoirMsgOutSPLowDestinationAddress" class="form-control" ng-model="selectedControlReservoirMsgOutSPLowDestinationAddress"></input>
+		            	<label for="selectedControlReservoirMsgOutSPLowDestinationIO">Destination IO:</label>
+		            	<input id="selectedControlReservoirMsgOutSPLowDestinationIO" class="form-control" ng-model="selectedControlReservoirMsgOutSPLowDestinationIO"></input>
+		            	<label for="selectedControlReservoirMsgOutSPLowIO">IO (ie: digOut):</label>
+		            	<input id="selectedControlReservoirMsgOutSPLowIO" class="form-control" ng-model="selectedControlReservoirMsgOutSPLowIO"></input>
+		            	<label for="selectedControlReservoirMsgOutSPLowWriteMask">Write Mask:</label>
+		            	<input id="selectedControlReservoirMsgOutSPLowWriteMask" class="form-control" ng-model="selectedControlReservoirMsgOutSPLowWriteMask"></input>
+		            	<label for="selectedControlReservoirMsgOutSPLowWriteValue">Write Value:</label>
+		            	<input id="selectedControlReservoirMsgOutSPLowWriteValue" class="form-control" ng-model="selectedControlReservoirMsgOutSPLowWriteValue"></input>
 
 
-					<h4>msgOutSetPointHi</h4>
-					<hr/>
-	            	<label for="selectedControlMsgOutSPHiSourceAddress">Source Address:</label>
-	            	<input id="selectedControlMsgOutSPHiSourceAddress" class="form-control" ng-model="selectedControlMsgOutSPHiSourceAddress"></input>
-	            	<label for="selectedControlMsgOutSPHiDestinationAddress">Destination Address:</label>
-	            	<input id="selectedControlMsgOutSPHiDestinationAddress" class="form-control" ng-model="selectedControlMsgOutSPHiDestinationAddress"></input>
-	            	<label for="selectedControlMsgOutSPHiDestinationIO">Destination IO:</label>
-	            	<input id="selectedControlMsgOutSPHiDestinationIO" class="form-control" ng-model="selectedControlMsgOutSPHiDestinationIO"></input>
-	            	<label for="selectedControlMsgOutSPHiIO">IO (ie: digOut):</label>
-	            	<input id="selectedControlMsgOutSPHiIO" class="form-control" ng-model="selectedControlMsgOutSPHiIO"></input>
-	            	<label for="selectedControlMsgOutSPHiWriteMask">Write Mask:</label>
-	            	<input id="selectedControlMsgOutSPHiWriteMask" class="form-control" ng-model="selectedControlMsgOutSPHiWriteMask"></input>
-	            	<label for="selectedControlMsgOutSPHiWriteValue">Write Value:</label>
-	            	<input id="selectedControlMsgOutSPHiWriteValue" class="form-control" ng-model="selectedControlMsgOutSPHiWriteValue"></input>
+						<h4>msgOutSetPointHi</h4>
+						<hr/>
+		            	<label for="selectedControlReservoirMsgOutSPHiSourceAddress">Source Address:</label>
+		            	<input id="selectedControlReservoirMsgOutSPHiSourceAddress" class="form-control" ng-model="selectedControlReservoirMsgOutSPHiSourceAddress"></input>
+		            	<label for="selectedControlReservoirMsgOutSPHiDestinationAddress">Destination Address:</label>
+		            	<input id="selectedControlReservoirMsgOutSPHiDestinationAddress" class="form-control" ng-model="selectedControlReservoirMsgOutSPHiDestinationAddress"></input>
+		            	<label for="selectedControlReservoirMsgOutSPHiDestinationIO">Destination IO:</label>
+		            	<input id="selectedControlReservoirMsgOutSPHiDestinationIO" class="form-control" ng-model="selectedControlReservoirMsgOutSPHiDestinationIO"></input>
+		            	<label for="selectedControlReservoirMsgOutSPHiIO">IO (ie: digOut):</label>
+		            	<input id="selectedControlReservoirMsgOutSPHiIO" class="form-control" ng-model="selectedControlReservoirMsgOutSPHiIO"></input>
+		            	<label for="selectedControlReservoirMsgOutSPHiWriteMask">Write Mask:</label>
+		            	<input id="selectedControlReservoirMsgOutSPHiWriteMask" class="form-control" ng-model="selectedControlReservoirMsgOutSPHiWriteMask"></input>
+		            	<label for="selectedControlReservoirMsgOutSPHiWriteValue">Write Value:</label>
+		            	<input id="selectedControlReservoirMsgOutSPHiWriteValue" class="form-control" ng-model="selectedControlReservoirMsgOutSPHiWriteValue"></input>
 
+						
+					</div>
 					<div>
 						<hr/>
 		            	<input type="button" class="btn btn-default" value="Add" ng-click="controlAdd()"></input>
