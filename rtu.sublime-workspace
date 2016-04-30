@@ -264,26 +264,26 @@
 	"buffers":
 	[
 		{
-			"file": "app/components/settings/settingsController.js",
-			"settings":
-			{
-				"buffer_size": 5452,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "app/components/settings/settingsView.html",
-			"settings":
-			{
-				"buffer_size": 7935,
-				"line_ending": "Unix"
-			}
-		},
-		{
 			"file": "config.js",
 			"settings":
 			{
-				"buffer_size": 2247,
+				"buffer_size": 1339,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "rtu.js",
+			"settings":
+			{
+				"buffer_size": 11154,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "script/server.js",
+			"settings":
+			{
+				"buffer_size": 1979,
 				"line_ending": "Unix"
 			}
 		}
@@ -378,16 +378,19 @@
 		"/home/shane/Documents/GitCode/rtu/app/components",
 		"/home/shane/Documents/GitCode/rtu/app/components/home",
 		"/home/shane/Documents/GitCode/rtu/app/components/settings",
+		"/home/shane/Documents/GitCode/rtu/app/services",
 		"/home/shane/Documents/GitCode/rtu/script"
 	],
 	"file_history":
 	[
-		"/home/shane/Documents/GitCode/rtu/script/rtulog.js",
 		"/home/shane/Documents/GitCode/rtu/script/plc.js",
+		"/home/shane/Documents/GitCode/rtu/app/components/settings/settingsView.html",
+		"/home/shane/Documents/GitCode/rtu/app/components/settings/settingsController.js",
+		"/home/shane/Documents/GitCode/rtu/app/services/services.js",
 		"/home/shane/Documents/GitCode/rtu/config.js",
 		"/home/shane/Documents/GitCode/rtu/script/server.js",
+		"/home/shane/Documents/GitCode/rtu/script/rtulog.js",
 		"/home/shane/Documents/GitCode/rtu/script/websvrcomms.js",
-		"/home/shane/Documents/GitCode/rtu/app/components/settings/settingsController.js",
 		"/home/shane/Documents/GitCode/rtu/app/components/home/homeController.js",
 		"/home/shane/Documents/GitCode/rtu/script/tcpclient.js",
 		"/home/shane/Documents/GitCode/rtu/rtu.js",
@@ -396,7 +399,6 @@
 		"/home/shane/Documents/GitCode/rtu/script/io.js",
 		"/home/shane/Documents/GitCode/rtu/script/iomodbustcp.js",
 		"/home/shane/Documents/GitCode/rtu/app/components/home/homeView.html",
-		"/home/shane/Documents/GitCode/rtu/app/services/services.js",
 		"/home/shane/Documents/GitCode/rtu/script/settings.js",
 		"/home/shane/Documents/GitCode/rtu/.gitignore",
 		"/home/shane/Documents/GitCode/xastris/logs/xastris.log",
@@ -508,8 +510,7 @@
 		"/tmp/sublime-svn-1458290420/SVN",
 		"/home/shane/Documents/SVN Code/xastris/ServerConfig.js",
 		"/home/shane/Documents/SVN Code/xastris/parser/pre/prePrePaidVendingV1.js",
-		"/home/shane/Documents/SVN Code/xastris/framework_modules/serverSideAPI.js",
-		"/home/shane/Documents/SVN Code/xastris/framework_modules/tcpServer.js"
+		"/home/shane/Documents/SVN Code/xastris/framework_modules/serverSideAPI.js"
 	],
 	"find":
 	{
@@ -561,6 +562,14 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"initWeb",
+			"__dirname",
+			"502",
+			"selectedControlReservoirSPSourceIO",
+			"Low",
+			"selectedControlReservoirMsgOutSPLowDestinationAddress",
+			"Low",
+			".2",
 			"Destination",
 			"PointLow",
 			"SPLow",
@@ -680,15 +689,7 @@
 			"writeHistoryLocal",
 			"localstorage.",
 			"options",
-			"console.",
-			"console.log",
-			");\n",
-			"0",
-			"getAssets",
-			"DataCapture",
-			"dataCaptureApp",
-			"writeData",
-			"processRow"
+			"console."
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -709,92 +710,95 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 2,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "app/components/settings/settingsController.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 5452,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3812,
-								3812
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 495.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "app/components/settings/settingsView.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 7935,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								5867,
-								5867
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 1350.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
 					"file": "config.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2247,
+						"buffer_size": 1339,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								708,
-								708
+								1339,
+								1339
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
 						},
+						"translation.x": 8006.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "rtu.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 11154,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								8712,
+								8712
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
 						"translation.x": 0.0,
-						"translation.y": 90.0,
+						"translation.y": 3197.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "script/server.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1979,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1774,
+								1774
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": -0.0,
+						"translation.y": 630.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
 					"type": "text"
 				}
 			]
@@ -889,7 +893,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 272.0,
+	"side_bar_width": 282.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

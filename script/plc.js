@@ -126,7 +126,16 @@ var sbModule = function() {
                 }
                 else if(payLoad.msgType === 'control'){
                     // console.log('doing Control');
-                    io.writeRegister(payLoad.write.destinationIO,payLoad.write.io,payLoad.write.value);
+                    var valueToWrite = 0;
+                    if(payLoad.write.io == 'digOut'){
+                        valueToWrite = payLoad.write.value + (io.currentStatus[__settings.value.rtuId].io[payLoad.write.destinationIO].digitalsOut & payLoad.write.mask);
+                    }
+                    else{
+                        valueToWrite = payLoad.write.value;
+                    }
+                    console.log('valueToWrite',valueToWrite);
+
+                    io.writeRegister(payLoad.write.destinationIO,payLoad.write.io,valueToWrite);
                     if(typeof payLoad.io !== 'undefined'){
                         //Save the senders io to memory
                         var memIO = {
@@ -138,10 +147,11 @@ var sbModule = function() {
                     var msgResponse = {
                         sourceAddress: __settings.value.rtuId,
                         destinationAddress: payLoad.sourceAddress,
-                        msgId: payLoad.msgId,
+                        msgId: msgIn.messageId,
                         msgType: 'handshake',
                         io: io.currentStatus[__settings.value.rtuId]
                     };
+                    console.log('adding this to the log',msgResponse);
                     myLog.add(msgResponse,1,1);
                     args[2] = msgResponse;
                     deferred.resolve(args);
@@ -188,39 +198,42 @@ var sbModule = function() {
                     }
                 });
                 myControl.forEach(function(item){
-                    switch(item.controlType){
-                        case('reservoir'):
-                            // debugger;
-                            var ioMonitor = io.currentStatus[__settings.value.rtuId].io[item.setPoints.sourceIO].data.AI1;    //item.setPoints.io
-                            // if(typeof ioMonitor !== 'undefined'){
-                            //     ioMonitor = 99;
-                            // }
-
-                            if(typeof myControlVariables[item.id] === 'undefined'){
-                                myControlVariables[item.id] = {};
-                            }
-                            myControlVariables[item.id].spHi = item.setPoints.hi;
-                            myControlVariables[item.id].spLow = item.setPoints.low;
-                            
-                            if(ioMonitor > myControlVariables[item.id].spHi && myControlVariables[item.id].spHiReached !== true){
+                    if(item.enabled){
+                        switch(item.controlType){
+                            case('reservoir'):
                                 // debugger;
-                                console.log('plc Hi Setpoint message loaded');
-                                myLog.add(item.msgOutSetPointHi,1,0);   //SB! Must change this to not be fireandforget. Like this for testing
-                                myControlVariables[item.id].spHiReached = true;
-                                myControlVariables[item.id].spLowReached = false;
-                            }
-                            if(ioMonitor < myControlVariables[item.id].spLow && myControlVariables[item.id].spLowReached !== true){
-                                debugger;
-                                console.log('plc Low Setpoint message loaded');
-                                myLog.add(item.msgOutSetPointLow,1,0);   //SB! Must change this to not be fireandforget. Like this for testing
-                                myControlVariables[item.id].spHiReached = false;
-                                myControlVariables[item.id].spLowReached = true;
-                            }
-                            break;
-                        default:
-                            console.log('unhandled controlType');
-                            break;
+                                var ioMonitor = io.currentStatus[__settings.value.rtuId].io[item.setPoints.sourceIO].data.AI1;    //item.setPoints.io
+                                // if(typeof ioMonitor !== 'undefined'){
+                                //     ioMonitor = 99;
+                                // }
+
+                                if(typeof myControlVariables[item.id] === 'undefined'){
+                                    myControlVariables[item.id] = {};
+                                }
+                                myControlVariables[item.id].spHi = item.setPoints.hi;
+                                myControlVariables[item.id].spLow = item.setPoints.low;
+                                
+                                if(ioMonitor > myControlVariables[item.id].spHi && myControlVariables[item.id].spHiReached !== true){
+                                    // debugger;
+                                    console.log('plc Hi Setpoint message loaded');
+                                    myLog.add(item.msgOutSetPointHi,1,0);   //SB! Must change this to not be fireandforget. Like this for testing
+                                    myControlVariables[item.id].spHiReached = true;
+                                    myControlVariables[item.id].spLowReached = false;
+                                }
+                                if(ioMonitor < myControlVariables[item.id].spLow && myControlVariables[item.id].spLowReached !== true){
+                                    debugger;
+                                    console.log('plc Low Setpoint message loaded');
+                                    myLog.add(item.msgOutSetPointLow,1,0);   //SB! Must change this to not be fireandforget. Like this for testing
+                                    myControlVariables[item.id].spHiReached = false;
+                                    myControlVariables[item.id].spLowReached = true;
+                                }
+                                break;
+                            default:
+                                console.log('unhandled controlType');
+                                break;
+                        }                        
                     }
+
                 });
             },runSpeedMilliseconds);
         },

@@ -65,8 +65,13 @@ var sbModule = function() {
         }
     }
 
-    ServerComms.init('192.167.1.2',12345,1);
-    console.log('Listening for ServerComms on: ' + '12345');
+    var webIP = __settings.value.localwebserver.ipAddress;
+    var socketPort = __settings.value.localwebserver.socketPort;
+    
+    if(socketPort != 0){
+        ServerComms.init(webIP,socketPort,1);
+        console.log('Listening for ServerComms on: ' + socketPort);
+    }
 
     return pubServer
 

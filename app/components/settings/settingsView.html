@@ -3,8 +3,34 @@
     <div id="divProviders" class="container">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h2 class="panel-title">{{description}}</h2>
+                <h2 class="panel-title">{{selectedSiteDescription}}</h2>
             </div>
+
+            <div class="panel-body">
+                <div class="row">
+		            <div class="form-group">
+		            	<label for="siteDescription">Site Description:</label>
+		            	<input id="siteDescription" class="form-control" ng-model="selectedSiteDescription"></input>
+		            	<label for="siteID">Site ID:</label>
+		            	<input id="siteID" class="form-control" ng-model="selectedSiteID"></input>
+		            	<label for="siteIpAddress">Site Ip Address:</label>
+		            	<input id="siteIpAddress" class="form-control" ng-model="selectedSiteIpAddress"></input>
+		            	<label for="sitePort">Site Port:</label>
+		            	<input id="sitePort" class="form-control" ng-model="selectedSitePort"></input>
+		            	<label for="siteSocketPort">Site Socket Port:</label>
+		            	<input id="siteSocketPort" class="form-control" ng-model="selectedSiteSocketPort"></input>
+		            	<label for="siteDefaultHtmlPage">Site Socket Port:</label>
+		            	<input id="siteDefaultHtmlPage" class="form-control" ng-model="selectedSiteDefaultHtmlPage"></input>
+	            	</div>
+					<div>
+						<hr/>
+		            	<input type="button" class="btn btn-default" value="Update" ng-click="siteUpdate()"></input>
+		            	<input type="button" class="btn btn-default" value="Cancel" ng-click="init()"></input>
+					</div>
+            	</div>
+            </div>
+
+
             <div class="panel-body">
                 <div class="row">
 
@@ -101,6 +127,10 @@
 						<option value="sewagesump">sewagesump</option>
 						<option value="other">other</option>
 					</select>
+					<label class="checkbox-inline"><input type="checkbox" ng-model="selectedControlEnabled">Enabled</label>	            	
+					<br>
+
+
 					<div id="divSetPointsReservoir" ng-show="controlUI.divSetPointsReservoirVisible">
 						<h4>Setpoints</h4>
 						<hr/>
@@ -108,22 +138,56 @@
 		            	<input id="selectedControlReservoirSPLow" class="form-control" ng-model="selectedControlReservoirSPLow"></input>
 		            	<label for="selectedControlReservoirSPHi">hi:</label>
 		            	<input id="selectedControlReservoirSPHi" class="form-control" ng-model="selectedControlReservoirSPHi"></input>
-		            	<label for="selectedControlReservoirSPSourceIO">SourceIO:</label>
-		            	<input id="selectedControlReservoirSPSourceIO" class="form-control" ng-model="selectedControlReservoirSPSourceIO"></input>
-		            	<label for="selectedControlReservoirSPIO">IO:</label>
-		            	<input id="selectedControlReservoirSPIO" class="form-control" ng-model="selectedControlReservoirSPIO"></input>
-						<label class="checkbox-inline"><input type="checkbox" ng-model="selectedControlReservoirEnabled">Enabled</label>	            	
 
+
+
+		            	<label for="selectedControlReservoirSPSourceIO">SourceIO:</label>
+						<select ng-model="selectedControlReservoirSPSourceIO" class="form-control">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+						</select>
+
+<!-- 		            	<label for="selectedControlReservoirSPSourceIO">SourceIO:</label>
+		            	<input id="selectedControlReservoirSPSourceIO" class="form-control" ng-model="selectedControlReservoirSPSourceIO"></input>
+ -->
+
+		            	<label for="selectedControlReservoirSPIO">IO:</label>
+						<select ng-model="selectedControlReservoirSPIO" class="form-control">
+							<option value="AI1">AI1</option>
+							<option value="AI2">AI2</option>
+							<option value="AI3">AI3</option>
+						</select>
+
+<!-- 		            	<label for="selectedControlReservoirSPIO">IO:</label>
+		            	<input id="selectedControlReservoirSPIO" class="form-control" ng-model="selectedControlReservoirSPIO"></input>
+ -->
 						<h4>msgOutSetPointLow</h4>
 						<hr/>
 		            	<label for="selectedControlReservoirMsgOutSPLowSourceAddress">Source Address:</label>
 		            	<input id="selectedControlReservoirMsgOutSPLowSourceAddress" class="form-control" ng-model="selectedControlReservoirMsgOutSPLowSourceAddress"></input>
 		            	<label for="selectedControlReservoirMsgOutSPLowDestinationAddress">Destination Address:</label>
 		            	<input id="selectedControlReservoirMsgOutSPLowDestinationAddress" class="form-control" ng-model="selectedControlReservoirMsgOutSPLowDestinationAddress"></input>
-		            	<label for="selectedControlReservoirMsgOutSPLowDestinationIO">Destination IO:</label>
+
+		            	<label for="selectedControlReservoirMsgOutSPLowDestinationIO">DestinationIO:</label>
+						<select ng-model="selectedControlReservoirMsgOutSPLowDestinationIO" class="form-control">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+						</select>
+<!-- 		            	<label for="selectedControlReservoirMsgOutSPLowDestinationIO">Destination IO:</label>
 		            	<input id="selectedControlReservoirMsgOutSPLowDestinationIO" class="form-control" ng-model="selectedControlReservoirMsgOutSPLowDestinationIO"></input>
-		            	<label for="selectedControlReservoirMsgOutSPLowIO">IO (ie: digOut):</label>
+ -->
+
+		            	
+		            	<label for="selectedControlReservoirMsgOutSPLowIO">IO:</label>
+						<select ng-model="selectedControlReservoirMsgOutSPLowIO" class="form-control">
+							<option value="digOut">digOut</option>
+						</select>
+<!-- 		            	<label for="selectedControlReservoirMsgOutSPLowIO">IO (ie: digOut):</label>
 		            	<input id="selectedControlReservoirMsgOutSPLowIO" class="form-control" ng-model="selectedControlReservoirMsgOutSPLowIO"></input>
+ -->		            	
+
 		            	<label for="selectedControlReservoirMsgOutSPLowWriteMask">Write Mask:</label>
 		            	<input id="selectedControlReservoirMsgOutSPLowWriteMask" class="form-control" ng-model="selectedControlReservoirMsgOutSPLowWriteMask"></input>
 		            	<label for="selectedControlReservoirMsgOutSPLowWriteValue">Write Value:</label>
@@ -136,10 +200,29 @@
 		            	<input id="selectedControlReservoirMsgOutSPHiSourceAddress" class="form-control" ng-model="selectedControlReservoirMsgOutSPHiSourceAddress"></input>
 		            	<label for="selectedControlReservoirMsgOutSPHiDestinationAddress">Destination Address:</label>
 		            	<input id="selectedControlReservoirMsgOutSPHiDestinationAddress" class="form-control" ng-model="selectedControlReservoirMsgOutSPHiDestinationAddress"></input>
-		            	<label for="selectedControlReservoirMsgOutSPHiDestinationIO">Destination IO:</label>
+
+
+
+		            	<label for="selectedControlReservoirMsgOutSPHiDestinationIO">DestinationIO:</label>
+						<select ng-model="selectedControlReservoirMsgOutSPHiDestinationIO" class="form-control">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+						</select>
+<!-- 		            	<label for="selectedControlReservoirMsgOutSPHiDestinationIO">Destination IO:</label>
 		            	<input id="selectedControlReservoirMsgOutSPHiDestinationIO" class="form-control" ng-model="selectedControlReservoirMsgOutSPHiDestinationIO"></input>
-		            	<label for="selectedControlReservoirMsgOutSPHiIO">IO (ie: digOut):</label>
+ -->
+
+		            	
+		            	<label for="selectedControlReservoirMsgOutSPHiIO">IO:</label>
+						<select ng-model="selectedControlReservoirMsgOutSPHiIO" class="form-control">
+							<option value="digOut">digOut</option>
+						</select>
+<!-- 		            	<label for="selectedControlReservoirMsgOutSPHiIO">IO (ie: digOut):</label>
 		            	<input id="selectedControlReservoirMsgOutSPHiIO" class="form-control" ng-model="selectedControlReservoirMsgOutSPHiIO"></input>
+ -->		            	
+
+
 		            	<label for="selectedControlReservoirMsgOutSPHiWriteMask">Write Mask:</label>
 		            	<input id="selectedControlReservoirMsgOutSPHiWriteMask" class="form-control" ng-model="selectedControlReservoirMsgOutSPHiWriteMask"></input>
 		            	<label for="selectedControlReservoirMsgOutSPHiWriteValue">Write Value:</label>

@@ -38,7 +38,7 @@ try{
     var myPlc;
     var rtu = {
 
-        initWeb: function(retErr){
+        initWeb: function(port,retErr){
             try{
                 var app	= express();
                 // Allow cross domain for AJAX queries
@@ -48,7 +48,8 @@ try{
                 app.use(bodyParser.json( {limit: '50mb'} ));
 
                 // Set the connection port
-                var port = 8000; 		// set our port
+                //var port = 8000; 		// set our port
+
                 // Setup processing at the base URL to retrieve static assets
                 app.use('/', express.static(__dirname + '/app'));
                 app.get('/', function(req, res){
@@ -224,8 +225,9 @@ try{
             var myServer = new server.rmcServer;
             myServer.init();
 
-
-            rtu.initWeb(function(err){
+            var webPort = __settings.value.localwebserver.port;
+            console.log('webPort',webPort);
+            rtu.initWeb(webPort,function(err){
                 console.log('rtu error: ', err);
             });
 

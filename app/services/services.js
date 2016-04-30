@@ -1,7 +1,7 @@
 angular.module('myApp')
 .factory('api', ['$rootScope', '$http', '$timeout', function api($rootScope, $http, $timeout){        
-    //var url = getAbsolutePath() + 'api';
-    var url = 'http://127.0.0.1:8000/' + 'api';
+    var url = getAbsolutePath() + 'api';
+    // var url = 'http://127.0.0.1:8000/' + 'api';
     
     function getAbsolutePath() {
         var loc = window.location;
