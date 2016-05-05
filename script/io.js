@@ -74,7 +74,8 @@ var sbModule = function() {
 
                         if(typeof pubIO.currentStatus[__settings.value.rtuId].io[myIO[i].IOid] === 'undefined'){
                             var id = myIO[i].id;
-                            var obj = { id: myIO[i].id, ioType: myIO[i].ioType, rawData: [], data: {} };
+                            var obj = { id: myIO[i].id, ioType: myIO[i].ioType, rawData: [], data: {}, scaling: myIO[i].scaling, cofs: myIO[i].cofs };
+                            // console.log('myIO[i]',myIO[i]);
                             var io = {};
                             pubIO.currentStatus[__settings.value.rtuId].io[id] = obj;
                         }
@@ -124,6 +125,7 @@ var sbModule = function() {
                 id: 0,
                 ioType: 'TCP-MODMUX-AI8',
                 AI1: 0,
+                AI1Scaled: 0,
                 AI2: 0,
                 AI3: 0,
                 AI4: 0,
@@ -300,6 +302,7 @@ var sbModule = function() {
             for (var key in pubIO.currentStatus[__settings.value.rtuId].io) {
                 if (pubIO.currentStatus[__settings.value.rtuId].io.hasOwnProperty(key)) {
                     var item = pubIO.currentStatus[__settings.value.rtuId].io[key];
+                    // console.log('item',item);
                     switch(item.ioType){
                         case('TCP-MODMUX-DIO8'):
                             var TCPMODMUXDIO8 = pubIO.ioTemplateTCPMODMUXDIO8();
@@ -317,6 +320,9 @@ var sbModule = function() {
                             TCPMODMUXAI8.AI1 = item.rawData[9];
                             TCPMODMUXAI8.AI1 <<= 8;
                             TCPMODMUXAI8.AI1 += item.rawData[10];
+                            // console.log('item.scaling.AI1.rawHi',item.scaling.AI1.rawHi);
+                            // console.log('item.scaling.AI1.rawHi',itemSettings.scaling.AI1.rawHi);
+                            TCPMODMUXAI8.AI1Scaled = parseInt((TCPMODMUXAI8.AI1 / (item.scaling.AI1.rawHi - item.scaling.AI1.rawLow)) * ((item.scaling.AI1.scaleHi - item.scaling.AI1.scaleLow)));
                             pubIO.currentStatus[__settings.value.rtuId].io[item.id].data = TCPMODMUXAI8;
                             break;
                         default:
