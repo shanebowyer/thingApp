@@ -207,6 +207,11 @@ var sbModule = function() {
                         switch(item.controlType){
                             case('reservoir'):
                                 // debugger;
+                                // var found = _.find(io.currentStatus[__settings.value.rtuId].io[item.setPoints.sourceIO].data,function(io){
+                                //     return io == item.setPoints.io;
+                                // });
+
+                                console.log('found',found);
                                 var ioMonitor = io.currentStatus[__settings.value.rtuId].io[item.setPoints.sourceIO].data.AI1Scaled;    //item.setPoints.io
                                 // if(typeof ioMonitor !== 'undefined'){
                                 //     ioMonitor = 99;

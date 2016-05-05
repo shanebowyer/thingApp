@@ -8,7 +8,7 @@ var settings =
    "fixedTxTime":2,
    "commsTimeout":30,
    "localwebserver":{
-      "ipAddress":"192.168.1.224",
+      "ipAddress":"192.167.1.251",
       "port":8000,
       "socketPort":12345,
       "defaultHtmlPage":"index.html"
@@ -18,7 +18,7 @@ var settings =
       "port":2030
    },
    "remotewebserver":{
-      "ipAddress":"192.168.1.224",
+      "ipAddress":"192.167.1.251",
       "port":12345
    },
    "control":[
