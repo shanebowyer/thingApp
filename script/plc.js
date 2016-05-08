@@ -211,29 +211,36 @@ var sbModule = function() {
                                 //     return io == item.setPoints.io;
                                 // });
 
-                                console.log('found',found);
-                                var ioMonitor = io.currentStatus[__settings.value.rtuId].io[item.setPoints.sourceIO].data.AI1Scaled;    //item.setPoints.io
-                                // if(typeof ioMonitor !== 'undefined'){
-                                //     ioMonitor = 99;
-                                // }
-
-                                if(typeof myControlVariables[item.id] === 'undefined'){
-                                    myControlVariables[item.id] = {};
+                                var ioMonitor;
+                                for(var key in io.currentStatus[__settings.value.rtuId].io[item.setPoints.sourceIO].data){
+                                    if(key == item.setPoints.io){
+                                        ioMonitor = io.currentStatus[__settings.value.rtuId].io[item.setPoints.sourceIO].data[key];
+                                        // console.log('value for ', item.setPoints.io + ':' + ioMonitor);
+                                    }
                                 }
-                                myControlVariables[item.id].spHi = item.setPoints.hi;
-                                myControlVariables[item.id].spLow = item.setPoints.low;
-                                
-                                if(ioMonitor > myControlVariables[item.id].spHi && myControlVariables[item.id].spHiReached !== true){
-                                    console.log('plc Hi Setpoint message loaded');
-                                    myLog.add(item.msgOutSetPointHi,1,0);   //SB! Must change this to not be fireandforget. Like this for testing
-                                    myControlVariables[item.id].spHiReached = true;
-                                    myControlVariables[item.id].spLowReached = false;
-                                }
-                                if(ioMonitor < myControlVariables[item.id].spLow && myControlVariables[item.id].spLowReached !== true){
-                                    console.log('plc Low Setpoint message loaded');
-                                    myLog.add(item.msgOutSetPointLow,1,0);   //SB! Must change this to not be fireandforget. Like this for testing
-                                    myControlVariables[item.id].spHiReached = false;
-                                    myControlVariables[item.id].spLowReached = true;
+                                if(typeof ioMonitor == 'undefined'){
+                                    //It takes a few seconds to start getting comms from io devices so need to bail out here
+                                    //SB! need to log this to detect a genuine issue
+                                    console.log('Cannot Find ioMonitor');
+                                }else{
+                                    if(typeof myControlVariables[item.id] === 'undefined'){
+                                        myControlVariables[item.id] = {};
+                                    }
+                                    myControlVariables[item.id].spHi = item.setPoints.hi;
+                                    myControlVariables[item.id].spLow = item.setPoints.low;
+                                    
+                                    if(ioMonitor > myControlVariables[item.id].spHi && myControlVariables[item.id].spHiReached !== true){
+                                        console.log('plc Hi Setpoint message loaded');
+                                        myLog.add(item.msgOutSetPointHi,1,0);   //SB! Must change this to not be fireandforget. Like this for testing
+                                        myControlVariables[item.id].spHiReached = true;
+                                        myControlVariables[item.id].spLowReached = false;
+                                    }
+                                    if(ioMonitor < myControlVariables[item.id].spLow && myControlVariables[item.id].spLowReached !== true){
+                                        console.log('plc Low Setpoint message loaded');
+                                        myLog.add(item.msgOutSetPointLow,1,0);   //SB! Must change this to not be fireandforget. Like this for testing
+                                        myControlVariables[item.id].spHiReached = false;
+                                        myControlVariables[item.id].spLowReached = true;
+                                    }
                                 }
                                 break;
                             default:

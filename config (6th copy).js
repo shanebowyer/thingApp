@@ -1,14 +1,16 @@
 var settings = 
+
 {
    "version":"0210.024",
    "rtuId":1,
-   "description":"Site1",
+   "description":"SiteOne",
    "timeZone":2,
    "fixedTxTime":2,
    "commsTimeout":30,
    "localwebserver":{
-      "ipAddress":"127.0.0.1",
+      "ipAddress":"192.167.1.251",
       "port":8000,
+      "socketPort":12345,
       "defaultHtmlPage":"index.html"
    },
    "modbusslave":{
@@ -16,7 +18,7 @@ var settings =
       "port":2030
    },
    "remotewebserver":{
-      "ipAddress":"192.167.1.2",
+      "ipAddress":"192.167.1.251",
       "port":12345
    },
    "control":[
@@ -24,22 +26,21 @@ var settings =
          "id":1,
          "controlType":"reservoir",
          "description":"Control Pumps at site11",
-         "enabled":1,
          "setPoints":{
             "low":"19",
-            "hi":"91",
-            "sourceIO":2,
-            "io":"AI1"
+            "hi":"30",
+            "sourceIO":"2",
+            "io":"AI1Scaled"
          },
          "msgOutSetPointLow":{
             "sourceAddress":1,
             "destinationAddress":2,
             "msgType":"control",
             "write":{
-               "destinationIO":1,
+               "destinationIO":"1",
                "io":"digOut",
-               "mask":0,
-               "value":254
+               "mask":"1",
+               "value":"255"
             }
          },
          "msgOutSetPointHi":{
@@ -47,12 +48,13 @@ var settings =
             "destinationAddress":2,
             "msgType":"control",
             "write":{
-               "destinationIO":1,
+               "destinationIO":"1",
                "io":"digOut",
-               "mask":0,
-               "value":0
+               "mask":"1",
+               "value":"0"
             }
-         }
+         },
+         "enabled":true
       }
    ],
    "io":[
@@ -62,7 +64,7 @@ var settings =
          "enabled":1,
          "ipAddress":"192.168.1.9",
          "port":502,
-         "description":"Reservoir Level16",
+         "description":"Site1 DIO",
          "unitid":0,
          "registertype":"readCoils",
          "startAddress":10,
@@ -77,14 +79,25 @@ var settings =
          "enabled":1,
          "ipAddress":"192.168.1.8",
          "port":502,
-         "description":"Pump1 status",
+         "description":"Site1 AI",
          "unitid":0,
          "registertype":"readCoils",
          "startAddress":11,
          "endAddress":11,
          "readMask":1,
          "writeMask":0,
-         "value":65535
+         "value":65535,
+         "scaling":{
+            "AI1":{
+               "rawHi":10000,
+               "rawLow":0,
+               "scaleHi":100,
+               "scaleLow":0
+            }
+         },
+         "cofs": {
+         	"AI1": 5
+         }
       },
       {
          "id":3,
@@ -97,6 +110,3 @@ var settings =
       }
    ]
 }
-
-
-
