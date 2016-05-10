@@ -114,6 +114,13 @@ angular.module('myApp')
 		$scope.localwebserver.defaultHtmlPage = $scope.selectedSite.defaultHtmlPage;
 	};
 
+	$scope.selectScalingTable = function(item,button){
+		if(button == 'edit'){
+			$scope.selectedScaling = item;
+		}
+	};
+
+
 
 	$scope.selectTable = function(item,button){
 		if(button == 'edit'){
@@ -124,8 +131,25 @@ angular.module('myApp')
 			$scope.selectedIO.ipAddress = item.ipAddress;
 			$scope.selectedIO.port = item.port;
 			$scope.selectedIO.enabled = item.enabled;
+
+			$scope.scaling = item.scaling;
 		}
-	}
+	};
+
+	$scope.scalingUpdate = function(){
+		for(i=0;i<$scope.scaling.length;i++){
+			if($scope.scaling[i].id == $scope.selectedScaling.id){
+				$scope.scaling[i].description = $scope.selectedScaling.description;
+				$scope.scaling[i].rawHi = $scope.selectedScaling.rawHi;
+				$scope.scaling[i].rawLow = $scope.selectedScaling.rawLow;
+				$scope.scaling[i].scaleHi = $scope.selectedScaling.scaleHi;
+				$scope.scaling[i].scaleLow = $scope.selectedScaling.scaleLow;
+				break;
+			}
+		}
+		console.log($scope.scaling);
+	};
+
 
 	$scope.ioAdd = function(){
 		var IO = {

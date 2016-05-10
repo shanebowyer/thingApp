@@ -106,6 +106,61 @@
             </div>
         </div>
 
+        <div id="anchorScaling" class="panel panel-primary">
+            <div class="panel-heading">
+                <h2 class="panel-title">Scaling</h2>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+					<table class="table table-hover">
+						<tr>
+							<th>
+								Description
+							</th>
+							<th>
+								rawHi
+							</th>
+							<th>
+								rawLow
+							</th>
+							<th>
+								scaleHi
+							</th>
+							<th>
+								scaleLow
+							</th>
+						</tr>
+						<tr ng-repeat="x in scaling" ng-click="selectScalingTable(x,'edit')">
+							<td>{{ x.description }}</td>
+							<td>{{ x.rawHi }}</td>
+							<td>{{ x.rawLow }}</td>
+							<td>{{ x.scaleHi }}</td>
+							<td>{{ x.scaleLow }}</td>
+							<!-- <td><input type="button" class="btn btn-default" ng-click="controlDelete(x,'delete')" value="X"></input></td> -->
+						</tr>
+					</table>
+	            </div>
+	            <hr/>
+	            <div class="form-group">
+	            	<label for="selectedScalingDescription">Description:</label>
+	            	<input id="selectedScalingDescription" class="form-control" ng-model="selectedScaling.description"></input>
+	            	<label for="selectedScalingRawHi">rawHi:</label>
+	            	<input id="selectedScalingRawHi" class="form-control" ng-model="selectedScaling.rawHi"></input>
+	            	<label for="selectedScalingRawLow">rawLow:</label>
+	            	<input id="selectedScalingRawLow" class="form-control" ng-model="selectedScaling.rawLow"></input>
+	            	<label for="selectedScalingScaleHi">scaleHi:</label>
+	            	<input id="selectedScalingScaleHi" class="form-control" ng-model="selectedScaling.scaleHi"></input>
+	            	<label for="selectedScalingScaleLow">scaleLow:</label>
+	            	<input id="selectedScalingScaleLow" class="form-control" ng-model="selectedScaling.scaleLow"></input>
+
+					<div>
+						<hr/>
+		            	<input type="button" class="btn btn-default" value="Update" ng-click="scalingUpdate()"></input>
+		            	<input type="button" class="btn btn-default" value="Cancel" ng-click="init()"></input>
+					</div>
+	            </div>
+            </div>
+        </div>
 
 
 
