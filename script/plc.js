@@ -68,7 +68,7 @@ var sbModule = function() {
             myLog.add(msgOut,1,1);
         },
 
-        processMessageIn: function(args){
+        processMessageIn: function(args,isLocalControl){
             var deferred = new Q.defer();
 
             function ObjectLength( object ) {
@@ -88,7 +88,7 @@ var sbModule = function() {
             var payLoad = msgIn.payLoad;
             // console.log('payLoad',payLoad);
 
-            if(__settings.value.rtuId === payLoad.sourceAddress){
+            if(__settings.value.rtuId === payLoad.sourceAddress && isLocalControl !== 1){
                 //dont chat this is echo from server
                 // console.log('hiterh');
                 deferred.reject(args);
@@ -111,7 +111,7 @@ var sbModule = function() {
             }
 
 
-            if(__settings.value.rtuId === payLoad.destinationAddress){
+            if(__settings.value.rtuId == payLoad.destinationAddress){
                 console.log('Processing PLC processMessageIn',msgIn);
 
                 if(payLoad.msgType === 'handshake'){
@@ -208,7 +208,6 @@ var sbModule = function() {
                     if(item.enabled){
                         switch(item.controlType){
                             case('reservoir'):
-                                // debugger;
                                 // var found = _.find(io.currentStatus[__settings.value.rtuId].io[item.setPoints.sourceIO].data,function(io){
                                 //     return io == item.setPoints.io;
                                 // });

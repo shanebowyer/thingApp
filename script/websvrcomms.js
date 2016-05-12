@@ -110,7 +110,22 @@ var sbModule = function() {
             }
             strOutput = myRTULog.readLog();
             if(strOutput != ''){
-                thismyWebSvrTCPClient.SendData(strOutput);
+                // console.log('message to send to server',strOutput);
+                if(strOutput.payLoad.destinationAddress == __settings.value.rtuId){
+                    //local control....dont send to server
+                    var args = [null,null,strOutput];
+                    myPLC.processMessageIn(args,1)
+                    .then(function(args){
+                        console.log('trying to do local control handshake');
+                        myRTULog.processMessageIn(args[2]);
+                    },function(err){
+                        console.log('webSVRComms local control reject');
+                    });
+                }
+                else{
+                    thismyWebSvrTCPClient.SendData(strOutput);    
+                }
+                
             }
         },
         on: function(strEvent,callbackFunction){

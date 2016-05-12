@@ -29,9 +29,6 @@ angular.module('myApp')
 				},
 				{
 					controlType: 'sewagesump'
-				},
-				{
-					controlType: 'other'
 				}
 			];
 
@@ -279,7 +276,7 @@ angular.module('myApp')
 
 
 	$scope.controlAdd = function(){
-		if($scope.selectedControlType === 'reservoir'){
+		if($scope.selectedControl.controlType === 'reservoir'){
 			var control = 
 		      {
 		         // "id":1,
