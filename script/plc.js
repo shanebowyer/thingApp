@@ -90,6 +90,7 @@ var sbModule = function() {
 
             if(__settings.value.rtuId === payLoad.sourceAddress){
                 //dont chat this is echo from server
+                // console.log('hiterh');
                 deferred.reject(args);
                 return deferred.promise;
             }
@@ -108,6 +109,7 @@ var sbModule = function() {
                 deferred.reject(args);
                 return deferred.promise;
             }
+
 
             if(__settings.value.rtuId === payLoad.destinationAddress){
                 console.log('Processing PLC processMessageIn',msgIn);

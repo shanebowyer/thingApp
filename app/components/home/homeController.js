@@ -13,7 +13,7 @@ angular.module('myApp')
             dateTime: '2016/01/01',
             messageId: 789,
             payLoad: {
-                sourceAddress: 200,
+                sourceAddress: 2,
                 destinationAddress: 1,
                 subAddress: subAddress,
                 msgId: 123,

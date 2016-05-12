@@ -344,6 +344,7 @@ var sbModule = function() {
             arrIO.forEach(function(item){
                 if(typeof item != 'undefined'){
                     if(item.id == ModuleAddress){
+                        console.log('writeRegister',IOToWrite);
                         item.io.writeRegister(ModuleAddress,IOToWrite,ValueToWrite,0);
                     }                    
                 }
