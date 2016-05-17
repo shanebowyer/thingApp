@@ -321,12 +321,12 @@ var sbModule = function() {
                             TCPMODMUXAI8.AI1 = item.rawData[9];
                             TCPMODMUXAI8.AI1 <<= 8;
                             TCPMODMUXAI8.AI1 += item.rawData[10];
-                            TCPMODMUXAI8.AI1Scaled = parseInt((TCPMODMUXAI8.AI1 / (item.scaling[0].rawHi - item.scaling[0].rawLow)) * ((item.scaling[0].scaleHi - item.scaling[0].scaleLow)));
+                            TCPMODMUXAI8.AI1Scaled = parseInt(((TCPMODMUXAI8.AI1 - item.scaling[0].rawLow) / (item.scaling[0].rawHi - item.scaling[0].rawLow)) * ((item.scaling[0].scaleHi - item.scaling[0].scaleLow)));
 
                             TCPMODMUXAI8.AI2 = item.rawData[11];
                             TCPMODMUXAI8.AI2 <<= 8;
                             TCPMODMUXAI8.AI2 += item.rawData[12];
-                            TCPMODMUXAI8.AI2Scaled = parseInt((TCPMODMUXAI8.AI2 / (item.scaling[0].rawHi - item.scaling[0].rawLow)) * ((item.scaling[0].scaleHi - item.scaling[0].scaleLow)));
+                            TCPMODMUXAI8.AI2Scaled = parseInt(((TCPMODMUXAI8.AI2 - item.scaling[1].rawLow) / (item.scaling[1].rawHi - item.scaling[1].rawLow)) * ((item.scaling[1].scaleHi - item.scaling[1].scaleLow)));
                             
                             pubIO.currentStatus[__settings.value.rtuId].io[item.id].data = TCPMODMUXAI8;
                             break;

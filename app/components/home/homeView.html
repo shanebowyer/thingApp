@@ -2,8 +2,13 @@
 
 <div>
 	homeView
-	<input type="button" ng-click="getRTUStatuses(1)" value="readIO 1"></input>
-	<input type="button" ng-click="getRTUStatuses(2)" value="readIO 2"></input>
+	<br/>
+	address:
+	<input type="text" ng-model="address"></input>
+	Sub address:
+	<input type="text" ng-model="subAddress"></input>
+
+	<input type="button" ng-click="getRTUStatuses()" value="readIO 1"></input>
 	<div>
 	  <ul>
 	    <li ng-repeat="item in rtuData.io.io">

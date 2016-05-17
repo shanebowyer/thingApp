@@ -90,7 +90,8 @@ var sbModule = function() {
 
             if(__settings.value.rtuId === payLoad.sourceAddress && isLocalControl !== 1){
                 //dont chat this is echo from server
-                // console.log('hiterh');
+                console.log('Ignored Echo Message From Server');
+                args[2] = 'Ignored Echo Message From Server';
                 deferred.reject(args);
                 return deferred.promise;
             }
@@ -207,7 +208,7 @@ var sbModule = function() {
                 myControl.forEach(function(item){
                     if(item.enabled){
                         switch(item.controlType){
-                            case('reservoir'):
+                            case('Control'):
                                 // var found = _.find(io.currentStatus[__settings.value.rtuId].io[item.setPoints.sourceIO].data,function(io){
                                 //     return io == item.setPoints.io;
                                 // });

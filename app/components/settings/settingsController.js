@@ -25,10 +25,7 @@ angular.module('myApp')
 
 			$scope.optionsControl = [
 				{
-					controlType: 'reservoir'
-				},
-				{
-					controlType: 'sewagesump'
+					controlType: 'Control'
 				}
 			];
 

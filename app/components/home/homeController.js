@@ -7,16 +7,18 @@ angular.module('myApp')
 .controller('homeCtrl', function($scope,$state,api) {
     $scope.firstName= "John";
     $scope.lastName= "Doe";
+    $scope.address = 2;
+    $scope.subAddress = 2;
 
-    $scope.getRTUStatuses = function(subAddress){
+    $scope.getRTUStatuses = function(){
         var msgOut = {
             dateTime: '2016/01/01',
             messageId: 789,
             payLoad: {
-                sourceAddress: 2,
-                destinationAddress: 1,
-                subAddress: subAddress,
-                msgId: 123,
+                sourceAddress: 0,
+                destinationAddress: $scope.address,
+                subAddress: $scope.subAddress,
+                msgId: 999,
                 msgType: 'status'
             }
         };
