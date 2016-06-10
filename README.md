@@ -1,5 +1,9 @@
 # rtu
-Remote Terminal Unit (RTU) - Telemetery
+IoT - Remote Terminal Unit (RTU) - Telemetery
+
+Updated:      2016-06-10
+Description:  We are nearing a release version. We are currently in development.
+              ETA is the end of July 2016.
 
 Ideal for:
 - Beagle
@@ -13,7 +17,7 @@ IO Tested:
 SCADA Tested:
 - Adroit (ModbusTCP Driver)
 
-Enable any device that can run nodejs to become a Telemetry controller/PLC. 
+Enable any device that can run nodejs to become an IoT - Telemetry controller/PLC. 
 
 The following drivers have been written:
 - ModbusTCP Master and Slave
