@@ -53,7 +53,8 @@ var sbModule = function() {
 
                 }
                 catch (e) {
-                    console.log('iomodbustcpslave data error: ' + e);
+
+                    console.log('iomodbustcpslave data error shane: ' + e);
                 }
 
             });
