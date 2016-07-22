@@ -30,6 +30,70 @@ angular.module('myApp')
     	});
     };
 
+    $scope.controlGate = function(){
+        $scope.toggleGateOn(function(){
+
+        }, function(){
+            $scope.toggleGateOff(function(){
+
+            },function(){
+
+            })
+        })
+    };
+
+    $scope.gateImg = './assets/img/button.jpg';
+
+    $scope.toggleGateOn = function(err,done){
+        var msgOut = {
+            dateTime: '2016/01/01',
+            messageId: 789,
+            payLoad: {
+                sourceAddress: 2,
+                destinationAddress: 1,
+                msgType: 'control',
+                write: {
+                    destinationIO: 1,
+                    io: 'digOut',
+                    value: 255
+                }
+            }
+        };
+        api.sendRTUMessage(msgOut, function(data){
+            $scope.rtuData = data.content;
+            console.log('sendRTUMessage response',data);
+            done();
+        },function(err){
+            console.log('Error sendRTUMessage response',err);
+        });
+    }
+
+    $scope.toggleGateOff = function(err,done){
+        var msgOut = {
+            dateTime: '2016/01/01',
+            messageId: 789,
+            payLoad: {
+                sourceAddress: 2,
+                destinationAddress: 1,
+                msgType: 'control',
+                write: {
+                    destinationIO: 1,
+                    io: 'digOut',
+                    value: 0
+                }
+            }
+        };
+        api.sendRTUMessage(msgOut, function(data){
+            $scope.rtuData = data.content;
+            console.log('sendRTUMessage response',data);
+            done();
+        },function(err){
+            console.log('Error sendRTUMessage response',err);
+        });
+    }
+
+
+
     $scope.controlIO = function(){
         var msgOut = {
             dateTime: '2016/01/01',

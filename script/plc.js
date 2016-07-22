@@ -141,7 +141,8 @@ var sbModule = function() {
                     else{
                         valueToWrite = payLoad.write.value;
                     }
-                    console.log('valueToWrite',valueToWrite);
+                    console.log('valueToWrite123',valueToWrite);
+                    valueToWrite = payLoad.write.value;
 
                     io.writeRegister(payLoad.write.destinationIO,payLoad.write.io,valueToWrite);
                     if(typeof payLoad.io !== 'undefined'){

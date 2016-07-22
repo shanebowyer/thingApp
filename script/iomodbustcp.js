@@ -13,7 +13,7 @@ var net = require('net');
 var sbModule = function(IOType,IOid) {
     var self = this;
 
-    var thisdebug = 0;
+    var thisdebug = 1;
     var thisIOType = IOType;
     var thisIOid = IOid;
     var myTCPClient;
