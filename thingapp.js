@@ -12,13 +12,14 @@ var Q       = require('q');
 var Settings    = require(__base + './script/settings.js');
 global.__settings = new Settings.settings();
 
-var server = require(__base + './script/server.js');
+var thingserver = require(__base + './script/server.js');
 var rtulog = require(__base + './script/rtulog.js');
 var websvrcomms = require(__base + './script/websvrcomms.js');
 var tcpClient = require(__base + './script/tcpclient.js');
 var io = require(__base + './script/io.js');
 var plc = require(__base + './script/plc.js');
 var modbusslave = require(__base + './script/iomodbustcpslave.js');
+// var socketserver = require(__base + './script/server.js');
 
 //var rs232 = require(__base + './script/rs232.js');
 
@@ -107,40 +108,22 @@ try{
                 });                
 
 
+                // var server = http.createServer(app);
+                // var websockio = require('socket.io').listen(server);
+                // server.listen(port);
+                console.log('API connect on port ' + port);
+
+
+//-------------------------------------websockets            // var myServer = new server.rmcServer;
+            // myServer.init();
+//---------------------------------------
                 var server = http.createServer(app);
-                var websockio = require('socket.io').listen(server);
+                // var websockio = require('socket.io').listen(server);
                 server.listen(port);
 
+                var socketServer = new thingserver.rmcServer;
+                socketServer.initWebSocket(server);
 
-                websockio.sockets.on('connection', function (socket) {
-                    console.log('websockio connection made:');
-
-                    setInterval(function(data){
-                        console.log('sending socketio data to client');
-                        socket.emit('message','test');
-                    },100000);
-
-                    socket.on('message', function(data){
-                        var resData = {
-                            message: data
-                        }
-                        console.log('Server recieved client socketio data',data);
-                    });
-                });
-
-                console.log('connecting story');
-                var test = require('socket.io-client').connect('http://localhost:8000');
-                console.log('connecting story1');
-                test.on('connect',function(data){
-                    console.log('test Client Connected to Server socketio');
-                    test.on('message',function(data){
-                        console.log('test socketio server data reveived',data);
-                    });
-                });
-
-
-
-                console.log('API connect on port ' + port);
 
             }
             catch(e){
@@ -222,8 +205,8 @@ try{
             console.log('other init');
             settings = args.settings;
 
-            var myServer = new server.rmcServer;
-            myServer.init();
+            // var myServer = new server.rmcServer;
+            // myServer.init();
 
             var webPort = __settings.value.localwebserver.port;
             console.log('webPort',webPort);

@@ -19,11 +19,11 @@ var sbModule = function() {
     var self = this;
 
     var thisdebug = 0;
-
+    var wss;
 
     var pubServer = {
 
-        init: function(){
+        initTCPSocket: function(){
             console.log('Initted server');
             thisdebug = 0;
 
@@ -51,6 +51,46 @@ var sbModule = function() {
                     console.log('iomodbustcpslave data error: ' + e);
                 }
 
+            });
+        },
+
+        initWebSocket: function(server){
+            console.log('initWebSocket');
+            var userId;
+            var WebSocketServer = require("ws").Server;
+            wss = new WebSocketServer({server: server});
+            var vValue = 0;
+            wss.on("connection", function (ws) {
+                console.info("websocket connection open");
+                var timestamp = new Date().getTime();
+                userId = timestamp;
+                ws.userId = userId;
+
+                ws.on("message", function (data) {
+                    console.log("websocket data in",data);
+                });
+
+                ws.on("close", function () {
+                    console.log("websocket connection close");
+                });
+            });
+            console.log("websocket server created");
+
+
+            setInterval(function(){
+                vValue += 5;
+                if(vValue > 100){
+                    vValue = 0;
+                }
+                pubServer.wsBroadcast({value:vValue});
+            },1000);
+
+        },
+
+        wsBroadcast: function(data){
+            wss.clients.forEach(function each(client) {
+                // console.log('broadcast to',client.userId);
+                client.send(JSON.stringify(data));
             });
         },
 

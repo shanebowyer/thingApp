@@ -1,8 +1,8 @@
 {
-  "name": "rtu",
+  "name": "thingapp",
   "version": "1.0.0",
-  "description": "rtu",
-  "main": "rtu.js",
+  "description": "thingapp",
+  "main": "thingapp.js",
   "dependencies": {
     "body-parser": "^1.12.0",
     "cors": "^2.5.3",
@@ -13,7 +13,8 @@
     "q": "^1.4.1",
     "serialport": "^3.1.1",
     "socket.io": "^1.4.5",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "ws": "^1.1.1"
   },
   "devDependencies": {},
   "scripts": {
@@ -21,12 +22,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shanebowyer/rtu.git"
+    "url": "git+https://github.com/shanebowyer/thingapp.git"
   },
   "author": "Shane Bowyer",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/shanebowyer/rtu/issues"
+    "url": "https://github.com/shanebowyer/thingapp/issues"
   },
-  "homepage": "https://github.com/shanebowyer/rtu#readme"
+  "homepage": "https://github.com/shanebowyer/thingapp#readme"
 }

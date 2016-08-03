@@ -1,6 +1,7 @@
 logs
 config
-rtu.sublime-workspace
+thingapp.sublime-workspace
+thingapp.sublime-project
 node_modules
 config.js
 
