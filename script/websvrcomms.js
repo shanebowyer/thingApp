@@ -33,7 +33,7 @@ var sbModule = function() {
         init: function(myWebSvrTCPClient,rtulog,plc,debug){
             thismyWebSvrTCPClient = myWebSvrTCPClient;
             myRTULog = rtulog;
-            thisdebug = 1;
+            thisdebug = 0;
             myPLC = plc;
 
             thismyWebSvrTCPClient.on('data', function (data) {

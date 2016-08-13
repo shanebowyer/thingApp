@@ -264,42 +264,49 @@ var sbModule = function() {
             var TxFlag = 0;
 
 
-            for(var key in io.currentStatus[__settings.value.rtuId].io){
-                if(typeof io.currentStatus[__settings.value.rtuId].io[key].data.digitalsIn != 'undefined'){
-                    // for(var key1 in )
-                    // console.log('key', io.currentStatus[__settings.value.rtuId].io[key].data.digitalsIn);
-                    if(arrCOFS[0].digitalsInMask > 0){
-                        var currentDigitalStatusWithMask = io.currentStatus[__settings.value.rtuId].io[key].data.digitalsIn & arrCOFS[0].digitalsInMask;
-                        if(currentDigitalStatusWithMask != arrCOFS[0].digitalsLastStatus){
+            if(typeof io.currentStatus[__settings.value.rtuId] != 'undefined'){
+                // console.log('io.currentStatus',io.currentStatus[__settings.value.rtuId]);
 
-                            arrCOFS[0].digitalsLastStatus = io.currentStatus[__settings.value.rtuId].io[key].data.digitalsIn  & arrCOFS[0].digitalsInMask;
-                            TxFlag += Math.pow(2,1);
-                            console.log('Digital COFS');
-                            bCOFS = 1;
 
-                            if(bCOFS == 1){
-                                console.log('COFS TXFlag = ' + TxFlag);
+                for(var key in io.currentStatus[__settings.value.rtuId].io){
+                    if(typeof io.currentStatus[__settings.value.rtuId].io[key].data.digitalsIn != 'undefined'){
+                        // for(var key1 in )
+                        // console.log('key', io.currentStatus[__settings.value.rtuId].io[key].data.digitalsIn);
+                        if(arrCOFS[0].digitalsInMask > 0){
+                            var currentDigitalStatusWithMask = io.currentStatus[__settings.value.rtuId].io[key].data.digitalsIn & arrCOFS[0].digitalsInMask;
+                            if(currentDigitalStatusWithMask != arrCOFS[0].digitalsLastStatus){
 
-                            var msgResponse = {
-                                sourceAddress: __settings.value.rtuId,
-                                destinationAddress: 0,
-                                msgId: 999,
-                                msgType: 'status',
-                                io: io.currentStatus[__settings.value.rtuId]
-                            };
-                            console.log('adding this to the log',msgResponse);
-                            myLog.add(msgResponse,1,1);
+                                arrCOFS[0].digitalsLastStatus = io.currentStatus[__settings.value.rtuId].io[key].data.digitalsIn  & arrCOFS[0].digitalsInMask;
+                                TxFlag += Math.pow(2,1);
+                                console.log('Digital COFS');
+                                bCOFS = 1;
 
-                                // io.currentStatus[__settings.value.rtuId].io[key].data.TxFlag = TxFlag;
-                                // var jsonRecord = io.arrCurrentStatus[0];
-                                // myLog.add(jsonRecord,1,1);
+                                if(bCOFS == 1){
+                                    console.log('COFS TXFlag = ' + TxFlag);
+
+                                var msgResponse = {
+                                    sourceAddress: __settings.value.rtuId,
+                                    destinationAddress: 0,
+                                    msgId: 999,
+                                    msgType: 'status',
+                                    io: io.currentStatus[__settings.value.rtuId]
+                                };
+                                console.log('adding this to the log',msgResponse);
+                                myLog.add(msgResponse,1,1);
+
+                                    // io.currentStatus[__settings.value.rtuId].io[key].data.TxFlag = TxFlag;
+                                    // var jsonRecord = io.arrCurrentStatus[0];
+                                    // myLog.add(jsonRecord,1,1);
+                                }
+
                             }
 
+
                         }
-
-
                     }
                 }
+
+
             }
             // io.currentStatus[__settings.value.rtuId].io.forEach(function(item){
                 //DIGITALS

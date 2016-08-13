@@ -18,7 +18,7 @@ var ServerComms = new tcpSvr.rmcTCPSvr;
 var sbModule = function() {
     var self = this;
 
-    var thisdebug = 1;
+    var thisdebug = 0;
     var wss;
 
     var pubServer = {
