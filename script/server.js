@@ -10,7 +10,7 @@ var util = require('util');
 var net = require('net');
 var http = require('http');
 
-var tcpSvr = require(__base + '/script/tcpsvr.js');
+var tcpSvr = require(__base + '/lib/tcpsvr.js');
 
 var ServerComms = new tcpSvr.rmcTCPSvr;
 
@@ -18,14 +18,14 @@ var ServerComms = new tcpSvr.rmcTCPSvr;
 var sbModule = function() {
     var self = this;
 
-    var thisdebug = 0;
+    var thisdebug = 1;
     var wss;
 
     var pubServer = {
 
         initTCPSocket: function(){
             console.log('Initted server');
-            thisdebug = 0;
+            thisdebug = 1;
 
             ServerComms.on('data', function(args){
                 try{
@@ -35,14 +35,15 @@ var sbModule = function() {
                         console.log('Server data: ' + sock.remoteAddress +':'+ sock.remotePort + ' Data: ' + data);
                     }
 
-                    pubServer.writeHistorical(data);
+
+                    pubServer.wsBroadcast(JSON.parse(data));
+                    // pubServer.writeHistorical(data);
 
                     try{
-                        //sock.write(data);
                         ServerComms.SendData(data);
                     }
                     catch (e) {
-                        console.log('iomodbustcpslave sock.write data error: ' + e);
+                        console.log('iomodbustcpslave sock.write data error: ' + e); 
                     }
 
 
@@ -68,6 +69,8 @@ var sbModule = function() {
 
                 ws.on("message", function (data) {
                     console.log("websocket data in",data);
+                    ServerComms.SendData(data);
+                    console.log('server broadcast done');
                 });
 
                 ws.on("close", function () {
@@ -77,13 +80,13 @@ var sbModule = function() {
             console.log("websocket server created");
 
 
-            setInterval(function(){
-                vValue += 5;
-                if(vValue > 100){
-                    vValue = 0;
-                }
-                pubServer.wsBroadcast({value:vValue});
-            },1000);
+            // setInterval(function(){
+            //     vValue += 5;
+            //     if(vValue > 100){
+            //         vValue = 0;
+            //     }
+            //     pubServer.wsBroadcast({value:vValue});
+            // },1000);
 
         },
 
@@ -91,6 +94,7 @@ var sbModule = function() {
             wss.clients.forEach(function each(client) {
                 // console.log('broadcast to',client.userId);
                 client.send(JSON.stringify(data));
+                // client.send(data);
             });
         },
 

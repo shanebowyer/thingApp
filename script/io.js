@@ -9,10 +9,10 @@
 //var Settings    = require(__base + './script/settings.js');
 var Q       = require('q');
 
-var iomodbustcp = require(__base + '/script/iomodbustcp.js');
-var iomodbusserial = require(__base + '/script/iomodbusserial.js');
-var tcpClient = require(__base + '/script/tcpclient.js');
-var rs232 = require(__base + './script/rs232.js');
+var iomodbustcp = require(__base + '/lib/iomodbustcp.js');
+var iomodbusserial = require(__base + '/lib/iomodbusserial.js');
+var tcpClient = require(__base + '/lib/tcpclient.js');
+var rs232 = require(__base + './lib/rs232.js');
 
 
 var EventEmitter = require( "events" ).EventEmitter;
@@ -308,10 +308,11 @@ var sbModule = function() {
                             var TCPMODMUXDIO8 = pubIO.ioTemplateTCPMODMUXDIO8();
                             TCPMODMUXDIO8.id = item.id;
                             TCPMODMUXDIO8.ioType = item.ioType;
-                            TCPMODMUXDIO8.digitalsIn = item.rawData[11];
+                            TCPMODMUXDIO8.digitalsIn = item.rawData[9];    //was 11
                             TCPMODMUXDIO8.digitalsIn <<= 8;
-                            TCPMODMUXDIO8.digitalsIn += item.rawData[12];
+                            TCPMODMUXDIO8.digitalsIn += item.rawData[10];   //was 12
                             pubIO.currentStatus[__settings.value.rtuId].io[item.id].data = TCPMODMUXDIO8;
+                            // console.log('raw',TCPMODMUXDIO8.digitalsIn);
                             break;
                         case('TCP-MODMUX-AI8'):
                             var TCPMODMUXAI8 = pubIO.ioTemplateTCPMODMUXAI8();

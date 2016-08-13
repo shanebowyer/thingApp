@@ -11,7 +11,7 @@ angular.module('myApp')
 
     function getSettings(done, error){
         var DTO = { 'myData': {'reqOption': 'settings'} };
-        $http.post(url, DTO)
+        $http.post(url + '/settings/read', DTO)
         .success(function(data){
             // $rootScope.settings = data;
             done(data);
@@ -24,7 +24,7 @@ angular.module('myApp')
     function saveSettings(done, error){
         console.log('saving')
         var DTO = { 'myData': {'reqOption': 'settingsSave', 'settings': $rootScope.settings} };
-        $http.post(url, DTO)
+        $http.post(url + '/settings/save', DTO)
         .success(function(data){
             // $rootScope.settings = data;
             done(data);
@@ -56,7 +56,7 @@ angular.module('myApp')
 
 
         var DTO = { 'myData': {'reqOption': 'rtuMessage', data: msgOut} };
-        $http.post(url, DTO)
+        $http.post(url + '/rtu/message', DTO)
         .success(function(data){
             // $rootScope.settings = data;
             done(data);

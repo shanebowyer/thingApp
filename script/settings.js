@@ -37,7 +37,7 @@ var settings = function(){
 		},
 		writeSettings: function(args){
 	        var deferred = Q.defer();
-	        var req = args[0];
+	        var req = args.req;
 
 			var mysettings = req.body.myData.settings;
             var fs = require('fs');
@@ -55,11 +55,11 @@ var settings = function(){
 		},
 		getSettings: function(args){
 	        var deferred;
-    		if(typeof args[3] == 'undefined'){
+    		if(typeof args.deferred == 'undefined'){
 		        deferred = Q.defer();
     		}
     		else{
-				deferred = args[3];
+				deferred = args.deferred;
     		}
 
 	        console.log('getSettings');
@@ -105,7 +105,8 @@ var settings = function(){
 		},
 		saveSettings: function(args){
 	        var deferred = Q.defer();
-	        args[3] = deferred;
+	        // args[3] = deferred;
+	        args.deferred = deferred;
 	        pubIO.backpupSettings(args)
 	        .then(pubIO.writeSettings,null)
 	        .then(pubIO.getSettings,null)

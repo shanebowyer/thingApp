@@ -6,7 +6,7 @@
 // var settings = require(__base + '/config.js');
 // var settings    = require(__base + './script/settings.js').settings;
 var rtulog = require(__base + '/script/rtulog.js');
-var tcpClient = require(__base + '/script/tcpclient.js');
+var tcpClient = require(__base + '/lib/tcpclient.js');
 
 
 
@@ -33,7 +33,7 @@ var sbModule = function() {
         init: function(myWebSvrTCPClient,rtulog,plc,debug){
             thismyWebSvrTCPClient = myWebSvrTCPClient;
             myRTULog = rtulog;
-            thisdebug = debug;
+            thisdebug = 1;
             myPLC = plc;
 
             thismyWebSvrTCPClient.on('data', function (data) {
@@ -50,7 +50,9 @@ var sbModule = function() {
 //"io":{"rtuAddress":1,"io":{"1":{"id":1,"ioType":"TCP-MODMUX-DIO8","rawData":[],"data":{"id":1,"ioType":"TCP-MODMUX-DIO8","digitalsIn":0,"digitalsOut":0,"digitalsOutWriteValue":0,"DigitalsIn":null}},"2":{"id":2,"ioType":"TCP-MODMUX-AI8","rawData":[],"data":{"ioType":"TCP-MODMUX-AI8","AI1":null,"AI2":0,"AI3":0,"AI4":0,"AI5":0,"AI6":0,"AI7":0,"AI8":0}}}}
 
                     var msgIn = JSON.parse(data);
-                    var args = [null,null,msgIn];
+                    // var args = [null,null,msgIn];
+                    var args = {};
+                    args.data = msgIn;
                     myPLC.processMessageIn(args)
                     .then(function(data){
                         // console.log('We do not respond here. We load the response into the myRTULog.');
@@ -68,6 +70,7 @@ var sbModule = function() {
                         console.log('plc websvrcomms Socket: '+ data);
                     }
                     if(data.toString() != 'CONNECTED'){
+                        console.log('not connected');
                         LoggedOnToWebServer = false;
                     }
                 }
@@ -106,6 +109,7 @@ var sbModule = function() {
         },
         checkRTULogForMessagesToSend: function(){
             if(LoggedOnToWebServer == false){
+                // console.log('Cant send logs');
                 return;
             }
             strOutput = myRTULog.readLog();
@@ -139,7 +143,7 @@ var sbModule = function() {
     LoggedOnToWebServer = true;
     //pubWebSVR.readConfig();
 
-    // setInterval(pubWebSVR.SendWebSvrLogon,5000);
+    setInterval(pubWebSVR.SendWebSvrLogon,5000);
     // setTimeout(function(){
     //     console.log('about to test');
     //     myPLC.testControl();

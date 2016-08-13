@@ -22,11 +22,11 @@ var sbModule = function() {
         var self = this;
         var thisMessageID = 1;
 
-        var thisdebug = 0;
+        var thisdebug = 1;
         var currentLogIndex = 0;
         var myIO;
 
-        var timezone = settings.value.timeZone;
+        var timezone = __settings.value.timeZone;
 
         var pubRTULog = {
             log: [],
@@ -35,8 +35,8 @@ var sbModule = function() {
                     'Sent': 0,
                     'ID': 1,
                     'Start': '%1',
-                    'VersionNumber': settings.value.version,
-                    'SerialNumber': settings.value.localwebserver.rtuId,
+                    'VersionNumber': __settings.value.version,
+                    'SerialNumber': __settings.value.localwebserver.rtuId,
                     'MessageID': thisMessageID,
                     'DateTime': 22351140,
                     'TxFlag': 1,
@@ -174,8 +174,8 @@ var sbModule = function() {
                 return vDateValue;
             },
             convertJsonToOutput: function(jsonData){
-                jsonData.VersionNumber = settings.value.version;
-                jsonData.SerialNumber = settings.value.rtuId;
+                jsonData.VersionNumber = __settings.value.version;
+                jsonData.SerialNumber = __settings.value.rtuId;
                 var strOutput = ''
                     + jsonData.Start
                     + ' ' + jsonData.VersionNumber

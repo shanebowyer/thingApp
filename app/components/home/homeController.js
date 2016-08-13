@@ -7,8 +7,8 @@ angular.module('myApp')
 .controller('homeCtrl', function($scope,$state,api) {
     $scope.firstName= "John";
     $scope.lastName= "Doe";
-    $scope.address = 2;
-    $scope.subAddress = 2;
+    $scope.address = 1;
+    $scope.subAddress = 1;
 
     $scope.getRTUStatuses = function(){
         var msgOut = {

@@ -9,219 +9,116 @@ global.__base = __dirname + '/';
 
 var Q       = require('q');
 
-var Settings    = require(__base + './script/settings.js');
-global.__settings = new Settings.settings();
+var Settings            = require(__base + './script/settings.js');
+global.__settings       = new Settings.settings();
 
-var thingserver = require(__base + './script/server.js');
-var rtulog = require(__base + './script/rtulog.js');
-var websvrcomms = require(__base + './script/websvrcomms.js');
-var tcpClient = require(__base + './script/tcpclient.js');
-var io = require(__base + './script/io.js');
-var plc = require(__base + './script/plc.js');
-var modbusslave = require(__base + './script/iomodbustcpslave.js');
-// var socketserver = require(__base + './script/server.js');
+var Responder           = require(__base + './lib/apiResponder.js');
+global.__apiResponder   = new Responder.module();
 
-//var rs232 = require(__base + './script/rs232.js');
+var logger              = require(__base + './lib/logger.js');
+global.__Logger         = new logger.module();
 
-
-
-
-//var myPlc = require('./script/plc.js');
-//var settings    = require(__base + './config.js');
-var express		= require('express'); 			// call express
-var cors		= require('cors');				// call cors
-var bodyParser 	= require('body-parser');		// call body-parser
-var http        = require('http');
+var bllModule           = require('./bll/bll.js');
+var thingserver         = require(__base + './script/server.js');
+var rtulog              = require(__base + './script/rtulog.js');
+var websvrcomms         = require(__base + './script/websvrcomms.js');
+var tcpClient           = require(__base + './lib/tcpclient.js');
+var io                  = require(__base + './script/io.js');
+var plc                 = require(__base + './script/plc.js');
+var modbusslave         = require(__base + './lib/iomodbustcpslave.js');
+var express             = require('express');
+var cors                = require('cors');
+var bodyParser          = require('body-parser');
+var http                = require('http');
 
 
 try{
-    //var settings = new Settings.settings();
     var myPlc;
-    var rtu = {
-
-        initWeb: function(port,retErr){
+    var thingApp = {
+        debug: 1,
+        debugIO: 0,
+        initAPI: function(args){
+            var deferred = Q.defer();
+            console.log('initAPI');
             try{
-                var app	= express();
-                // Allow cross domain for AJAX queries
+                var port = args.settings.value.localwebserver.port;
+                var app = express();
                 app.use(cors());
-                // Use parsing to extract JSON object from POST requests
                 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
                 app.use(bodyParser.json( {limit: '50mb'} ));
 
-                // Set the connection port
-                //var port = 8000; 		// set our port
-
-                // Setup processing at the base URL to retrieve static assets
-                app.use('/', express.static(__dirname + '/app'));
-                app.get('/', function(req, res){
-                    res.sendFile('index.html',{ root: __dirname + '/apps'} );
+                app.use(function boltOnObjects(req, res, next) {
+                    req.myPlc = myPlc;
+                    req.settings = __settings;
+                    req.logger = __Logger;
+                    next();
                 });
 
-                // API ROUTES
-                //=============================================================================
-                // Get an instance of the express Router
-                var router = express.Router();
-
-                // Set up the main services at ROUTE_PARAM.API_RES / ROUTE_PARAM.WS_RESOURCE
-                // The target is specified in the request parameters
-                app.post('/api', function(req, res) {
-                    res.header("Access-Control-Allow-Origin", "*");
-                    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-
-                    // console.log('api req',req);
-                    var data = req.body.myData.data;
-                    var args = [req,res,data];
-                    rtu.processAPICall(args)
-                    .then(function(args){
-                        console.log('success');
-                        args[1].json(args[2]);
-                    },function(args){
-                        console.log('fail');
-                        args[1].json(args[2]);
-                    });
-                });
-                app.get('/api',function(req,res){
-                        var data = {};
-                        var args = [req,res,data];
-                        rtu.processAPICall(args)
-                        .then(function(args){
-                            args[1].json(args[2]);
-                        },function(args){
-                            args[1].json(args[2]);
-                        });
+                app.use('/', express.static(__base + '/app'));
+                app.get('/app', function(req, res){
+                    res.sendFile('index.html',{ root: __base + '/app'} );
                 });
 
-                //more routes for our API will happen here
 
-                //REGISTER ROUTES
-                //All of the routes will be prefixed with the value defined in the ROUTE_PARAM.API_RES parameter
-                app.use('/api', router);
+                var rtu = require('./api/rtu');
+                app.use('/api/rtu',rtu);
 
-                //ErrorHandler
+                var settings = require('./api/settings');
+                app.use('/api/settings',settings);
+
+
                 app.use(function(err, req, res, next) {
-                    //console.log('router error: ', err);
-                    var response={header:{result:{}},content:{}};
-                    response.header.result = 'failed';
-                    response.content = err.message.toString();
-                    retErr(err);
-                    res.json(response);
-                });                
+                    var myModule = new bllModule.module();
+                    myModule.rtu.errorResponse.error.code = '500';
+                    myModule.rtu.errorResponse.error.message = 'Something broke';
+                    myModule.rtu.errorResponse.error.errors[0].code = '500';
+                    myModule.rtu.errorResponse.error.errors[0].message = 'Something broke';
+                    myModule.rtu.errorResponse.hiddenErrors.push(err.stack);
+                    __apiResponder.errorResponse(req,res,myModule.rtu.errorResponse);
 
-
-                // var server = http.createServer(app);
-                // var websockio = require('socket.io').listen(server);
-                // server.listen(port);
-                console.log('API connect on port ' + port);
-
-
-//-------------------------------------websockets            // var myServer = new server.rmcServer;
-            // myServer.init();
-//---------------------------------------
+                });
                 var server = http.createServer(app);
-                // var websockio = require('socket.io').listen(server);
                 server.listen(port);
+                console.log('api listen port',port);
 
-                var socketServer = new thingserver.rmcServer;
-                socketServer.initWebSocket(server);
-
+                args.server = server;
+                deferred.resolve(args);
 
             }
             catch(e){
-                //next1(e);
                 console.log(e.message.toString());
-            }
-        },
-        processAPICall: function(args){
-            var deferred = new Q.defer();
-            var apiRespone = {header:{result:{}},content:{}};
-            var req = args[0];
-            console.log('api requestOption',req.body.myData.reqOption);
-            switch(req.body.myData.reqOption){
-                case('rtuMessage'):
-                    myPlc.processMessageIn(args)
-                    .then(function(args){
-                        apiRespone.header.result = 'success';
-                        apiRespone.content = args[2];
-                        args[2] = apiRespone;
-                        deferred.resolve(args);
-                    },function(args){
-                        apiRespone.header.result = 'fail';
-                        apiRespone.content = args[2];
-                        args[2] = apiRespone;
-                        deferred.reject(args);
-                    });
-                    break;
-                case('settings'):
-                    apiRespone.header.result = 'success';
-                    apiRespone.content = settings;
-                    args[2] = apiRespone;
-                    deferred.resolve(args);
-                    break;
-                case('settingsSave'):
-                    debugger;
-                    __settings.saveSettings(args)
-                    .then(function(args){
-                        apiRespone.header.result = 'success';
-                        apiRespone.content = args.settings;
-                        args[2] = apiRespone;
-                        console.log('okay here now');
-                        deferred.resolve(args);
-                        return deferred.promise;
-                    }, function(args){
-                        apiRespone.header.result = 'error';
-                        apiRespone.content = err;
-                        args[2] = apiRespone;
-                        deferred.reject(args);
-                        return deferred.promise;
-                    });
-                    break;
-                default:
-                    apiRespone.header.result = 'error';
-                    apiRespone.content = 'Error. Not sure which io to read';
-                    args[2] = apiRespone;
-                    deferred.reject(args);
             }
             return deferred.promise;
         },
+
         init: function(args){
             var deferred = Q.defer();
             __settings.getSettings(args)
-            .then(rtu.otherInit,null)
+            .then(thingApp.initLogger,null)
+            .then(thingApp.initModbusSlave,null)
+            .then(thingApp.initLog,null)
+            .then(thingApp.initPLC,null)
+            .then(thingApp.initRemoteServer,null)
+            .then(thingApp.initAPI,null)
+            .then(thingApp.initSockets,null)
             .then(function(args){
-                // console.log('args',args);
-
                 deferred.resolve(args);
             },function(args){
-                // console.log('args error',args);
                 deferred.reject(args);
                 console.log('promise error');
             });
 
             return deferred.promise;
         },
-        otherInit: function(args){
+        initModbusSlave: function(args){
             var deferred = Q.defer();
 
-            console.log('other init');
-            settings = args.settings;
-
-            // var myServer = new server.rmcServer;
-            // myServer.init();
-
-            var webPort = __settings.value.localwebserver.port;
-            console.log('webPort',webPort);
-            rtu.initWeb(webPort,function(err){
-                console.log('rtu error: ', err);
-            });
-
-            var Debug = 1;
-
-            console.log('settings rtuid',__settings.value.rtuId);
-
-
+            console.log('initModbusSlave');
 
             myIO = new io.rmcio;
-            myIO.init(0);
+            myIO.init(thingApp.debugIO);
+
+            args.myIO = myIO;
 
             //---------------------------Modbus Slave---------------------------//
             var settingsModbusSlave = __settings.value.modbusslave;
@@ -231,40 +128,76 @@ try{
             }
             //---------------------------Modbus Slave---------------------------//
 
+            deferred.resolve(args);
+
+            return deferred.promise;
+        },
+        initLog: function(args){
+            var deferred = Q.defer();
+            console.log('initLog');
 
             //--------------------------- Log    ---------------------------//
             var myRTULog = new rtulog.rmcLog;
-            myRTULog.init(myIO,1);
+            myRTULog.init(args.myIO,1);
+            args.myRTULog = myRTULog;
             //---------------------------End Log---------------------------//
 
+            deferred.resolve(args);
+            return deferred.promise;
+        },
+        initPLC: function(args){
+            var deferred = Q.defer();
+            console.log('initPLC');
 
             myPlc = new plc.rmcplc;
-            myPlc.init(myIO,myRTULog,0);
+            myPlc.init(args.myIO,args.myRTULog,thingApp.debug);
+
+            args.myPlc = myPlc;
+
+            deferred.resolve(args);
+            return deferred.promise;
+        },
+        initRemoteServer: function(args){
+            var deferred = Q.defer();
+            console.log('initRemoteServer');
 
             //---------------------------Remote Web Server---------------------------//
             var settingsRemoteWebserver = __settings.value.remotewebserver;
             var remoteServerTCPClient = new tcpClient.rmcTCP;
             remoteServerTCPClient.init(function(err){
+                deferred.reject(args);
                 console.log('remoteServerTCPClient error', err);
-            },settingsRemoteWebserver.ipAddress,settingsRemoteWebserver.port,Debug);
+            },settingsRemoteWebserver.ipAddress,settingsRemoteWebserver.port,thingApp.debug);
 
             var mywebsvrComms = new websvrcomms.webSVRComms;
-            mywebsvrComms.init(remoteServerTCPClient,myRTULog,myPlc,0);
+            mywebsvrComms.init(remoteServerTCPClient,args.myRTULog,args.myPlc,thingApp.debug);
             //---------------------------END Remote Web Server---------------------------//
 
+            args.mywebsvrComms = mywebsvrComms;
 
+            deferred.resolve(args);
+            return deferred.promise;
+        },
+        initSockets: function(args){
+            var deferred = Q.defer();
+            console.log('initSockets');
 
+            var thisServer = new thingserver.rmcServer;
+            thisServer.initWebSocket(args.server);
+            thisServer.initTCPSocket();
+            args.thisServer = thisServer;
 
-            // console.log('RS232');
-            // var myrs232 = new rs232.rmcRS232;
-            // myrs232.init(1);
-
-            //deferred.resolve(args);
-
+            deferred.resolve(args);
+            return deferred.promise;
+        },
+        initLogger: function(args){
+            var deferred = Q.defer();
+            console.log('initLogger');
+            global.__Logger = new logger.module();
+            __Logger.init(__settings.value.LOG4JS);
+            deferred.resolve(args);
             return deferred.promise;
         }
-
-
     };
 
 
@@ -272,36 +205,9 @@ try{
 
     // var myIO;
     var x = {'settings': ''};
-    rtu.init(x);
-
-
-
-
-
-
-
-
+    thingApp.init(x);
 
 }
 catch(error){
     console.log('The following error has occurred: '+error.message);
 }
-
-
-
-/*
- readConfig: function(){
- var fs = require('fs');
- var file = './config/config.json';
- var obj = JSON.parse(fs.readFileSync(file,'utf8'));
- CONFIG = obj;
- SETINGS = CONFIG.settings;
- },
- searchSettings: function(search){
- var arrFound = SETINGS.filter(function(item) {
- return item.description == search;
- });
- return arrFound[0].value;
- },
-
- */
