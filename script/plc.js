@@ -210,6 +210,9 @@ var sbModule = function() {
 
                     }
                 });
+                if(typeof myControl == 'undefined'){
+                    return;
+                }
                 myControl.forEach(function(item){
                     if(item.enabled){
                         switch(item.controlType){
@@ -266,6 +269,10 @@ var sbModule = function() {
 
 
             var rtukey = __settings.value.rtuId;
+            if(typeof io.currentStatus[rtukey] == 'undefined'){
+                done(0);
+                return;
+            }
             for(var iokey in io.currentStatus[rtukey].io){
                 // console.log('sb io.currentStatus[rtukey].io[iokey]',io.currentStatus[rtukey].io[iokey]);
 
