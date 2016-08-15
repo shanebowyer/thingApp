@@ -50,6 +50,7 @@ var sbModule = function() {
                     console.log('about to test %S');
                     try{
                         if(data.indexOf('%S')){
+                            console.log('found %S----------------------------------------------------------------------------------------');
                         }
                         else{
                         }
