@@ -9,6 +9,7 @@ var EventEmitter = require( "events" ).EventEmitter;
 var util = require('util');
 var net = require('net');
 var http = require('http');
+var https = require('https');
 
 var tcpSvr = require(__base + '/lib/tcpsvr.js');
 
@@ -37,7 +38,6 @@ var sbModule = function() {
 
 
                     pubServer.wsBroadcast(JSON.parse(data));
-                    // pubServer.writeHistorical(data);
 
                     try{
                         ServerComms.SendData(data);
@@ -45,6 +45,19 @@ var sbModule = function() {
                     catch (e) {
                         console.log('iomodbustcpslave sock.write data error: ' + e); 
                     }
+
+                    if(typeof data == 'object'){
+                        var testData = JSON.parse(data);
+                        console.log('testData',testData);
+                        // if(testData.indexOf('%S')>-1){
+                        //     console.log('ignore writeHistorical for %S');
+                        // }
+                        // else{
+                            pubServer.writeHistorical(JSON.parse(data));        
+                        // }
+                        
+                    }
+                    
 
 
                 }
@@ -102,17 +115,17 @@ var sbModule = function() {
             var deferred = Q.defer();
 
             var email = 'shane@bitid.co.za';
-            var clientIdAuth = '578ddb40f3f1047b670f9a6b';
-            var token = '{"Bearer":"c24869ca0861243e9746f74fef2b30238765d85da30db4aa277af79b3f752d80","scopes":[{"url":"/users/list","role":"1"},{"url":"/users/update","role":"1"},{"url":"/rtu/writehistorical","role":"2"}],"expiry":1471774538010}';
+            var clientIdAuth = '579745be55d00a0a92e4d118';
+            var token = '{"Bearer":"744a5bb653da33a125df2cc07031fae6a2390bdc3dd4ff8b7193281a3edf003e","scopes":[{"url":"/telemetry/rtu/list","role":"4"},{"url":"/telemetry/rtu/add","role":"4"},{"url":"/telemetry/rtu/update","role":"4"},{"url":"/telemetry/rtu/delete","role":"4"},{"url":"/telemetry/rtu/writehistorical","role":"4"},{"url":"/telemetry/report/rtu","role":"4"},{"url":"/telemetry/mimic/list","role":"4"},{"url":"/telemetry/mimic/add","role":"4"},{"url":"/telemetry/mimic/update","role":"4"},{"url":"/telemetry/mimic/delete","role":"4"}],"expiry":1473747715200,"tokenAddOn":{"name":"Test"}}';
             // console.log('token',token);
 
-            var DTO = JSON.stringify({"email":email, "clientIdAuth": clientIdAuth, "serverDate":Date.now(), "rtuId":"000000000000000000000001", "rtuData":{}});
-            // console.log('DTO',DTO);
+            var DTO = JSON.stringify({"email":email, "clientIdAuth": clientIdAuth, "serverDate":Date.now(), "rtuId":"5798acae85adb10cfc733503", "rtuData":data});
+            console.log('DTO',DTO);
 
             var options = {
-                host: '127.0.0.1',
-                port: 8000,
-                path: '/rtu/writehistorical',
+                host: 'telemetry.bitid.co.za',
+                port: 443,
+                path: '/telemetry/rtu/writehistorical',
                 method: 'POST',
                 headers: {
                     'Authorization': token,
@@ -122,7 +135,7 @@ var sbModule = function() {
                 }
             };
 
-            var myReq = http.request(options, function(res) {
+            var myReq = https.request(options, function(res) {
                     var msg = '';
 
                     res.setEncoding('utf8');

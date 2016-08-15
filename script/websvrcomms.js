@@ -27,6 +27,7 @@ var sbModule = function() {
     var myPLC;
     var myRTULog;
 
+    var fixedTxTimeCount = 0;
 
     var pubWebSVR = {
 
@@ -80,17 +81,33 @@ var sbModule = function() {
             });
         },
         fixedTxTime: function(){
+            fixedTxTimeCount ++;
             if(LoggedOnToWebServer == false){
                 return;
             }
 
-            var jsonOutput = myIO.getIOStatus(1);
-            jsonOutput.TxFlag = 128;
-            myRTULog.add(jsonOutput,0,0);
+            if(fixedTxTimeCount >= __settings.value.fixedTxTime){
+                fixedTxTimeCount = 0;
+                // var jsonOutput = myIO.getIOStatus(1);
+                // jsonOutput.TxFlag = 128;
+                // myRTULog.add(jsonOutput,0,0);
 
-            console.log('plc - FixTxTime Message inserted to log');
-            //thismyWebSvrTCPClient.handle.SendData(strOutput);
-            thismyWebSvrTCPClient.SendData(jsonOutput);
+                var msgResponse = {
+                    sourceAddress: __settings.value.rtuId,
+                    destinationAddress: 0,
+                    msgId: 999,
+                    msgType: 'status',
+                    io: myIO.getIOStatus(__settings.value.rtuId)
+                };
+
+
+                console.log('plc - FixTxTime Message inserted to log');
+                myRTULog.add(msgResponse,1,1);
+                //thismyWebSvrTCPClient.handle.SendData(strOutput);
+                // thismyWebSvrTCPClient.SendData(jsonOutput);
+
+            }
+
 
         },
         SendWebSvrLogon: function(){
@@ -141,16 +158,11 @@ var sbModule = function() {
 
 
     LoggedOnToWebServer = true;
-    //pubWebSVR.readConfig();
 
     setInterval(pubWebSVR.SendWebSvrLogon,5000);
-    // setTimeout(function(){
-    //     console.log('about to test');
-    //     myPLC.testControl();
-    // },5000);
+    
 
-    var FixedTxTime = __settings.value.fixedTxTime;
-    pubWebSVR.fixedTxTime;
+    setInterval(pubWebSVR.fixedTxTime,(60000));
 
     setInterval(pubWebSVR.checkRTULogForMessagesToSend,(1000));
 

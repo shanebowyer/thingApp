@@ -175,13 +175,15 @@ var sbModule = function() {
             return ioStatus;
         },
         getIOStatus: function(Address){
-            var i = 0;
-            for(i=0;i<pubIO.arrCurrentStatus.length;i++){
-                if(pubIO.arrCurrentStatus[i].ID == Address){
-                    return pubIO.arrCurrentStatus[i];
-                }
-            }
-            return -999;
+            // var i = 0;
+            // for(i=0;i<pubIO.arrCurrentStatus.length;i++){
+            //     if(pubIO.arrCurrentStatus[i].ID == Address){
+            //         return pubIO.arrCurrentStatus[i];
+            //     }
+            // }
+            // return -999;
+
+            return pubIO.currentStatus[Address];
         },
         getModBusRegisterValue: function(Address,ModBusPos){
             //console.log('Before ' + Address + '   ' + ModBusPos);
