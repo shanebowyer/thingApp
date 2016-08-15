@@ -116,7 +116,7 @@ var sbModule = function() {
 
             var email = 'thingappdemo@bitid.co.za';
             var clientIdAuth = '579745be55d00a0a92e4d118';
-            var token = '{"Bearer":"abc0f78037b2d233e4297f68376ab09f1e6b8a1e42261eb4b3d7c8625e3e9ad7","scopes":[{"url":"/telemetry/rtu/list","role":"4"},{"url":"/telemetry/rtu/add","role":"4"},{"url":"/telemetry/rtu/update","role":"4"},{"url":"/telemetry/rtu/delete","role":"4"},{"url":"/telemetry/rtu/writehistorical","role":"4"},{"url":"/telemetry/report/rtu","role":"4"},{"url":"/telemetry/mimic/list","role":"4"},{"url":"/telemetry/mimic/add","role":"4"},{"url":"/telemetry/mimic/update","role":"4"},{"url":"/telemetry/mimic/delete","role":"4"}],"expiry":1473856296019,"tokenAddOn":{"name":"Test"}}';
+            var token = '{"Bearer":"2cb5ca7dbe56995ef168242fe022f8693dfa284a6ab1c12c4523d60ee76fb453","scopes":[{"url":"/telemetry/rtu/list","role":"4"},{"url":"/telemetry/rtu/add","role":"4"},{"url":"/telemetry/rtu/update","role":"4"},{"url":"/telemetry/rtu/delete","role":"4"},{"url":"/telemetry/rtu/writehistorical","role":"4"},{"url":"/telemetry/report/rtu","role":"4"},{"url":"/telemetry/mimic/list","role":"4"},{"url":"/telemetry/mimic/add","role":"4"},{"url":"/telemetry/mimic/update","role":"4"},{"url":"/telemetry/mimic/delete","role":"4"}],"expiry":1473830862985,"tokenAddOn":{"name":"Test"}}';
             // console.log('token',token);
 
             var rtuId = data.rtuId;
