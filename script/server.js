@@ -40,17 +40,18 @@ var sbModule = function() {
                     pubServer.wsBroadcast(JSON.parse(data));
 
                     try{
-                        if(data.indexOf('%S')){
-
-                        }
-                        else{
-                            pubServer.writeHistorical(JSON.parse(data));        
-                            ServerComms.SendData(data);
-                        }
-
+                        ServerComms.SendData(data);
                     }
                     catch (e) {
                         console.log('iomodbustcpslave sock.write data error: ' + e); 
+                    }
+
+
+                    if(data.indexOf('%S')){
+
+                    }
+                    else{
+                        pubServer.writeHistorical(JSON.parse(data));        
                     }
 
 
