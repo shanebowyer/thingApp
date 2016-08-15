@@ -6,6 +6,7 @@
 var Q       = require('q');
 var iomodbustcp = require(__base + '/lib/iomodbustcp.js');
 var tcpClient = require(__base + '/lib/tcpclient.js');
+var gcm = require('node-gcm');
 
 
 var EventEmitter = require( "events" ).EventEmitter;
@@ -264,42 +265,129 @@ var sbModule = function() {
             var TxFlag = 0;
 
 
-            for(var key in io.currentStatus[__settings.value.rtuId].io){
-                if(typeof io.currentStatus[__settings.value.rtuId].io[key].data.digitalsIn != 'undefined'){
-                    // for(var key1 in )
-                    // console.log('key', io.currentStatus[__settings.value.rtuId].io[key].data.digitalsIn);
-                    if(arrCOFS[0].digitalsInMask > 0){
-                        var currentDigitalStatusWithMask = io.currentStatus[__settings.value.rtuId].io[key].data.digitalsIn & arrCOFS[0].digitalsInMask;
-                        if(currentDigitalStatusWithMask != arrCOFS[0].digitalsLastStatus){
+            var rtukey = __settings.value.rtuId;
+            for(var iokey in io.currentStatus[rtukey].io){
+                // console.log('sb io.currentStatus[rtukey].io[iokey]',io.currentStatus[rtukey].io[iokey]);
 
-                            arrCOFS[0].digitalsLastStatus = io.currentStatus[__settings.value.rtuId].io[key].data.digitalsIn  & arrCOFS[0].digitalsInMask;
-                            TxFlag += Math.pow(2,1);
-                            console.log('Digital COFS');
-                            bCOFS = 1;
+                if(typeof io.currentStatus[rtukey].io[iokey] != 'undefined'){
+                    var itemIO = io.currentStatus[rtukey].io[iokey];
 
-                            if(bCOFS == 1){
-                                console.log('COFS TXFlag = ' + TxFlag);
+                    if(typeof itemIO.cofs != 'undefined'){
+                        // console.log('cofs', itemIO.cofs);
 
-                            var msgResponse = {
-                                sourceAddress: __settings.value.rtuId,
-                                destinationAddress: 0,
-                                msgId: 999,
-                                msgType: 'status',
-                                io: io.currentStatus[__settings.value.rtuId]
-                            };
-                            console.log('adding this to the log',msgResponse);
-                            myLog.add(msgResponse,1,1);
+                        for(var cofskey in itemIO.cofs){
+                            if(typeof itemIO.cofs[cofskey] != 'undefined'){
+                                var itemCOFS = itemIO.cofs[cofskey];
+                                switch(itemCOFS.description){
+                                    case('digitalsIn'):
 
-                                // io.currentStatus[__settings.value.rtuId].io[key].data.TxFlag = TxFlag;
-                                // var jsonRecord = io.arrCurrentStatus[0];
-                                // myLog.add(jsonRecord,1,1);
+                                        // console.log('cofs', itemIO.cofs);
+
+                                        if(typeof itemIO.data.digitalsIn != 'undefined'){
+                                            // console.log('digitalsIn', itemIO.data.digitalsIn);
+                                            var currentDigitalStatusWithMask = itemIO.data.digitalsIn & arrCOFS[0].digitalsInMask;
+                                            if(currentDigitalStatusWithMask != arrCOFS[0].digitalsLastStatus){
+
+                                                arrCOFS[0].digitalsLastStatus = itemIO.data.digitalsIn  & arrCOFS[0].digitalsInMask;
+                                                TxFlag += Math.pow(2,1);
+                                                console.log('Digital COFS');
+                                                bCOFS = 1;
+
+                                                if(bCOFS == 1){
+                                                    console.log('COFS TXFlag = ' + TxFlag + ' Status: ' + itemIO.data.digitalsIn);
+
+                                                    if(__settings.value.localwebserver.ipAddress == '92.222.86.224'){
+                                                        var pushMessage = pubPLC.buildMessage('COFS TXFlag = ' + TxFlag + ' Status: ' + itemIO.data.digitalsIn);
+                                                        pubPLC.sendPushMessage(pushMessage);
+                                                    }
+
+
+                                                    if(__settings.value.localwebserver.ipAddress != '92.222.86.224'){
+                                                        var msgResponse = {
+                                                            sourceAddress: __settings.value.rtuId,
+                                                            destinationAddress: 0,
+                                                            msgId: 999,
+                                                            msgType: 'status',
+                                                            io: io.currentStatus[rtukey]
+                                                        };
+                                                        console.log('adding this to the log',msgResponse);
+                                                        myLog.add(msgResponse,1,1);
+                                                    }
+
+                                                    // io.currentStatus[__settings.value.rtuId].io[key].data.TxFlag = TxFlag;
+                                                    // var jsonRecord = io.arrCurrentStatus[0];
+                                                    // myLog.add(jsonRecord,1,1);
+                                                }
+                                            }
+                                            
+                                        }
+
+
+
+                                        break;
+                                    default:
+                                        break
+
+                                }
                             }
-
                         }
 
 
+                    }                            
+                }
+            }
+                    
+            done(bCOFS);
+        },
+        checkCOFS_old: function(done){
+            var i = 0;
+            var bCOFS = 0;
+            var TxFlag = 0;
+
+
+            if(typeof io.currentStatus[__settings.value.rtuId] != 'undefined'){
+                // console.log('io.currentStatus',io.currentStatus[__settings.value.rtuId]);
+
+
+                for(var key in io.currentStatus[__settings.value.rtuId].io){
+                    if(typeof io.currentStatus[__settings.value.rtuId].io[key].data.digitalsIn != 'undefined'){
+                        // for(var key1 in )
+                        // console.log('what io looks like', io.currentStatus[__settings.value.rtuId].io[key]);
+                        if(arrCOFS[0].digitalsInMask > 0){
+                            var currentDigitalStatusWithMask = io.currentStatus[__settings.value.rtuId].io[key].data.digitalsIn & arrCOFS[0].digitalsInMask;
+                            if(currentDigitalStatusWithMask != arrCOFS[0].digitalsLastStatus){
+
+                                arrCOFS[0].digitalsLastStatus = io.currentStatus[__settings.value.rtuId].io[key].data.digitalsIn  & arrCOFS[0].digitalsInMask;
+                                TxFlag += Math.pow(2,1);
+                                console.log('Digital COFS');
+                                bCOFS = 1;
+
+                                if(bCOFS == 1){
+                                    console.log('COFS TXFlag = ' + TxFlag);
+
+                                var msgResponse = {
+                                    sourceAddress: __settings.value.rtuId,
+                                    destinationAddress: 0,
+                                    msgId: 999,
+                                    msgType: 'status',
+                                    io: io.currentStatus[__settings.value.rtuId]
+                                };
+                                console.log('adding this to the log',msgResponse);
+                                myLog.add(msgResponse,1,1);
+
+                                    // io.currentStatus[__settings.value.rtuId].io[key].data.TxFlag = TxFlag;
+                                    // var jsonRecord = io.arrCurrentStatus[0];
+                                    // myLog.add(jsonRecord,1,1);
+                                }
+
+                            }
+
+
+                        }
                     }
                 }
+
+
             }
             // io.currentStatus[__settings.value.rtuId].io.forEach(function(item){
                 //DIGITALS
@@ -366,6 +454,52 @@ var sbModule = function() {
             // }
             done(bCOFS);
         },
+
+        buildMessage: function(tag){
+            var message = new gcm.Message({
+                collapseKey: 'do_not_collapse',
+                contentAvailable: true,
+                vibrationPattern : [300, 150, 300], // Vibrate for 300ms then wait 150ms and then vibrate for 300ms.
+                notification: {
+                    vibrationPattern : [300, 150, 300], // Vibrate for 300ms then wait 150ms and then vibrate for 300ms.
+                    title: "biTid - Alert",
+                    message:"Scabanger at Gate",
+                    sound: "sound.wav",
+                    android: {
+                        "content_available": 1,
+                        "message": "Hello Android!",
+                        "sound": "android-sound.wav",
+                        //"icon": "ionitron.png",
+                        "icon_color": "#FF0000",
+                        "payload": {
+                            "foo": "bar"
+                        }
+                    },
+                    tag:tag
+                }
+            });
+            return message;
+        },
+
+        sendPushMessage: function(message){
+            //bitid
+            var regTokens = ['f62eOOFJxH4:APA91bHt5ig0supytmo7UK3LNOWmV7GPM_XNNqiNcP3UOS3p-WgtKWphty-TKGQgQJwRipemzLH13v0RgTWc65ZShAPOxfiSqQtxevV9dBaJtVJ7UiMKsJDfBZOyLsz67aW3LaITMrnu'];
+            //pauls
+            // var regTokens = ['fjbDf00OnC4:APA91bE3KPULRHMIAdrXtX0-D9aACd2G6gnnTqg730HwXlUmCqEb_TTAYYXiuzT9bi2-QO5a-irukfjYEnMBSO86dvPrxZ29AYmq12hcZ2VrYAJOwTNrQv0j6hb0mRatiFNOBtZcX6DY'];
+            //bitid
+            // var sender = new gcm.Sender('AIzaSyBXG-rm8EijI--ODcW23rOLIIv57ijd7og');
+            //pauls
+            var sender = new gcm.Sender('AIzaSyAg2dtsPcxuMFwRtANjMHBzYPARd3W6MqI');
+            
+            sender.send(message, { registrationTokens: regTokens }, function (err, response) {
+                if(err) {
+                    console.error(err);
+                }
+                else {
+                    console.log(response);
+                }
+            });
+        },         
         on: function(strEvent,callbackFunction){
             self.on(strEvent,function(data){
                 callbackFunction(data);

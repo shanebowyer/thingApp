@@ -22,7 +22,7 @@ var sbModule = function() {
         var self = this;
         var thisMessageID = 1;
 
-        var thisdebug = 1;
+        var thisdebug = 0;
         var currentLogIndex = 0;
         var myIO;
 
