@@ -47,17 +47,13 @@ var sbModule = function() {
                     }
 
                     if(typeof data == 'object'){
-                        var testData = JSON.parse(data);
-                        console.log('testData',testData);
-                        // if(testData.indexOf('%S')>-1){
-                        //     console.log('ignore writeHistorical for %S');
-                        // }
-                        // else{
+                        if(data.indexOf('%S')){
+
+                        }
+                        else{
                             pubServer.writeHistorical(JSON.parse(data));        
-                        // }
-                        
+                        }
                     }
-                    
 
 
                 }
