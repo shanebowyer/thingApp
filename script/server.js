@@ -53,6 +53,8 @@ var sbModule = function() {
                             console.log('found %S----------------------------------------------------------------------------------------');
                         }
                         else{
+                            console.log('about to writehistorical >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+                            pubServer.writeHistorical(JSON.parse(data));        
                         }
                     }
                     catch(e){
@@ -60,8 +62,6 @@ var sbModule = function() {
 
                     }
 
-                    console.log('about to writehistorical');
-                    pubServer.writeHistorical(JSON.parse(data));        
 
 
                 }
