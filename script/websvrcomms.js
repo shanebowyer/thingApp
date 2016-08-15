@@ -34,7 +34,7 @@ var sbModule = function() {
         init: function(myWebSvrTCPClient,rtulog,plc,debug){
             thismyWebSvrTCPClient = myWebSvrTCPClient;
             myRTULog = rtulog;
-            thisdebug = 0;
+            thisdebug = 1;
             myPLC = plc;
 
             thismyWebSvrTCPClient.on('data', function (data) {
@@ -131,7 +131,10 @@ var sbModule = function() {
             }
             strOutput = myRTULog.readLog();
             if(strOutput != ''){
-                // console.log('message to send to server',strOutput);
+                if(thisdebug == 1){
+                    console.log('message to send to server',strOutput);    
+                }
+                
                 if(strOutput.payLoad.destinationAddress == __settings.value.rtuId){
                     //local control....dont send to server
                     var args = [null,null,strOutput];
@@ -162,7 +165,7 @@ var sbModule = function() {
     setInterval(pubWebSVR.SendWebSvrLogon,5000);
     
 
-    setInterval(pubWebSVR.fixedTxTime,(60000));
+    setInterval(pubWebSVR.fixedTxTime,(10000));
 
     setInterval(pubWebSVR.checkRTULogForMessagesToSend,(1000));
 
