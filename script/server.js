@@ -47,10 +47,12 @@ var sbModule = function() {
                     }
 
 
+                    console.log('about to test %S');
                     if(data.indexOf('%S')){
 
                     }
                     else{
+                        console.log('about to writehistorical');
                         pubServer.writeHistorical(JSON.parse(data));        
                     }
 
