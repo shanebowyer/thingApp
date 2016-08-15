@@ -49,7 +49,7 @@ var sbModule = function() {
 
                     console.log('about to test %S');
                     try{
-                        if(data.indexOf('%S')){
+                        if(data.indexOf('%S') > -1){
                             console.log('found %S----------------------------------------------------------------------------------------');
                         }
                         else{
