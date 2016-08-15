@@ -165,7 +165,9 @@ var sbModule = function() {
     setInterval(pubWebSVR.SendWebSvrLogon,5000);
     
 
-    setInterval(pubWebSVR.fixedTxTime,(10000));
+    if(__settings.value.fixedTxTime > 0){
+        setInterval(pubWebSVR.fixedTxTime,(10000));
+    }
 
     setInterval(pubWebSVR.checkRTULogForMessagesToSend,(1000));
 
