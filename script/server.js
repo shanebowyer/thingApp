@@ -58,7 +58,7 @@ var sbModule = function() {
                         }
                     }
                     catch(e){
-                        console.log('error testing for %S');
+                        console.log('error testing for %S',e);
 
                     }
 
@@ -121,10 +121,11 @@ var sbModule = function() {
             //live rtuId 5798acae85adb10cfc733503
             //dev rtuId 57a03160949bcd64297bc459 or 57a363c22f8bc54d228c275b
 
-            // Live
-            var email = 'thingappdemo@bitid.co.za';
-            var clientIdAuth = '579745be55d00a0a92e4d118';
-            var token = __settings.value.bitidTelemetryToken;
+            // // Live
+            // var email = 'thingappdemo@bitid.co.za';
+            // var clientIdAuth = '579745be55d00a0a92e4d118';
+            // var token = JSON.stringify(__settings.value.bitidTelemetryToken);
+            // console.log('token>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',token);
 
 
             // //DEV
@@ -132,73 +133,54 @@ var sbModule = function() {
             // var clientIdAuth = '000000000000000000000002';
             // var token = '{"Bearer":"eba33b255870fcfbd12dd137e7f9174f901d950c8f85350f1b7093f15ed6c3c0","scopes":[{"url":"/telemetry/rtu/list","role":"4"},{"url":"/telemetry/rtu/add","role":"4"},{"url":"/telemetry/rtu/update","role":"4"},{"url":"/telemetry/rtu/delete","role":"4"},{"url":"/telemetry/rtu/writehistorical","role":"4"},{"url":"/telemetry/rtu/gethistorical","role":"4"},{"url":"/telemetry/report/rtu","role":"4"},{"url":"/telemetry/mimic/list","role":"4"},{"url":"/telemetry/mimic/add","role":"4"},{"url":"/telemetry/mimic/update","role":"4"},{"url":"/telemetry/mimic/delete","role":"4"}],"expiry":1473958965938,"tokenAddOn":{"name":"Test"}}';
 
+            console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',data);
+
+            var email = '';
+            var clientIdAuth = '';
+            var token = '';
+
+            if(__settings.value.environmentDev == 1){
+                email = __settings.value.authTelemetry.emailDev;
+                clientIdAuth = __settings.value.authTelemetry.clientIdAuthDev;
+                token = JSON.stringify(__settings.value.authTelemetry.tokenDev);
+            }
+            else{
+                email = __settings.value.authTelemetry.email;
+                clientIdAuth = __settings.value.authTelemetry.clientIdAuth;
+                token = JSON.stringify(__settings.value.authTelemetry.token);
+            }
+
+
             var rtuId = data.payLoad.sourceAddress;
-
             var DTO = JSON.stringify({"email":email, "clientIdAuth": clientIdAuth, "serverDate":Date.now(), "rtuId":rtuId, "rtuData":data});
-            console.log('DTO',DTO);
 
-            //Live
-            var options = {
-                host: 'telemetry.bitid.co.za',
-                port: 443,
-                path: '/telemetry/rtu/writehistorical',
-                method: 'POST',
+
+            var request = require('request');
+            var url = __settings.value.authTelemetry.host + ':' + __settings.value.authTelemetry.port + __settings.value.authTelemetry.path;
+            console.log('CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCcc',DTO);
+            console.log('DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD',token);
+
+            request({
+                url: url,
+                method: "POST",
                 headers: {
                     'Authorization': token,
                     'Content-Type': 'application/json; charset=utf-8',
                     'Content-Length': DTO.length,
                     'accept': '*/*'
+                },
+                body: DTO
+            }, function (error, response, body){
+                if(error){
+                    console.log('writehistorical error');
+                    deferred.reject({'error':error});
                 }
-            };
-
-            // // //DEV
-            // var options = {
-            //     host: '192.167.1.251',
-            //     port: 8000,
-            //     path: '/telemetry/rtu/writehistorical',
-            //     method: 'POST',
-            //     headers: {
-            //         'Authorization': token,
-            //         'Content-Type': 'application/json; charset=utf-8',
-            //         'Content-Length': DTO.length,
-            //         'accept': '*/*'
-            //     }
-            // };
-            //Live
-            var myReq = https.request(options, function(res) {
-                //Dev
-            // var myReq = http.request(options, function(res) {
-                    var msg = '';
-
-                    res.setEncoding('utf8');
-                    res.on('data', function(chunk) {
-                        msg += chunk;
-                    });
-                    res.on('end', function() {
-                        if(msg != ''){
-                            console.log('msg', msg);
-                            // var result = JSON.parse(msg);
-                            // if(typeof result.error == 'undefined'){
-                                deferred.resolve('result');
-                            // }
-                            // else{
-                            //     deferred.reject(result);
-                            // }
-                            
-                        }else{
-                            deferred.reject(portal.errorResponse);
-                        }
-
-                    });
-
-                    res.on('error', function(e) {
-                        console.log('authenticate error',e);
-                        deferred.reject(error);
-                    });
-                });
-
-                myReq.write(DTO);
-                myReq.end();
+                else{
+                    var myResult = JSON.parse(response.body);
+                    console.log('BBBBBBBBBBBBBBBBBBBBBBBBBBBB',myResult);
+                    deferred.resolve(myResult);
+                }
+            });
 
             return deferred.promise;
         },
