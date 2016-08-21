@@ -13,6 +13,7 @@
     "mongodb": "^2.1.18",
     "node-gcm": "^0.14.4",
     "q": "^1.4.1",
+    "request": "^2.74.0",
     "serialport": "^3.1.1",
     "socket.io": "^1.4.5",
     "underscore": "^1.8.3",
