@@ -12,6 +12,7 @@ var http = require('http');
 var https = require('https');
 
 var tcpSvr = require(__base + '/lib/tcpsvr.js');
+var tcpClient = require(__base + '/lib/tcpclient.js');
 
 var ServerComms = new tcpSvr.rmcTCPSvr;
 
@@ -21,8 +22,140 @@ var sbModule = function() {
 
     var thisdebug = 0;
     var wss;
+    var wanData = '';
+
+    //DEV
+    // var rtuIdGLOG = '57a03160949bcd64297bc459';
+    // var rtuIdUGU = '57a0713f5406b609e2f598f6';
+    //LIVE
+    var rtuIdGLOG = '579b7d10d467ad1ed87444eb';
+    var rtuIdUGU = '57a0a927f327353ced34e260';
 
     var pubServer = {
+
+        initWanSlave: function(){
+            var tcpWanSlave = new tcpClient.rmcTCP();
+            tcpWanSlave.init(function(err){
+                console.log('tcpWanSlave error', err);
+            },'41.0.147.125',61114,0);
+
+            tcpWanSlave.on('data', function (data) {
+                var strData = data.toString('utf8');
+                wanData = wanData + strData;
+            })
+
+            setInterval(function(){
+                if(wanData != ''){
+                    // var arrData = wanData.split(',');
+                    var myData = pubServer.modelWanMasterData(wanData);
+                    wanData = '';
+
+                    try{
+                        pubServer.wsBroadcast(JSON.parse(myData));
+                    }
+                    catch(e){
+                        console.log('server wsBroadcast error: ' + e); 
+                    }
+
+
+                    try{
+                        console.log('Writing Historical***************************************************** '); 
+                        pubServer.writeHistorical(JSON.parse(myData));        
+                        console.log('DONE Writing Historical***************************************************** '); 
+                    }
+                    catch(e){
+                        console.log('*****************************************************server writehistorical error: ' + e); 
+                    }
+
+
+                    // console.log('string from wanMaster',strData);
+                    // console.log('data from wanMaster',arrData);
+                }
+
+            },1000)
+
+        },
+
+        modelWanMasterData: function(data){
+            var arrGlogData = data.split(',');
+            var oneValue = arrGlogData[0].split('=');
+            console.log('oneValue',oneValue);
+            var glogData = {};
+            glogData.dateTime = Date.now();
+            glogData.payLoad = {};
+            glogData.payLoad.sourceAddress = rtuIdUGU;
+            glogData.payLoad.destinationAddress = 0;
+            glogData.payLoad.msgId = 999;
+            glogData.payLoad.msgType = 'status';
+            glogData.payLoad.io = {};
+            glogData.payLoad.io.rtuAddress = rtuIdUGU;
+            
+            var io = {"1":{},"2":{}};
+            io["1"].id = 1;
+            io["1"].ioType = "TCP-MODMUX-DIO8";
+            io["1"].rawData = {};
+            io["1"].data = {};
+            io["1"].data.id = 1;
+            io["1"].data.ioType = "TCP-MODMUX-DIO8";
+            io["1"].data.digitalsIn = 0;
+            // io["1"].data.digitalsIn = parseInt(oneValue[1]);
+
+            io["2"].id = 2;
+            io["2"].ioType = "TCP-MODMUX-AI8";
+            io["2"].rawData = {};
+            io["2"].data = {};
+            io["2"].data.id = 2;
+            io["2"].data.ioType = "TCP-MODMUX-AI8";
+            io["2"].data.AI1 = parseInt(oneValue[1]);
+
+            glogData.payLoad.io.io = io;
+
+            console.log('modelWanMasterData', JSON.stringify(glogData));
+
+            return JSON.stringify(glogData);
+
+        },
+
+        modelGlogData: function(data){
+
+            var arrGlogData = data.toString('utf8').split(' ');
+            var glogData = {};
+            glogData.dateTime = arrGlogData[4];
+            glogData.payLoad = {};
+            glogData.payLoad.sourceAddress = rtuIdGLOG; //arrGlogData[2];
+            glogData.payLoad.destinationAddress = 0;
+            glogData.payLoad.msgId = 999;
+            glogData.payLoad.msgType = 'status';
+            glogData.payLoad.io = {};
+            glogData.payLoad.io.rtuAddress = rtuIdGLOG; //arrGlogData[2];
+            var io = {"1":{},"2":{}};
+            io["1"].id = 1;
+            io["1"].ioType = "TCP-MODMUX-DIO8";
+            io["1"].rawData = {};
+            io["1"].data = {};
+            io["1"].data.id = 1;
+            io["1"].data.ioType = "TCP-MODMUX-DIO8";
+            io["1"].data.digitalsIn = arrGlogData[6];
+
+            io["2"].id = 2;
+            io["2"].ioType = "TCP-MODMUX-AI8";
+            io["2"].rawData = {};
+            io["2"].data = {};
+            io["2"].data.id = 2;
+            io["2"].data.ioType = "TCP-MODMUX-AI8";
+            io["2"].data.AI1 = arrGlogData[8];
+
+            glogData.payLoad.io.io = io;
+
+            console.log('modelGlogData', JSON.stringify(glogData));
+
+            return JSON.stringify(glogData);
+//Glog Data
+//"%1 0210.030 6 0 1110215725 128 256 0 0 0 0 0 0 0 0 0 0 170 0 0 0 0 0 0 0 0 0 0 127 48 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 > 30021 *"
+
+
+        },
+
 
         initTCPSocket: function(){
             console.log('Initted server');
@@ -30,31 +163,65 @@ var sbModule = function() {
 
             ServerComms.on('data', function(args){
                 try{
+                    var dataType = '';
                     var sock = args[0];
                     var data = args[1];
                     if(thisdebug == 1){
-                        console.log('Server data: ' + sock.remoteAddress +':'+ sock.remotePort + ' Data: ' + data);
+                        debugger;
+                        console.log('Server data: ' + sock.remoteAddress +':'+ sock.remotePort + ' Data: ' + data.toString('utf8'));
                     }
-
-
-                    pubServer.wsBroadcast(JSON.parse(data));
-
-                    try{
-                        ServerComms.SendData(data);
-                    }
-                    catch (e) {
-                        console.log('iomodbustcpslave sock.write data error: ' + e); 
-                    }
-
 
                     console.log('about to test %S');
                     try{
-                        if(data.indexOf('%S') > -1){
+                        if(data.toString('utf8').indexOf('%S') > -1){
                             console.log('found %S----------------------------------------------------------------------------------------');
+                            sock.write(data);
+                            return;
                         }
                         else{
+
+                            if(data.toString('utf8').indexOf('%') > -1){
+                                console.log('identified glog data')
+                                dataType = 'glog';
+                                var arrGlogData = data.toString('utf8').split(' ');
+                                data = pubServer.modelGlogData(data);
+                            }
+                            else{
+                                //Manual testing below
+                                data = JSON.parse(data);
+                                data.payLoad.io.io[2].data.AI1 = 415;
+                                data.payLoad.io.io[2].data.AI2 = 488;
+                                // data.payLoad.io.io[1].data.digitalsIn = 0;
+                                data = JSON.stringify(data);
+                            }
+
+                            try{
+                                ServerComms.SendData(data);
+                            }
+                            catch (e) {
+                                console.log('server sock.write data error: ' + e); 
+                            }
+
+                            try{
+                                pubServer.wsBroadcast(JSON.parse(data));
+                            }
+                            catch(e){
+                                console.log('server wsBroadcast error: ' + e); 
+                            }
+
+
                             console.log('about to writehistorical >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-                            pubServer.writeHistorical(JSON.parse(data));        
+                            try{
+                                pubServer.writeHistorical(JSON.parse(data));        
+                                if(dataType == 'glog'){
+                                    //Handshake the message
+                                    sock.write('%1 ' + arrGlogData[3] + ' *');
+                                }
+                            }
+                            catch(e){
+                                console.log('server writehistorical error: ' + e); 
+                            }
+                            
                         }
                     }
                     catch(e){
@@ -62,11 +229,9 @@ var sbModule = function() {
 
                     }
 
-
-
                 }
                 catch (e) {
-                    console.log('iomodbustcpslave data error: ' + e);
+                    console.log('server data error: ' + e);
                 }
 
             });
@@ -133,7 +298,7 @@ var sbModule = function() {
             // var clientIdAuth = '000000000000000000000002';
             // var token = '{"Bearer":"eba33b255870fcfbd12dd137e7f9174f901d950c8f85350f1b7093f15ed6c3c0","scopes":[{"url":"/telemetry/rtu/list","role":"4"},{"url":"/telemetry/rtu/add","role":"4"},{"url":"/telemetry/rtu/update","role":"4"},{"url":"/telemetry/rtu/delete","role":"4"},{"url":"/telemetry/rtu/writehistorical","role":"4"},{"url":"/telemetry/rtu/gethistorical","role":"4"},{"url":"/telemetry/report/rtu","role":"4"},{"url":"/telemetry/mimic/list","role":"4"},{"url":"/telemetry/mimic/add","role":"4"},{"url":"/telemetry/mimic/update","role":"4"},{"url":"/telemetry/mimic/delete","role":"4"}],"expiry":1473958965938,"tokenAddOn":{"name":"Test"}}';
 
-            console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',data);
+            // console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',data);
 
             var email = '';
             var clientIdAuth = '';
@@ -157,8 +322,8 @@ var sbModule = function() {
 
             var request = require('request');
             var url = __settings.value.authTelemetry.host + ':' + __settings.value.authTelemetry.port + __settings.value.authTelemetry.path;
-            console.log('CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCcc',DTO);
-            console.log('DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD',token);
+            // console.log('CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCcc',DTO);
+            // console.log('DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD',token);
 
             request({
                 url: url,
@@ -198,6 +363,8 @@ var sbModule = function() {
         ServerComms.init(webIP,socketPort,1);
         console.log('Listening for ServerComms on: ' + socketPort);
     }
+
+    pubServer.initWanSlave();
 
     return pubServer
 
