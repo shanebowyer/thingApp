@@ -1,11 +1,23 @@
 var settings = 
 
 {  
+   "environmentDev": 1,
    "version":"0210.024",
-   "rtuId":1,
+   "rtuId":"57a363c22f8bc54d228c275b",
+   "authTelemetry":{
+      "email":"thingappdemo@bitid.co.za",
+      "emailDev":"shane@bitid.co.za",
+      "clientIdAuth":"579745be55d00a0a92e4d118",
+      "clientIdAuthDev":"000000000000000000000002",
+      "token":{"Bearer":"168969927d36003b9d10665421248132c150164f8a8ab736cdc0ab859198741f","scopes":[{"url":"/telemetry/rtu/list","role":1},{"url":"/telemetry/rtu/add","role":2},{"url":"/telemetry/rtu/update","role":2},{"url":"/telemetry/rtu/delete","role":4},{"url":"/telemetry/rtu/writehistorical","role":4},{"url":"/telemetry/rtu/gethistorical","role":1},{"url":"/telemetry/report/rtu","role":1},{"url":"/telemetry/mimic/list","role":4},{"url":"/telemetry/mimic/add","role":4},{"url":"/telemetry/mimic/update","role":4},{"url":"/telemetry/mimic/delete","role":4},{"url":"/users/alert","role":4},{"url":"/telemetry/test/alert","role":4}],"expiry":1474329588305,"pushToken":"","tokenAddOn":{"name":"Test"}},
+      "tokenDev":{"Bearer":"168969927d36003b9d10665421248132c150164f8a8ab736cdc0ab859198741f","scopes":[{"url":"/telemetry/rtu/list","role":1},{"url":"/telemetry/rtu/add","role":2},{"url":"/telemetry/rtu/update","role":2},{"url":"/telemetry/rtu/delete","role":4},{"url":"/telemetry/rtu/writehistorical","role":4},{"url":"/telemetry/rtu/gethistorical","role":1},{"url":"/telemetry/report/rtu","role":1},{"url":"/telemetry/mimic/list","role":4},{"url":"/telemetry/mimic/add","role":4},{"url":"/telemetry/mimic/update","role":4},{"url":"/telemetry/mimic/delete","role":4},{"url":"/users/alert","role":4},{"url":"/telemetry/test/alert","role":4}],"expiry":1474329588305,"pushToken":"","tokenAddOn":{"name":"Test"}},
+      "host":"http://192.167.1.251",
+      "port":"8000",
+      "path":"/telemetry/rtu/writehistorical"
+   },
    "description":"SiteOne1",
    "timeZone":2,
-   "fixedTxTime":2,
+   "fixedTxTime":10,
    "commsTimeout":30,
    "localwebserver":{  
       "ipAddress":"192.167.1.251",
@@ -105,7 +117,13 @@ var settings =
                "scaleHi":255,
                "scaleLow":0
             }
-         ]         
+         ],
+         "cofs":[
+            {
+              "description":"digitalsIn",
+              "value":65535
+            }
+         ]
       },
       {  
          "id":2,

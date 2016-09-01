@@ -80,8 +80,9 @@ var sbModule = function() {
                     pubRTULog.log.splice(thisMessageID, 1);
                 }
 
+                var dateNow = Date.now();
                 var msgOut = {
-                    dateTime: '2016/01/01',
+                    dateTime: dateNow,
                     messageId: thisMessageID,
                     payLoad: payLoad
                 };
