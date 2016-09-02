@@ -25,11 +25,11 @@ var sbModule = function() {
     var wanData = '';
 
     //DEV
-    // var rtuIdGLOG = '57a03160949bcd64297bc459';
-    // var rtuIdUGU = '57a0713f5406b609e2f598f6';
-    //LIVE
-    var rtuIdGLOG = '579b7d10d467ad1ed87444eb';
-    var rtuIdUGU = '57a0a927f327353ced34e260';
+    var rtuIdGLOG = '57a03160949bcd64297bc459';
+    var rtuIdUGU = '57a0713f5406b609e2f598f6';
+    // //LIVE
+    // var rtuIdGLOG = '579b7d10d467ad1ed87444eb';
+    // var rtuIdUGU = '57c91e177b647c34ab8c8427';
 
     var pubServer = {
 
@@ -144,6 +144,8 @@ var sbModule = function() {
             io["2"].data.id = 2;
             io["2"].data.ioType = "TCP-MODMUX-AI8";
             io["2"].data.AI1 = arrGlogData[8];
+            io["2"].data.CI1 = arrGlogData[17];
+            
 
             glogData.payLoad.io.io = io;
 
@@ -337,13 +339,18 @@ var sbModule = function() {
                 body: DTO
             }, function (error, response, body){
                 if(error){
-                    console.log('writehistorical error');
+                    console.log('writehistorical error',error);
                     deferred.reject({'error':error});
                 }
                 else{
-                    var myResult = JSON.parse(response.body);
-                    console.log('BBBBBBBBBBBBBBBBBBBBBBBBBBBB',myResult);
-                    deferred.resolve(myResult);
+                    try{
+                        var myResult = JSON.parse(response.body);
+                        console.log('BBBBBBBBBBBBBBBBBBBBBBBBBBBB',myResult);
+                        deferred.resolve(myResult);
+                    }
+                    catch(e){
+                        deferred.reject(e);
+                    }
                 }
             });
 
@@ -364,7 +371,7 @@ var sbModule = function() {
         console.log('Listening for ServerComms on: ' + socketPort);
     }
 
-    pubServer.initWanSlave();
+    // pubServer.initWanSlave();
 
     return pubServer
 
