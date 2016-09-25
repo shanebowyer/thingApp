@@ -90,25 +90,30 @@ var sbModule = function() {
             glogData.payLoad.io = {};
             glogData.payLoad.io.rtuAddress = rtuIdUGU;
             
-            var io = {"1":{},"2":{}};
-            io["1"].id = 1;
-            io["1"].ioType = "TCP-MODMUX-DIO8";
-            io["1"].rawData = {};
-            io["1"].data = {};
-            io["1"].data.id = 1;
-            io["1"].data.ioType = "TCP-MODMUX-DIO8";
-            io["1"].data.digitalsIn = 0;
+            var ioDetails = [];
+
+            var objIO1 = {}
+            objIO1.id = 1;
+            objIO1.ioType = "TCP-MODMUX-DIO8";
+            objIO1.rawData = {};
+            objIO1.data = {};
+            objIO1.data.id = 1;
+            objIO1.data.ioType = "TCP-MODMUX-DIO8";
+            objIO1.data.digitalsIn = 0;
+            ioDetails.push(objIO1);
             // io["1"].data.digitalsIn = parseInt(oneValue[1]);
 
-            io["2"].id = 2;
-            io["2"].ioType = "TCP-MODMUX-AI8";
-            io["2"].rawData = {};
-            io["2"].data = {};
-            io["2"].data.id = 2;
-            io["2"].data.ioType = "TCP-MODMUX-AI8";
-            io["2"].data.AI1 = parseInt(oneValue[1]);
+            var objIO2 = {}
+            objIO2.id = 2;
+            objIO2.ioType = "TCP-MODMUX-AI8";
+            objIO2.rawData = {};
+            objIO2.data = {};
+            objIO2.data.id = 2;
+            objIO2.data.ioType = "TCP-MODMUX-AI8";
+            objIO2.data.AI1 = parseInt(oneValue[1]);
+            ioDetails.push(objIO2);
 
-            glogData.payLoad.io.io = io;
+            glogData.payLoad.io.ioDetails = ioDetails;
 
             console.log('modelWanMasterData', JSON.stringify(glogData));
 
@@ -128,26 +133,30 @@ var sbModule = function() {
             glogData.payLoad.msgType = 'status';
             glogData.payLoad.io = {};
             glogData.payLoad.io.rtuAddress = rtuIdGLOG; //arrGlogData[2];
-            var io = {"1":{},"2":{}};
-            io["1"].id = 1;
-            io["1"].ioType = "TCP-MODMUX-DIO8";
-            io["1"].rawData = {};
-            io["1"].data = {};
-            io["1"].data.id = 1;
-            io["1"].data.ioType = "TCP-MODMUX-DIO8";
-            io["1"].data.digitalsIn = arrGlogData[6];
+            var ioDetails = [];
+            var objIO1 = {}
+            objIO1.id = 1;
+            objIO1.ioType = "TCP-MODMUX-DIO8";
+            objIO1.rawData = {};
+            objIO1.data = {};
+            objIO1.data.id = 1;
+            objIO1.data.ioType = "TCP-MODMUX-DIO8";
+            objIO1.data.digitalsIn = arrGlogData[6];
+            ioDetails.push(objIO1);
 
-            io["2"].id = 2;
-            io["2"].ioType = "TCP-MODMUX-AI8";
-            io["2"].rawData = {};
-            io["2"].data = {};
-            io["2"].data.id = 2;
-            io["2"].data.ioType = "TCP-MODMUX-AI8";
-            io["2"].data.AI1 = arrGlogData[8];
-            io["2"].data.CI1 = arrGlogData[17];
+            var objIO2 = {};
+            objIO2.id = 2;
+            objIO2.ioType = "TCP-MODMUX-AI8";
+            objIO2.rawData = {};
+            objIO2.data = {};
+            objIO2.data.id = 2;
+            objIO2.data.ioType = "TCP-MODMUX-AI8";
+            objIO2.data.AI1 = arrGlogData[8];
+            objIO2.data.CI1 = arrGlogData[17];
+            ioDetails.push(objIO2);
             
 
-            glogData.payLoad.io.io = io;
+            glogData.payLoad.io.ioDetails = ioDetails;
 
             console.log('modelGlogData', JSON.stringify(glogData));
 
@@ -191,8 +200,8 @@ var sbModule = function() {
                             else{
                                 //Manual testing below
                                 data = JSON.parse(data);
-                                data.payLoad.io.io[2].data.AI1 = 415;
-                                data.payLoad.io.io[2].data.AI2 = 488;
+                                data.payLoad.io.ioDetails[1].data.AI1 = 415;
+                                data.payLoad.io.ioDetails[1].data.AI2 = 488;
                                 // data.payLoad.io.io[1].data.digitalsIn = 0;
                                 data = JSON.stringify(data);
                             }
