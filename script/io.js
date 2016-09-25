@@ -28,7 +28,66 @@ var sbModule = function() {
     var arrIO = [];
 
     var pubIO = {
-        init: function(debug){
+        initShane: function(debug){
+            thisdebug = debug;
+            // thisdebug = 1;
+
+            console.log('Starting io');
+
+            if(typeof __settings === 'undefined'){
+                console.log('settings undefined');
+            }
+            // console.log('settings',settings.value);
+
+            var myIO = __settings.value.io;
+            var shaneIO = [];
+            var i = 0;
+            for(i=0;i<myIO.length;i++){
+                if(myIO[i].enabled == 1){
+                    if(myIO[i].ioType == 'TCP-MODMUX-AI8' || myIO[i].ioType == 'TCP-MODMUX-DIO8') 
+                    {
+                        var ioTCPClient = new tcpClient.rmcTCP;
+                        ioTCPClient.init(function(err){
+                            console.log('io error',err);
+                        }, myIO[i].ipAddress,myIO[i].port,0);
+
+                        console.log('loaded ioType',myIO[i].ioType);
+                        var ioModbus = new iomodbustcp.ioModbus(myIO[i].ioType, myIO[i].id);
+                        
+                        ioModbus.init(ioTCPClient,0);
+
+                        ioModbus.on('data',function(data){
+                            pubIO.processData(data);
+                        });
+                        var ioItem = {'id': myIO[i].id, 'io': ioModbus};
+                        arrIO.push(ioItem);
+
+
+                        if(typeof pubIO.currentStatus[__settings.value.rtuId] === 'undefined'){
+                            var currentStatus = {};
+                            currentStatus.rtuAddress = __settings.value.rtuId;
+                            var id = myIO[i].id;
+                            // var obj = { id: myIO[i].id, ioType: myIO[i].ioType, rawData: '', data: {} };
+                            currentStatus.io = {};
+                            // currentStatus.io[id] = obj;
+                            pubIO.currentStatus[__settings.value.rtuId] = currentStatus;
+                        }
+
+                        if(typeof pubIO.currentStatus[__settings.value.rtuId].io[myIO[i].IOid] === 'undefined'){
+                            var id = myIO[i].id;
+                            var obj = { id: myIO[i].id, ioType: myIO[i].ioType, rawData: [], data: {}, scaling: myIO[i].scaling, cofs: myIO[i].cofs };
+                            // var io = {};
+                            // pubIO.currentStatus[__settings.value.rtuId].io[id] = obj;
+                            shaneIO.push(obj);
+                        }
+
+                    }
+                }
+            }
+            pubIO.currentStatus[__settings.value.rtuId].io = shaneIO;
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',JSON.stringify(pubIO.currentStatus[__settings.value.rtuId]));
+        },   
+       init: function(debug){
             thisdebug = debug;
             // thisdebug = 1;
 
@@ -101,7 +160,7 @@ var sbModule = function() {
                     // }
                 }
             }
-        },        
+        },               
         saveSettings: function(req,res,done,error){
             __settings.writeSettings(req,res,function(req,res,data){
                 done(req,res,data);
