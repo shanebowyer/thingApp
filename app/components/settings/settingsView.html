@@ -1,315 +1,317 @@
 <div data-ng-init="init()">
 
-    <div id="divProviders" class="container">
+  <div id="divProviders" class="container">
 
-		<div>
-			<a href="" ng-click="gotoAnchor('anchorSiteInfo')">SiteInfo | </a>
-			<a href="" ng-click="gotoAnchor('anchorIO')">IO | </a>
-			<a href="" ng-click="gotoAnchor('anchorControl')">Control</a>
-		</div>
-
-        <div id="anchorSiteInfo" class="panel panel-primary">
-            <div class="panel-heading">
-                <h2 class="panel-title">Site info</h2>
-            </div>
-
-            <div class="panel-body">
-                <div class="row">
-		            <div class="form-group">
-		            	<label for="siteDescription">Site Description:</label>
-		            	<input id="siteDescription" class="form-control" ng-model="selectedSite.description"></input>
-		            	<label for="siteID">Site ID:</label>
-		            	<input id="siteID" class="form-control" ng-model="selectedSite.id"></input>
-		            	<label for="siteIpAddress">Site Ip Address:</label>
-		            	<input id="siteIpAddress" class="form-control" ng-model="selectedSite.ipAddress"></input>
-		            	<label for="sitePort">Site Port:</label>
-		            	<input id="sitePort" class="form-control" ng-model="selectedSite.port"></input>
-		            	<label for="siteSocketPort">Site Socket Port:</label>
-		            	<input id="siteSocketPort" class="form-control" ng-model="selectedSite.socketPort"></input>
-		            	<label for="siteDefaultHtmlPage">Site Socket Port:</label>
-		            	<input id="siteDefaultHtmlPage" class="form-control" ng-model="selectedSite.defaultHtmlPage"></input>
-	            	</div>
-					<div>
-						<hr/>
-		            	<input type="button" class="btn btn-default" value="Update" ng-click="siteUpdate()"></input>
-		            	<input type="button" class="btn btn-default" value="Cancel" ng-click="init()"></input>
-					</div>
-            	</div>
-            </div>
-        </div>
-
-
-        <div id="anchorIO" class="panel panel-primary">
-            <div class="panel-heading">
-                <h2 class="panel-title">IO</h2>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-
-					<table class="table table-hover">
-						<tr>
-							<th>
-								ID
-							</th>
-							<th>
-								Description
-							</th>
-							<th>
-								ioType
-							</th>
-							<th>
-								IpAddress
-							</th>
-							<th>
-								Port
-							</th>
-							<th>
-								Enabled
-							</th>
-						</tr>
-						<tr ng-repeat="x in io" ng-click="selectTable(x,'edit')">
-							<td>{{ x.id }}</td>
-							<td>{{ x.description }}</td>
-							<td>{{ x.ioType }}</td>
-							<td>{{ x.ipAddress }}</td>
-							<td>{{ x.port }}</td>
-							<td>{{ x.enabled }}</td>
-							<td><input type="button" class="btn btn-default" ng-click="ioDelete(x,'delete')" value="X"></input></td>
-						</tr>
-					</table>
-                </div>
-                <hr/>
-	            <div class="form-group">
-	            	<label for="ID">ID:</label>
-	            	<input id="ID" class="form-control" ng-model="selectedIO.id"></input>
-	            	<label for="Description">Description:</label>
-	            	<input id="Description" class="form-control" ng-model="selectedIO.description"></input>
-	            	<label for="ioType">ioType:</label>
-					<select ng-model="selectedIO.ioType" class="form-control">
-						<option ng-repeat="items in optionsIOModules" value="{{items.ioType}}">
-							{{items.ioType}}
-						</option>
-					</select>
-	            	<label for="ipAddress">ipAddress:</label>
-	            	<input id="ipAddress" class="form-control" ng-model="selectedIO.ipAddress"></input>
-
-	            	<label for="port">Port:</label>
-	            	<input id="port" class="form-control" ng-model="selectedIO.port"></input>
-					<label class="checkbox-inline"><input type="checkbox" ng-model="selectedIO.enabled">Enabled</label>	            	
-					<div>
-						<hr/>
-		            	<input type="button" class="btn btn-default" value="Add" ng-click="ioAdd()"></input>
-		            	<input type="button" class="btn btn-default" value="Update" ng-click="ioUpdate()"></input>
-		            	<input type="button" class="btn btn-default" value="Cancel" ng-click="init()"></input>
-					</div>
-	            </div>
-            </div>
-        </div>
-
-        <div id="anchorScaling" class="panel panel-primary">
-            <div class="panel-heading">
-                <h2 class="panel-title">Scaling</h2>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-					<table class="table table-hover">
-						<tr>
-							<th>
-								Description
-							</th>
-							<th>
-								rawHi
-							</th>
-							<th>
-								rawLow
-							</th>
-							<th>
-								scaleHi
-							</th>
-							<th>
-								scaleLow
-							</th>
-						</tr>
-						<tr ng-repeat="x in scaling" ng-click="selectScalingTable(x,'edit')">
-							<td>{{ x.description }}</td>
-							<td>{{ x.rawHi }}</td>
-							<td>{{ x.rawLow }}</td>
-							<td>{{ x.scaleHi }}</td>
-							<td>{{ x.scaleLow }}</td>
-							<!-- <td><input type="button" class="btn btn-default" ng-click="controlDelete(x,'delete')" value="X"></input></td> -->
-						</tr>
-					</table>
-	            </div>
-	            <hr/>
-	            <div class="form-group">
-	            	<label for="selectedScalingDescription">Description:</label>
-	            	<input id="selectedScalingDescription" class="form-control" ng-model="selectedScaling.description"></input>
-	            	<label for="selectedScalingRawHi">rawHi:</label>
-	            	<input id="selectedScalingRawHi" class="form-control" ng-model="selectedScaling.rawHi"></input>
-	            	<label for="selectedScalingRawLow">rawLow:</label>
-	            	<input id="selectedScalingRawLow" class="form-control" ng-model="selectedScaling.rawLow"></input>
-	            	<label for="selectedScalingScaleHi">scaleHi:</label>
-	            	<input id="selectedScalingScaleHi" class="form-control" ng-model="selectedScaling.scaleHi"></input>
-	            	<label for="selectedScalingScaleLow">scaleLow:</label>
-	            	<input id="selectedScalingScaleLow" class="form-control" ng-model="selectedScaling.scaleLow"></input>
-
-					<div>
-						<hr/>
-		            	<input type="button" class="btn btn-default" value="Update" ng-click="scalingUpdate()"></input>
-		            	<input type="button" class="btn btn-default" value="Cancel" ng-click="init()"></input>
-					</div>
-	            </div>
-            </div>
-        </div>
-
-
-
-        <div id="anchorControl" class="panel panel-primary">
-            <div class="panel-heading">
-                <h2 class="panel-title">Control</h2>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-
-					<table class="table table-hover">
-						<tr>
-							<th>
-								Description
-							</th>
-							<th>
-								controlType
-							</th>
-						</tr>
-						<tr ng-repeat="x in control" ng-click="selectControlTable(x,'edit')">
-							<td>{{ x.description }}</td>
-							<td>{{ x.controlType }}</td>
-							<td><input type="button" class="btn btn-default" ng-click="controlDelete(x,'delete')" value="X"></input></td>
-						</tr>
-					</table>
-                </div>
-                <hr/>
-	            <div class="form-group">
-	            	<img src={{selectedControl.img}}>
-	            	<br/>
-	            	<label for="selectedControlDescription">Description:</label>
-	            	<input id="selectedControlDescription" class="form-control" ng-model="selectedControl.description"></input>
-	            	<label for="selectedControlType">controlType:</label>
-					<select ng-model="selectedControl.controlType" class="form-control">
-						<option ng-repeat="items in optionsControl" value="{{items.controlType}}">
-							{{items.controlType}}
-						</option>
-					</select>
-
-
-					<label class="checkbox-inline"><input type="checkbox" ng-model="selectedControl.enabled">Enabled</label>	            	
-					<br>
-
-
-					<div id="divSetPointsReservoir" ng-show="controlUI.divSetPointsReservoirVisible">
-						<h4>Setpoints</h4>
-						<hr/>
-		            	<label for="selectedControlReservoirSPLow">low:</label>
-		            	<input id="selectedControlReservoirSPLow" class="form-control" ng-model="selectedControl.reservoirSPLow"></input>
-		            	<label for="selectedControlReservoirSPHi">hi:</label>
-		            	<input id="selectedControlReservoirSPHi" class="form-control" ng-model="selectedControl.reservoirSPHi"></input>
-
-
-
-		            	<label for="selectedControlReservoirSPSourceIO">SourceIO:</label>
-						<select ng-model="selectedControl.reservoirSPSourceIO" class="form-control">
-							<option ng-repeat="items in io" value="{{items.id}}">
-								{{items.ioType}}
-							</option>
-						</select>
-
-
-
-		            	<label for="selectedControlReservoirSPIO">IO To Monitor:</label>
-						<select ng-model="selectedControl.reservoirSPIO" class="form-control">
-							<option ng-repeat="items in optionsIO" value="{{items.description}}">
-								{{items.description}}
-							</option>
-						</select>
-
-
-						<h4>msgOutSetPointLow</h4>
-						<hr/>
-		            	<label for="selectedControlReservoirMsgOutSPLowSourceAddress">Source Address:</label>
-		            	<input id="selectedControlReservoirMsgOutSPLowSourceAddress" class="form-control" ng-model="selectedControl.reservoirMsgOutSPLowSourceAddress"></input>
-		            	<label for="selectedControlReservoirMsgOutSPLowDestinationAddress">Destination Address:</label>
-		            	<input id="selectedControlReservoirMsgOutSPLowDestinationAddress" class="form-control" ng-model="selectedControl.reservoirMsgOutSPLowDestinationAddress"></input>
-
-		            	<label for="selectedControlReservoirMsgOutSPLowDestinationIO">DestinationIO:</label>
-						<select ng-model="selectedControl.reservoirMsgOutSPLowDestinationIO" class="form-control">
-							<option value="1">1</option>
-							<option value="2">2</option>
-							<option value="3">3</option>
-						</select>
-
-		            	
-		            	<label for="selectedControlReservoirMsgOutSPLowIO">IO to Control:</label>
-<!-- 						<select ng-model="selectedControl.reservoirMsgOutSPLowIO" class="form-control">
-							<option value="digOut">digOut</option>
-						</select>
- -->
-						<select ng-model="selectedControl.reservoirMsgOutSPLowIO" class="form-control">
-							<option ng-repeat="items in optionsIO" value="{{items.description}}">
-								{{items.description}}
-							</option>
-						</select>
-
-
-		            	<label for="selectedControlReservoirMsgOutSPLowWriteMask">Write Mask:</label>
-		            	<input id="selectedControlReservoirMsgOutSPLowWriteMask" class="form-control" ng-model="selectedControl.reservoirMsgOutSPLowWriteMask"></input>
-		            	<label for="selectedControlReservoirMsgOutSPLowWriteValue">Write Value:</label>
-		            	<input id="selectedControlReservoirMsgOutSPLowWriteValue" class="form-control" ng-model="selectedControl.reservoirMsgOutSPLowWriteValue"></input>
-
-
-						<h4>msgOutSetPointHi</h4>
-						<hr/>
-		            	<label for="selectedControlReservoirMsgOutSPHiSourceAddress">Source Address:</label>
-		            	<input id="selectedControlReservoirMsgOutSPHiSourceAddress" class="form-control" ng-model="selectedControl.reservoirMsgOutSPHiSourceAddress"></input>
-		            	<label for="selectedControlReservoirMsgOutSPHiDestinationAddress">Destination Address:</label>
-		            	<input id="selectedControlReservoirMsgOutSPHiDestinationAddress" class="form-control" ng-model="selectedControl.reservoirMsgOutSPHiDestinationAddress"></input>
-
-
-
-		            	<label for="selectedControlReservoirMsgOutSPHiDestinationIO">DestinationIO:</label>
-						<select ng-model="selectedControl.reservoirMsgOutSPHiDestinationIO" class="form-control">
-							<option value="1">1</option>
-							<option value="2">2</option>
-							<option value="3">3</option>
-						</select>
-		            	
-		            	<label for="selectedControlReservoirMsgOutSPHiIO">IO:</label>
-						<select ng-model="selectedControl.reservoirMsgOutSPHiIO" class="form-control">
-							<option value="digOut">digOut</option>
-						</select>
-
-		            	<label for="selectedControlReservoirMsgOutSPHiWriteMask">Write Mask:</label>
-		            	<input id="selectedControlReservoirMsgOutSPHiWriteMask" class="form-control" ng-model="selectedControl.reservoirMsgOutSPHiWriteMask"></input>
-		            	<label for="selectedControlReservoirMsgOutSPHiWriteValue">Write Value:</label>
-		            	<input id="selectedControlReservoirMsgOutSPHiWriteValue" class="form-control" ng-model="selectedControl.reservoirMsgOutSPHiWriteValue"></input>
-
-						
-					</div>
-					<div>
-						<hr/>
-		            	<input type="button" class="btn btn-default" value="Add" ng-click="controlAdd()"></input>
-		            	<input type="button" class="btn btn-default" value="Update" ng-click="controlUpdate()"></input>
-		            	<input type="button" class="btn btn-default" value="Cancel" ng-click="init()"></input>
-					</div>
-	            </div>
-            </div>
-        </div>
-
-
-
-
-        <div>
-        	<input type="button" class="btn btn-warning" value="SAVE" ng-click="save()"></input>
-        </div>
-
+    <div>
+      <a href="" ng-click="gotoAnchor('anchorSiteInfo')">SiteInfo | </a>
+      <a href="" ng-click="gotoAnchor('anchorIO')">IO | </a>
+      <a href="" ng-click="gotoAnchor('anchorControl')">Control</a>
     </div>
 
- </div>
+    <div id="anchorSiteInfo" class="panel panel-primary">
+      <div class="panel-heading">
+        <h2 class="panel-title">Site info</h2>
+      </div>
+
+      <div class="panel-body">
+        <div class="row">
+          <div class="form-group">
+            <label for="siteDescription">Site Description:</label>
+            <input id="siteDescription" class="form-control" ng-model="selectedSite.description"></input>
+            <label for="siteID">Site ID:</label>
+            <input id="siteID" class="form-control" ng-model="selectedSite.id"></input>
+            <label for="siteIpAddress">Site Ip Address:</label>
+            <input id="siteIpAddress" class="form-control" ng-model="selectedSite.ipAddress"></input>
+            <label for="sitePort">Site Port:</label>
+            <input id="sitePort" class="form-control" ng-model="selectedSite.port"></input>
+            <label for="siteSocketPort">Site Socket Port:</label>
+            <input id="siteSocketPort" class="form-control" ng-model="selectedSite.socketPort"></input>
+            <label for="siteDefaultHtmlPage">Site Socket Port:</label>
+            <input id="siteDefaultHtmlPage" class="form-control" ng-model="selectedSite.defaultHtmlPage"></input>
+          </div>
+          <div>
+            <hr/>
+            <input type="button" class="btn btn-default" value="Update" ng-click="siteUpdate()"></input>
+            <input type="button" class="btn btn-default" value="Cancel" ng-click="init()"></input>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div id="anchorIO" class="panel panel-primary">
+      <div class="panel-heading">
+        <h2 class="panel-title">IO</h2>
+      </div>
+      <div class="panel-body">
+        <div class="row">
+
+          <table class="table table-hover">
+            <tr>
+              <th>
+                ID
+              </th>
+              <th>
+                Description
+              </th>
+              <th>
+                ioType
+              </th>
+              <th>
+                IpAddress
+              </th>
+              <th>
+                Port
+              </th>
+              <th>
+                Enabled
+              </th>
+            </tr>
+            <tr ng-repeat="x in io" ng-click="selectTable(x,'edit')">
+              <td>{{ x.id }}</td>
+              <td>{{ x.description }}</td>
+              <td>{{ x.ioType }}</td>
+              <td>{{ x.ipAddress }}</td>
+              <td>{{ x.port }}</td>
+              <td>{{ x.enabled }}</td>
+              <td>
+                <input type="button" class="btn btn-default" ng-click="ioDelete(x,'delete')" value="X"></input>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <hr/>
+        <div class="form-group">
+          <label for="ID">ID:</label>
+          <input id="ID" class="form-control" ng-model="selectedIO.id"></input>
+          <label for="Description">Description:</label>
+          <input id="Description" class="form-control" ng-model="selectedIO.description"></input>
+          <label for="ioType">ioType:</label>
+          <select ng-model="selectedIO.ioType" class="form-control">
+            <option ng-repeat="items in optionsIOModules" value="{{items.ioType}}">
+              {{items.ioType}}
+            </option>
+          </select>
+          <label for="ipAddress">ipAddress:</label>
+          <input id="ipAddress" class="form-control" ng-model="selectedIO.ipAddress"></input>
+
+          <label for="port">Port:</label>
+          <input id="port" class="form-control" ng-model="selectedIO.port"></input>
+          <label class="checkbox-inline">
+            <input type="checkbox" ng-model="selectedIO.enabled">Enabled</label>
+          <div>
+            <hr/>
+            <input type="button" class="btn btn-default" value="Add" ng-click="ioAdd()"></input>
+            <input type="button" class="btn btn-default" value="Update" ng-click="ioUpdate()"></input>
+            <input type="button" class="btn btn-default" value="Cancel" ng-click="init()"></input>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="anchorScaling" class="panel panel-primary">
+      <div class="panel-heading">
+        <h2 class="panel-title">Scaling</h2>
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <table class="table table-hover">
+            <tr>
+              <th>
+                Description
+              </th>
+              <th>
+                rawHi
+              </th>
+              <th>
+                rawLow
+              </th>
+              <th>
+                scaleHi
+              </th>
+              <th>
+                scaleLow
+              </th>
+            </tr>
+            <tr ng-repeat="x in scaling" ng-click="selectScalingTable(x,'edit')">
+              <td>{{ x.description }}</td>
+              <td>{{ x.rawHi }}</td>
+              <td>{{ x.rawLow }}</td>
+              <td>{{ x.scaleHi }}</td>
+              <td>{{ x.scaleLow }}</td>
+              <!-- <td><input type="button" class="btn btn-default" ng-click="controlDelete(x,'delete')" value="X"></input></td> -->
+            </tr>
+          </table>
+        </div>
+        <hr/>
+        <div class="form-group">
+          <label for="selectedScalingDescription">Description:</label>
+          <input id="selectedScalingDescription" class="form-control" ng-model="selectedScaling.description"></input>
+          <label for="selectedScalingRawHi">rawHi:</label>
+          <input id="selectedScalingRawHi" class="form-control" ng-model="selectedScaling.rawHi"></input>
+          <label for="selectedScalingRawLow">rawLow:</label>
+          <input id="selectedScalingRawLow" class="form-control" ng-model="selectedScaling.rawLow"></input>
+          <label for="selectedScalingScaleHi">scaleHi:</label>
+          <input id="selectedScalingScaleHi" class="form-control" ng-model="selectedScaling.scaleHi"></input>
+          <label for="selectedScalingScaleLow">scaleLow:</label>
+          <input id="selectedScalingScaleLow" class="form-control" ng-model="selectedScaling.scaleLow"></input>
+
+          <div>
+            <hr/>
+            <input type="button" class="btn btn-default" value="Update" ng-click="scalingUpdate()"></input>
+            <input type="button" class="btn btn-default" value="Cancel" ng-click="init()"></input>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div id="anchorControl" class="panel panel-primary">
+      <div class="panel-heading">
+        <h2 class="panel-title">Control</h2>
+      </div>
+      <div class="panel-body">
+        <div class="row">
+
+          <table class="table table-hover">
+            <tr>
+              <th>
+                Description
+              </th>
+              <th>
+                controlType
+              </th>
+            </tr>
+            <tr ng-repeat="x in control" ng-click="selectControlTable(x,'edit')">
+              <td>{{ x.description }}</td>
+              <td>{{ x.controlType }}</td>
+              <td>
+                <input type="button" class="btn btn-default" ng-click="controlDelete(x,'delete')" value="X"></input>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <hr/>
+        <div class="form-group">
+          <img src={{selectedControl.img}}>
+          <br/>
+          <label for="selectedControlDescription">Description:</label>
+          <input id="selectedControlDescription" class="form-control" ng-model="selectedControl.description"></input>
+          <label for="selectedControlType">controlType:</label>
+          <select ng-model="selectedControl.controlType" class="form-control">
+            <option ng-repeat="items in optionsControl" value="{{items.controlType}}">
+              {{items.controlType}}
+            </option>
+          </select>
+
+
+          <label class="checkbox-inline">
+            <input type="checkbox" ng-model="selectedControl.enabled">Enabled</label>
+          <br>
+
+
+          <div id="divSetPointsReservoir" ng-show="controlUI.divSetPointsReservoirVisible">
+            <h4>Setpoints</h4>
+            <hr/>
+            <label for="selectedControlReservoirSPLow">low:</label>
+            <input id="selectedControlReservoirSPLow" class="form-control" ng-model="selectedControl.reservoirSPLow"></input>
+            <label for="selectedControlReservoirSPHi">hi:</label>
+            <input id="selectedControlReservoirSPHi" class="form-control" ng-model="selectedControl.reservoirSPHi"></input>
+
+
+
+            <label for="selectedControlReservoirSPSourceIO">SourceIO:</label>
+            <select ng-model="selectedControl.reservoirSPSourceIO" class="form-control">
+              <option ng-repeat="items in io" value="{{items.id}}">
+                {{items.ioType}}
+              </option>
+            </select>
+
+
+
+            <label for="selectedControlReservoirSPIO">IO To Monitor:</label>
+            <select ng-model="selectedControl.reservoirSPIO" class="form-control">
+              <option ng-repeat="items in optionsIO" value="{{items.description}}">
+                {{items.description}}
+              </option>
+            </select>
+
+
+            <h4>msgOutSetPointLow</h4>
+            <hr/>
+            <label for="selectedControlReservoirMsgOutSPLowSourceAddress">Source Address:</label>
+            <input id="selectedControlReservoirMsgOutSPLowSourceAddress" class="form-control" ng-model="selectedControl.reservoirMsgOutSPLowSourceAddress"></input>
+            <label for="selectedControlReservoirMsgOutSPLowDestinationAddress">Destination Address:</label>
+            <input id="selectedControlReservoirMsgOutSPLowDestinationAddress" class="form-control" ng-model="selectedControl.reservoirMsgOutSPLowDestinationAddress"></input>
+
+            <label for="selectedControlReservoirMsgOutSPLowDestinationIO">DestinationIO:</label>
+            <select ng-model="selectedControl.reservoirMsgOutSPLowDestinationIO" class="form-control">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+
+
+            <label for="selectedControlReservoirMsgOutSPLowIO">IO to Control:</label>
+            <!-- 						<select ng-model="selectedControl.reservoirMsgOutSPLowIO" class="form-control">
+						<option value="digOut">digOut</option>
+					</select>
+-->
+            <select ng-model="selectedControl.reservoirMsgOutSPLowIO" class="form-control">
+              <option ng-repeat="items in optionsIO" value="{{items.description}}">
+                {{items.description}}
+              </option>
+            </select>
+
+
+            <label for="selectedControlReservoirMsgOutSPLowWriteMask">Write Mask:</label>
+            <input id="selectedControlReservoirMsgOutSPLowWriteMask" class="form-control" ng-model="selectedControl.reservoirMsgOutSPLowWriteMask"></input>
+            <label for="selectedControlReservoirMsgOutSPLowWriteValue">Write Value:</label>
+            <input id="selectedControlReservoirMsgOutSPLowWriteValue" class="form-control" ng-model="selectedControl.reservoirMsgOutSPLowWriteValue"></input>
+
+
+            <h4>msgOutSetPointHi</h4>
+            <hr/>
+            <label for="selectedControlReservoirMsgOutSPHiSourceAddress">Source Address:</label>
+            <input id="selectedControlReservoirMsgOutSPHiSourceAddress" class="form-control" ng-model="selectedControl.reservoirMsgOutSPHiSourceAddress"></input>
+            <label for="selectedControlReservoirMsgOutSPHiDestinationAddress">Destination Address:</label>
+            <input id="selectedControlReservoirMsgOutSPHiDestinationAddress" class="form-control" ng-model="selectedControl.reservoirMsgOutSPHiDestinationAddress"></input>
+
+
+
+            <label for="selectedControlReservoirMsgOutSPHiDestinationIO">DestinationIO:</label>
+            <select ng-model="selectedControl.reservoirMsgOutSPHiDestinationIO" class="form-control">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+
+            <label for="selectedControlReservoirMsgOutSPHiIO">IO:</label>
+            <select ng-model="selectedControl.reservoirMsgOutSPHiIO" class="form-control">
+              <option value="digOut">digOut</option>
+            </select>
+
+            <label for="selectedControlReservoirMsgOutSPHiWriteMask">Write Mask:</label>
+            <input id="selectedControlReservoirMsgOutSPHiWriteMask" class="form-control" ng-model="selectedControl.reservoirMsgOutSPHiWriteMask"></input>
+            <label for="selectedControlReservoirMsgOutSPHiWriteValue">Write Value:</label>
+            <input id="selectedControlReservoirMsgOutSPHiWriteValue" class="form-control" ng-model="selectedControl.reservoirMsgOutSPHiWriteValue"></input>
+
+          </div>
+          <div>
+            <hr/>
+            <input type="button" class="btn btn-default" value="Add" ng-click="controlAdd()"></input>
+            <input type="button" class="btn btn-default" value="Update" ng-click="controlUpdate()"></input>
+            <input type="button" class="btn btn-default" value="Cancel" ng-click="init()"></input>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <input type="button" class="btn btn-warning" value="SAVE" ng-click="save()"></input>
+    </div>
+
+  </div>
+
+</div>
