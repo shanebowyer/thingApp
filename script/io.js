@@ -292,7 +292,7 @@ var sbModule = function() {
                         TCPMODMUXDIO8.digitalsIn = item.rawData[9];    //was 11
                         TCPMODMUXDIO8.digitalsIn <<= 8;
                         TCPMODMUXDIO8.digitalsIn += item.rawData[10];   //was 12
-                        pubIO.currentStatus[__settings.value.rtuId].ioDetails[item.id].data = TCPMODMUXDIO8;
+                        pubIO.currentStatus[__settings.value.rtuId].ioDetails[item.id-1].data = TCPMODMUXDIO8;
                         break;
                     case('TCP-MODMUX-AI8'):
                         var TCPMODMUXAI8 = pubIO.ioTemplateTCPMODMUXAI8();
@@ -309,7 +309,7 @@ var sbModule = function() {
                         TCPMODMUXAI8.AI2 += item.rawData[12];
                         TCPMODMUXAI8.AI2Scaled = parseInt(((TCPMODMUXAI8.AI2 - item.scaling[1].rawLow) / (item.scaling[1].rawHi - item.scaling[1].rawLow)) * ((item.scaling[1].scaleHi - item.scaling[1].scaleLow)));
                         
-                        pubIO.currentStatus[__settings.value.rtuId].ioDetails[item.id].data = TCPMODMUXAI8;
+                        pubIO.currentStatus[__settings.value.rtuId].ioDetails[item.id-1].data = TCPMODMUXAI8;
                         break;
                     default:
                         console.log('Unhandled ioType here5');
