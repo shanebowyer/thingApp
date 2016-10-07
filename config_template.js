@@ -3,21 +3,21 @@ var settings =
 {  
    "environmentDev": 1,
    "version":"0210.024",
-   "rtuId":"57a363c22f8bc54d228c275b",
+   "rtuId":"000000000000000000000001",
    "authTelemetry":{
       "email":"thingappdemo@bitid.co.za",
       "emailDev":"shane@bitid.co.za",
       "clientIdAuth":"579745be55d00a0a92e4d118",
       "clientIdAuthDev":"000000000000000000000002",
       "token":{"Bearer":"168969927d36003b9d10665421248132c150164f8a8ab736cdc0ab859198741f","scopes":[{"url":"/telemetry/rtu/list","role":1},{"url":"/telemetry/rtu/add","role":2},{"url":"/telemetry/rtu/update","role":2},{"url":"/telemetry/rtu/delete","role":4},{"url":"/telemetry/rtu/writehistorical","role":4},{"url":"/telemetry/rtu/gethistorical","role":1},{"url":"/telemetry/report/rtu","role":1},{"url":"/telemetry/mimic/list","role":4},{"url":"/telemetry/mimic/add","role":4},{"url":"/telemetry/mimic/update","role":4},{"url":"/telemetry/mimic/delete","role":4},{"url":"/users/alert","role":4},{"url":"/telemetry/test/alert","role":4}],"expiry":1474329588305,"pushToken":"","tokenAddOn":{"name":"Test"}},
-      "tokenDev":{"Bearer":"168969927d36003b9d10665421248132c150164f8a8ab736cdc0ab859198741f","scopes":[{"url":"/telemetry/rtu/list","role":1},{"url":"/telemetry/rtu/add","role":2},{"url":"/telemetry/rtu/update","role":2},{"url":"/telemetry/rtu/delete","role":4},{"url":"/telemetry/rtu/writehistorical","role":4},{"url":"/telemetry/rtu/gethistorical","role":1},{"url":"/telemetry/report/rtu","role":1},{"url":"/telemetry/mimic/list","role":4},{"url":"/telemetry/mimic/add","role":4},{"url":"/telemetry/mimic/update","role":4},{"url":"/telemetry/mimic/delete","role":4},{"url":"/users/alert","role":4},{"url":"/telemetry/test/alert","role":4}],"expiry":1474329588305,"pushToken":"","tokenAddOn":{"name":"Test"}},
+      "tokenDev":{"Bearer":"fbf4d55d24b1bb7d1624bda2885e54f5a6834ced5639d3980496fbd17a8c4968","scopes":[{"url":"/telemetry/rtu/list","role":1},{"url":"/telemetry/rtu/add","role":2},{"url":"/telemetry/rtu/update","role":2},{"url":"/telemetry/rtu/delete","role":4},{"url":"/telemetry/rtu/writehistorical","role":4},{"url":"/telemetry/rtu/gethistorical","role":1},{"url":"/telemetry/report/rtu","role":1},{"url":"/telemetry/mimic/list","role":4},{"url":"/telemetry/mimic/add","role":4},{"url":"/telemetry/mimic/update","role":4},{"url":"/telemetry/mimic/delete","role":4},{"url":"/users/alert","role":4},{"url":"/telemetry/test/alert","role":4}],"expiry":1477824701623,"pushToken":"","tokenAddOn":{"name":"Test"}},
       "host":"http://192.167.1.251",
       "port":"8000",
       "path":"/telemetry/rtu/writehistorical"
    },
    "description":"SiteOne1",
    "timeZone":2,
-   "fixedTxTime":10,
+   "fixedTxTime":1,
    "commsTimeout":30,
    "localwebserver":{  
       "ipAddress":"192.167.1.251",

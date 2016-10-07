@@ -24,7 +24,7 @@ var sbModule = function() {
     var myLog;
 
     var pubPLC = {
-
+        test: 0,
         COFSSettingsTemplate: function(){
             COFS = {
                 digitalsInMask: 0,
@@ -88,7 +88,7 @@ var sbModule = function() {
             debugger;
 
             var msgIn = args.data;
-            console.log('msgIn',msgIn);
+            // console.log('msgIn',msgIn);
             var payLoad = msgIn.payLoad;
             console.log('payLoad',payLoad);
 
@@ -131,12 +131,12 @@ var sbModule = function() {
                     }
                     //myLog.add(JSON.stringify(args),1,1);
                 }
-                else if(payLoad.msgType === 'control' && (typeof io.currentStatus[__settings.value.rtuId].io[payLoad.write.destinationIO].data.digitalsOut !== 'undefined')){
+                else if(payLoad.msgType === 'control' && (typeof io.currentStatus[__settings.value.rtuId].ioDetails[payLoad.write.destinationIO-1].data.digitalsOut !== 'undefined')){
                     console.log('payLoad.write.io',payLoad.write.io);
                     var valueToWrite = 0;
                     if(payLoad.write.io == 'digOut'){
-                        console.log('in here',io.currentStatus[__settings.value.rtuId].io[payLoad.write.destinationIO].data.digitalsOut);
-                        var diff = parseInt(io.currentStatus[__settings.value.rtuId].io[payLoad.write.destinationIO].data.digitalsOut) - parseInt(payLoad.write.mask);
+                        console.log('in here',io.currentStatus[__settings.value.rtuId].ioDetails[payLoad.write.destinationIO-1].data.digitalsOut);
+                        var diff = parseInt(io.currentStatus[__settings.value.rtuId].ioDetails[payLoad.write.destinationIO-1].data.digitalsOut) - parseInt(payLoad.write.mask);
                         if(diff < 0){
                             diff = 0;
                         }
@@ -217,14 +217,10 @@ var sbModule = function() {
                     if(item.enabled){
                         switch(item.controlType){
                             case('Control'):
-                                // var found = _.find(io.currentStatus[__settings.value.rtuId].io[item.setPoints.sourceIO].data,function(io){
-                                //     return io == item.setPoints.io;
-                                // });
-
                                 var ioMonitor;
-                                for(var key in io.currentStatus[__settings.value.rtuId].io[item.setPoints.sourceIO].data){
+                                for(var key in io.currentStatus[__settings.value.rtuId].ioDetails[item.setPoints.sourceIO-1].data){
                                     if(key == item.setPoints.io){
-                                        ioMonitor = io.currentStatus[__settings.value.rtuId].io[item.setPoints.sourceIO].data[key];
+                                        ioMonitor = io.currentStatus[__settings.value.rtuId].ioDetails[item.setPoints.sourceIO-1].data[key];
                                         // console.log('value for ', item.setPoints.io + ':' + ioMonitor);
                                     }
                                 }
@@ -267,198 +263,142 @@ var sbModule = function() {
             var bCOFS = 0;
             var TxFlag = 0;
 
-
             var rtukey = __settings.value.rtuId;
             if(typeof io.currentStatus[rtukey] == 'undefined'){
                 done(0);
                 return;
             }
-            for(var iokey in io.currentStatus[rtukey].io){
-                // console.log('sb io.currentStatus[rtukey].io[iokey]',io.currentStatus[rtukey].io[iokey]);
+            // console.log('checkCOFS',io.currentStatus[rtukey]);
+            pubPLC.test++;
 
-                if(typeof io.currentStatus[rtukey].io[iokey] != 'undefined'){
-                    var itemIO = io.currentStatus[rtukey].io[iokey];
+            for(var itemIO of io.currentStatus[rtukey].ioDetails){
+                // console.log('item',item);
+                for(var itemCOFS of itemIO.cofs){
+                    switch(itemCOFS.description){
+                        case('digitalsIn'):
 
-                    if(typeof itemIO.cofs != 'undefined'){
-                        // console.log('cofs', itemIO.cofs);
+                            // console.log('cofs', itemIO.cofs);
 
-                        for(var cofskey in itemIO.cofs){
-                            if(typeof itemIO.cofs[cofskey] != 'undefined'){
-                                var itemCOFS = itemIO.cofs[cofskey];
-                                switch(itemCOFS.description){
-                                    case('digitalsIn'):
-
-                                        // console.log('cofs', itemIO.cofs);
-
-                                        if(typeof itemIO.data.digitalsIn != 'undefined'){
-                                            // console.log('digitalsIn', itemIO.data.digitalsIn);
-                                            var currentDigitalStatusWithMask = itemIO.data.digitalsIn & arrCOFS[0].digitalsInMask;
-                                            if(currentDigitalStatusWithMask != arrCOFS[0].digitalsLastStatus){
-
-                                                arrCOFS[0].digitalsLastStatus = itemIO.data.digitalsIn  & arrCOFS[0].digitalsInMask;
-                                                TxFlag += Math.pow(2,1);
-                                                console.log('Digital COFS');
-                                                bCOFS = 1;
-
-                                                if(bCOFS == 1){
-                                                    console.log('COFS TXFlag = ' + TxFlag + ' Status: ' + itemIO.data.digitalsIn);
-
-                                                    if(__settings.value.localwebserver.ipAddress == '92.222.86.224'){
-                                                        var pushMessage = pubPLC.buildMessage('COFS TXFlag = ' + TxFlag + ' Status: ' + itemIO.data.digitalsIn);
-                                                        pubPLC.sendPushMessage(pushMessage);
-                                                    }
+                            if(typeof itemIO.data.digitalsIn != 'undefined'){
+                                // console.log('pubPLC.test',pubPLC.test);
+                                // if(pubPLC.test < 5){
+                                //     itemIO.data.digitalsIn = 0;
+                                // }
+                                // else if(pubPLC.test < 10){
+                                //     itemIO.data.digitalsIn = 1;
+                                // }
+                                // else{
+                                //     itemIO.data.digitalsIn = 0;
+                                //     pubPLC.test = 0;
+                                // }
+                                // io.currentStatus[rtukey].ioDetails[0] = itemIO; //Only for testing. Must delete this
 
 
-                                                    if(__settings.value.localwebserver.ipAddress != '92.222.86.224'){
-                                                        var msgResponse = {
-                                                            sourceAddress: __settings.value.rtuId,
-                                                            destinationAddress: 0,
-                                                            msgId: 999,
-                                                            msgType: 'status',
-                                                            io: io.currentStatus[rtukey]
-                                                        };
-                                                        console.log('adding this to the log',msgResponse);
-                                                        myLog.add(msgResponse,1,1);
-                                                    }
+                                // console.log('digitalsIn', itemIO.data.digitalsIn);
+                                var currentDigitalStatusWithMask = itemIO.data.digitalsIn & arrCOFS[0].digitalsInMask;
+                                if(currentDigitalStatusWithMask != arrCOFS[0].digitalsLastStatus){
 
-                                                    // io.currentStatus[__settings.value.rtuId].io[key].data.TxFlag = TxFlag;
-                                                    // var jsonRecord = io.arrCurrentStatus[0];
-                                                    // myLog.add(jsonRecord,1,1);
-                                                }
-                                            }
-                                            
+                                    arrCOFS[0].digitalsLastStatus = itemIO.data.digitalsIn  & arrCOFS[0].digitalsInMask;
+                                    TxFlag += Math.pow(2,1);
+                                    console.log('Digital COFS');
+                                    bCOFS = 1;
+
+                                    if(bCOFS == 1){
+                                        console.log('COFS TXFlag = ' + TxFlag + ' Status: ' + itemIO.data.digitalsIn);
+
+                                        // if(__settings.value.localwebserver.ipAddress == '92.222.86.224'){
+                                        //     var pushMessage = pubPLC.buildMessage('COFS TXFlag = ' + TxFlag + ' Status: ' + itemIO.data.digitalsIn);
+                                        //     pubPLC.sendPushMessage(pushMessage);
+                                        // }
+
+
+                                        if(__settings.value.localwebserver.ipAddress != '92.222.86.224'){
+                                            var msgResponse = {
+                                                sourceAddress: __settings.value.rtuId,
+                                                destinationAddress: 0,
+                                                msgId: 999,
+                                                msgType: 'status',
+                                                io: io.currentStatus[rtukey]
+                                            };
+                                            console.log('adding this to the log',msgResponse);
+                                            myLog.add(msgResponse,1,1);
                                         }
-
-
-
-                                        break;
-                                    default:
-                                        break
-
+                                    }
                                 }
                             }
-                        }
-
-
-                    }                            
-                }
-            }
-                    
-            done(bCOFS);
-        },
-        checkCOFS_old: function(done){
-            var i = 0;
-            var bCOFS = 0;
-            var TxFlag = 0;
-
-
-            if(typeof io.currentStatus[__settings.value.rtuId] != 'undefined'){
-                // console.log('io.currentStatus',io.currentStatus[__settings.value.rtuId]);
-
-
-                for(var key in io.currentStatus[__settings.value.rtuId].io){
-                    if(typeof io.currentStatus[__settings.value.rtuId].io[key].data.digitalsIn != 'undefined'){
-                        // for(var key1 in )
-                        // console.log('what io looks like', io.currentStatus[__settings.value.rtuId].io[key]);
-                        if(arrCOFS[0].digitalsInMask > 0){
-                            var currentDigitalStatusWithMask = io.currentStatus[__settings.value.rtuId].io[key].data.digitalsIn & arrCOFS[0].digitalsInMask;
-                            if(currentDigitalStatusWithMask != arrCOFS[0].digitalsLastStatus){
-
-                                arrCOFS[0].digitalsLastStatus = io.currentStatus[__settings.value.rtuId].io[key].data.digitalsIn  & arrCOFS[0].digitalsInMask;
-                                TxFlag += Math.pow(2,1);
-                                console.log('Digital COFS');
-                                bCOFS = 1;
-
-                                if(bCOFS == 1){
-                                    console.log('COFS TXFlag = ' + TxFlag);
-
-                                var msgResponse = {
-                                    sourceAddress: __settings.value.rtuId,
-                                    destinationAddress: 0,
-                                    msgId: 999,
-                                    msgType: 'status',
-                                    io: io.currentStatus[__settings.value.rtuId]
-                                };
-                                console.log('adding this to the log',msgResponse);
-                                myLog.add(msgResponse,1,1);
-
-                                    // io.currentStatus[__settings.value.rtuId].io[key].data.TxFlag = TxFlag;
-                                    // var jsonRecord = io.arrCurrentStatus[0];
-                                    // myLog.add(jsonRecord,1,1);
-                                }
-
-                            }
-
-
-                        }
+                            break;
+                        default:
+                            break
                     }
                 }
-
-
             }
-            // io.currentStatus[__settings.value.rtuId].io.forEach(function(item){
-                //DIGITALS
-                // for(var key in io.currentStatus[__settings.value.rtuId].io[item.setPoints.sourceIO].data){
-                    // console.log('key',io.currentStatus[1].io[2]);
-                // }
 
-                // if(arrCOFS[0].DigitalsMask > 0){
-                    // console.log('IO', JSON.stringify(io.currentStatus));
-                    // var CurrentDigitalStatusWithMask = io.arrCurrentStatus[0].Digitals & arrCOFS[0].DigitalsMask;
-                    // if(CurrentDigitalStatusWithMask != arrCOFS[0].DigitalsLastStatus){
-                    //     arrCOFS[0].DigitalsLastStatus = io.arrCurrentStatus[0].Digitals  & arrCOFS[0].DigitalsMask;
-                    //     TxFlag += Math.pow(2,1);
-                    //     console.log('Digital COFS');
-                    //     bCOFS = 1;
-                    // }
-                // }
-            // })
-            // myCOFS.forEach(function(item){
-            //     if(typeof item.cofs !== 'undefined'){
+            // for(var iokey in io.currentStatus[rtukey].io){
+            //     // console.log('sb io.currentStatus[rtukey].io[iokey]',io.currentStatus[rtukey].io[iokey]);
+            //     if(typeof io.currentStatus[rtukey].io[iokey] != 'undefined'){
+            //         var itemIO = io.currentStatus[rtukey].io[iokey];
+
+            //         if(typeof itemIO.cofs != 'undefined'){
+            //             // console.log('cofs', itemIO.cofs);
+
+            //             for(var cofskey in itemIO.cofs){
+            //                 if(typeof itemIO.cofs[cofskey] != 'undefined'){
+            //                     var itemCOFS = itemIO.cofs[cofskey];
+            //                     switch(itemCOFS.description){
+            //                         case('digitalsIn'):
+
+            //                             // console.log('cofs', itemIO.cofs);
+
+            //                             if(typeof itemIO.data.digitalsIn != 'undefined'){
+            //                                 // console.log('digitalsIn', itemIO.data.digitalsIn);
+            //                                 var currentDigitalStatusWithMask = itemIO.data.digitalsIn & arrCOFS[0].digitalsInMask;
+            //                                 if(currentDigitalStatusWithMask != arrCOFS[0].digitalsLastStatus){
+
+            //                                     arrCOFS[0].digitalsLastStatus = itemIO.data.digitalsIn  & arrCOFS[0].digitalsInMask;
+            //                                     TxFlag += Math.pow(2,1);
+            //                                     console.log('Digital COFS');
+            //                                     bCOFS = 1;
+
+            //                                     if(bCOFS == 1){
+            //                                         console.log('COFS TXFlag = ' + TxFlag + ' Status: ' + itemIO.data.digitalsIn);
+
+            //                                         if(__settings.value.localwebserver.ipAddress == '92.222.86.224'){
+            //                                             var pushMessage = pubPLC.buildMessage('COFS TXFlag = ' + TxFlag + ' Status: ' + itemIO.data.digitalsIn);
+            //                                             pubPLC.sendPushMessage(pushMessage);
+            //                                         }
+
+
+            //                                         if(__settings.value.localwebserver.ipAddress != '92.222.86.224'){
+            //                                             var msgResponse = {
+            //                                                 sourceAddress: __settings.value.rtuId,
+            //                                                 destinationAddress: 0,
+            //                                                 msgId: 999,
+            //                                                 msgType: 'status',
+            //                                                 io: io.currentStatus[rtukey]
+            //                                             };
+            //                                             console.log('adding this to the log',msgResponse);
+            //                                             myLog.add(msgResponse,1,1);
+            //                                         }
+            //                                     }
+            //                                 }
+                                            
+            //                             }
+
+
+
+            //                             break;
+            //                         default:
+            //                             break
+
+            //                     }
+            //                 }
+            //             }
+
+
+            //         }                            
+            //     }
+            // }
                     
-            //     }
-
-            // }
-
-
-            // if(io.arrCurrentStatus[0] != undefined){
-            //     if(arrCOFS != undefined){
-            //         if(arrCOFS.length > 0){
-            //             //console.log('DIGITAL: ' + io.arrCurrentStatus[0].Digitals);
-
-            //             //DIGITALS
-            //             if(arrCOFS[0].DigitalsMask > 0){
-            //                 var CurrentDigitalStatusWithMask = io.arrCurrentStatus[0].Digitals & arrCOFS[0].DigitalsMask;
-            //                 if(CurrentDigitalStatusWithMask != arrCOFS[0].DigitalsLastStatus){
-            //                     arrCOFS[0].DigitalsLastStatus = io.arrCurrentStatus[0].Digitals  & arrCOFS[0].DigitalsMask;
-            //                     TxFlag += Math.pow(2,1);
-            //                     console.log('Digital COFS');
-            //                     bCOFS = 1;
-            //                 }
-            //             }
-            //             //DIGITALS EXT(Digital Outputs on tcp modmux unit)
-            //             if(arrCOFS[0].DigitalsExtMask > 0){
-            //                 var CurrentDigitalExtStatusWithMask = io.arrCurrentStatus[0].DigitalsExt & arrCOFS[0].DigitalsExtMask;
-            //                 if(CurrentDigitalExtStatusWithMask != arrCOFS[0].DigitalsExtLastStatus){
-            //                     arrCOFS[0].DigitalsExtLastStatus = io.arrCurrentStatus[0].DigitalsExt  & arrCOFS[0].DigitalsExtMask;
-            //                     TxFlag += Math.pow(2,1);
-            //                     console.log('DigitalExt COFS');
-            //                     bCOFS = 1;
-            //                 }
-            //             }
-
-            //             //COUNTER0
-            //             if(arrCOFS[0].Counter0Mask > 0){
-            //                 if((io.arrCurrentStatus[0].Counter0 - arrCOFS[0].Counter0LastStatus >= arrCOFS[0].Counter0Mask) || (arrCOFS[0].Counter0LastStatus - io.arrCurrentStatus[0].Counter0  >= arrCOFS[0].Counter0Mask)){
-            //                     arrCOFS[0].Counter0LastStatus = io.arrCurrentStatus[0].Counter0;
-            //                     TxFlag += Math.pow(2,2);
-            //                     console.log('Counter0 COFS');
-            //                     bCOFS = 1;
-            //                 }
-            //             }
-            //         }
-            //     }
-            // }
             done(bCOFS);
         },
 
