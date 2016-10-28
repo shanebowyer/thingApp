@@ -321,7 +321,16 @@ var sbModule = function() {
 
 
             var rtuId = data.payLoad.sourceAddress;
-            var DTO = JSON.stringify({"email":email, "clientIdAuth": clientIdAuth, "serverDate":Date.now(), "rtuId":rtuId, "rtuData":data});
+            var DTO = JSON.stringify(
+                {
+                    "header":{
+                        "email":email, 
+                        "clientIdAuth": clientIdAuth
+                    },
+                    "serverDate":Date.now(), 
+                    "rtuId":rtuId, 
+                    "rtuData":data
+                });
 
 
             var request = require('request');
