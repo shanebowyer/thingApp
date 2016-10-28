@@ -315,20 +315,22 @@ var sbModule = function() {
             var clientIdAuth = '';
             var token = '';
 
-            if(__settings.value.environmentDev == 1){
-                email = __settings.value.authTelemetry.emailDev;
-                clientIdAuth = __settings.value.authTelemetry.clientIdAuthDev;
-                token = JSON.stringify(__settings.value.authTelemetry.tokenDev);
-            }
-            else{
-                email = __settings.value.authTelemetry.email;
-                clientIdAuth = __settings.value.authTelemetry.clientIdAuth;
-                token = JSON.stringify(__settings.value.authTelemetry.token);
-            }
+            email = __settings.value.authTelemetry.email;
+            clientIdAuth = __settings.value.authTelemetry.clientIdAuth;
+            token = JSON.stringify(__settings.value.authTelemetry.token);
 
 
             var rtuId = data.payLoad.sourceAddress;
-            var DTO = JSON.stringify({"email":email, "clientIdAuth": clientIdAuth, "serverDate":Date.now(), "rtuId":rtuId, "rtuData":data});
+            var DTO = JSON.stringify(
+                {
+                    "header":{
+                        "email":email, 
+                        "clientIdAuth": clientIdAuth
+                    },
+                    "serverDate":Date.now(), 
+                    "rtuId":rtuId, 
+                    "rtuData":data
+                });
 
 
             var request = require('request');

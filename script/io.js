@@ -76,7 +76,10 @@ var sbModule = function() {
                     }
                 }
             }
-            pubIO.currentStatus[__settings.value.rtuId].ioDetails = ioDetails;
+            if(ioDetails.length > 0){
+                pubIO.currentStatus[__settings.value.rtuId].ioDetails = ioDetails;    
+            }
+            
         },   
      
         saveSettings: function(req,res,done,error){
