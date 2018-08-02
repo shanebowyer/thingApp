@@ -30,7 +30,7 @@ var express             = require('express');
 var cors                = require('cors');
 var bodyParser          = require('body-parser');
 var http                = require('http');
-
+var rs232               = require(__base + './lib/rs232.js');
 
 try{
     var myPlc;
@@ -102,6 +102,9 @@ try{
             .then(thingApp.initAPI,null)
             .then(thingApp.initSockets,null)
             .then(function(args){
+                console.log('RS232','9600',1);
+                var myrs232 = new rs232.rmcRS232;
+                myrs232.init("/dev/ttyUSB0");                
                 deferred.resolve(args);
             },function(args){
                 deferred.reject(args);
