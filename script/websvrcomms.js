@@ -26,6 +26,7 @@ var sbModule = function() {
     var thisdebug;
     var myPLC;
     var myRTULog;
+    var tmrLogon;
 
     var fixedTxTimeCount = 0;
 
@@ -39,27 +40,14 @@ var sbModule = function() {
 
             thismyWebSvrTCPClient.on('data', function (data) {
                 try {
-                    LoggedOnToWebServer = true;
+                    if(data.toString().includes('%S *')){
+                        clearInterval(tmrLogon)
+                        LoggedOnToWebServer = true;
+                    }
                     if(thisdebug == 1){
                         console.log('websvrcomms received: '+ data);
                     }
 
-//{"dateTime":"2016/01/01","messageId":2,"payLoad":{"sourceAddress":2,"destinationAddress":1,"msgType":"control","write":{"destinationIO":1,"io":"digOut","value":255},"io":{"rtuAddress":1,"io":{"1":{"id":1,"ioType":"TCP-MODMUX-DIO8","rawData":[],"data":{"id":1,"ioType":"TCP-MODMUX-DIO8","digitalsIn":0,"digitalsOut":0,"digitalsOutWriteValue":0,"DigitalsIn":null}},"2":{"id":2,"ioType":"TCP-MODMUX-AI8","rawData":[],"data":{"ioType":"TCP-MODMUX-AI8","AI1":null,"AI2":0,"AI3":0,"AI4":0,"AI5":0,"AI6":0,"AI7":0,"AI8":0}}}}}}
-
-
-//{"dateTime":"2016/01/01","messageId":3,"payLoad":{"sourceAddress":1,"destinationAddress":2,"msgType":"handshake","io":{"rtuAddress":1,"io":{"1":{"id":1,"ioType":"TCP-MODMUX-DIO8","rawData":[],"data":{"id":1,"ioType":"TCP-MODMUX-DIO8","digitalsIn":0,"digitalsOut":0,"digitalsOutWriteValue":0,"DigitalsIn":null}},"2":{"id":2,"ioType":"TCP-MODMUX-AI8","rawData":[],"data":{"ioType":"TCP-MODMUX-AI8","AI1":null,"AI2":0,"AI3":0,"AI4":0,"AI5":0,"AI6":0,"AI7":0,"AI8":0}}}}
-//"io":{"rtuAddress":1,"io":{"1":{"id":1,"ioType":"TCP-MODMUX-DIO8","rawData":[],"data":{"id":1,"ioType":"TCP-MODMUX-DIO8","digitalsIn":0,"digitalsOut":0,"digitalsOutWriteValue":0,"DigitalsIn":null}},"2":{"id":2,"ioType":"TCP-MODMUX-AI8","rawData":[],"data":{"ioType":"TCP-MODMUX-AI8","AI1":null,"AI2":0,"AI3":0,"AI4":0,"AI5":0,"AI6":0,"AI7":0,"AI8":0}}}}
-
-                    var msgIn = JSON.parse(data);
-                    // var args = [null,null,msgIn];
-                    var args = {};
-                    args.data = msgIn;
-                    myPLC.processMessageIn(args)
-                    .then(function(data){
-                        // console.log('We do not respond here. We load the response into the myRTULog.');
-                    },function(err){
-                        // console.log('Not responding for a reason. Response would cause noise',err);
-                    });
                 }
                 catch (e) {
                     console.log('thismyWebSvrTCPClient data error: ' + e);
@@ -115,14 +103,16 @@ var sbModule = function() {
                 return;
             }
             var Start = '%S';
-            var SerialNumber = __settings.value.rtuId;
+            var SerialNumber = parseFloat(__settings.value.rtuId);
             var End = '*';
             var strOutput = ''
                 + Start
                 + ' ' + SerialNumber
                 + ' ' + End;
 
-            thismyWebSvrTCPClient.SendData(strOutput);
+            // let buf = Buffer.from('%S 65534 *')
+            let buf = Buffer.from(strOutput)
+            thismyWebSvrTCPClient.SendData(buf);
         },
         checkRTULogForMessagesToSend: function(){
             if(LoggedOnToWebServer == false){
@@ -147,7 +137,12 @@ var sbModule = function() {
                     });
                 }
                 else{
-                    thismyWebSvrTCPClient.SendData(strOutput);    
+                    if(strOutput.payLoad.io.glogData){
+                        let buf = Buffer.from(strOutput.payLoad.io.glogData)
+                        thismyWebSvrTCPClient.SendData(buf);
+                    }else{
+                        thismyWebSvrTCPClient.SendData(strOutput);    
+                    }
                 }
                 
             }
@@ -160,9 +155,9 @@ var sbModule = function() {
     }
 
 
-    LoggedOnToWebServer = true;
+    LoggedOnToWebServer = false;
 
-    setInterval(pubWebSVR.SendWebSvrLogon,5000);
+    tmrLogon = setInterval(pubWebSVR.SendWebSvrLogon,5000);
     
 
     if(__settings.value.fixedTxTime > 0){
@@ -189,6 +184,22 @@ exports.webSVRComms = sbModule;
 
 
 
+//{"dateTime":"2016/01/01","messageId":2,"payLoad":{"sourceAddress":2,"destinationAddress":1,"msgType":"control","write":{"destinationIO":1,"io":"digOut","value":255},"io":{"rtuAddress":1,"io":{"1":{"id":1,"ioType":"TCP-MODMUX-DIO8","rawData":[],"data":{"id":1,"ioType":"TCP-MODMUX-DIO8","digitalsIn":0,"digitalsOut":0,"digitalsOutWriteValue":0,"DigitalsIn":null}},"2":{"id":2,"ioType":"TCP-MODMUX-AI8","rawData":[],"data":{"ioType":"TCP-MODMUX-AI8","AI1":null,"AI2":0,"AI3":0,"AI4":0,"AI5":0,"AI6":0,"AI7":0,"AI8":0}}}}}}
+
+
+//{"dateTime":"2016/01/01","messageId":3,"payLoad":{"sourceAddress":1,"destinationAddress":2,"msgType":"handshake","io":{"rtuAddress":1,"io":{"1":{"id":1,"ioType":"TCP-MODMUX-DIO8","rawData":[],"data":{"id":1,"ioType":"TCP-MODMUX-DIO8","digitalsIn":0,"digitalsOut":0,"digitalsOutWriteValue":0,"DigitalsIn":null}},"2":{"id":2,"ioType":"TCP-MODMUX-AI8","rawData":[],"data":{"ioType":"TCP-MODMUX-AI8","AI1":null,"AI2":0,"AI3":0,"AI4":0,"AI5":0,"AI6":0,"AI7":0,"AI8":0}}}}
+//"io":{"rtuAddress":1,"io":{"1":{"id":1,"ioType":"TCP-MODMUX-DIO8","rawData":[],"data":{"id":1,"ioType":"TCP-MODMUX-DIO8","digitalsIn":0,"digitalsOut":0,"digitalsOutWriteValue":0,"DigitalsIn":null}},"2":{"id":2,"ioType":"TCP-MODMUX-AI8","rawData":[],"data":{"ioType":"TCP-MODMUX-AI8","AI1":null,"AI2":0,"AI3":0,"AI4":0,"AI5":0,"AI6":0,"AI7":0,"AI8":0}}}}
+
+                    // var msgIn = JSON.parse(data);
+                    // // var args = [null,null,msgIn];
+                    // var args = {};
+                    // args.data = msgIn;
+                    // myPLC.processMessageIn(args)
+                    // .then(function(data){
+                    //     // console.log('We do not respond here. We load the response into the myRTULog.');
+                    // },function(err){
+                    //     // console.log('Not responding for a reason. Response would cause noise',err);
+                    // });
 
 
 
