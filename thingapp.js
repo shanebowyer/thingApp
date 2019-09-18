@@ -102,9 +102,9 @@ try{
             .then(thingApp.initAPI,null)
             .then(thingApp.initSockets,null)
             .then(function(args){
-                console.log('RS232','9600',1);
-                var myrs232 = new rs232.rmcRS232;
-                myrs232.init("/dev/ttyUSB0");                
+                // console.log('RS232','9600',1);
+                // var myrs232 = new rs232.rmcRS232;
+                // myrs232.init("/dev/ttyUSB0",9600,1);                
                 deferred.resolve(args);
             },function(args){
                 deferred.reject(args);

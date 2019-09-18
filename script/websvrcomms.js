@@ -97,7 +97,7 @@ var sbModule = function() {
                     destinationAddress: 0,
                     msgId: 999,
                     msgType: 'status',
-                    io: myIO.getIOStatus(__settings.value.rtuId)
+                    io: myIO.getIOStatus(__settings.value.rtuId) || 1
                 };
 
 

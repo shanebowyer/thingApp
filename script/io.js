@@ -44,35 +44,48 @@ var sbModule = function() {
             var i = 0;
             for(i=0;i<myIO.length;i++){
                 if(myIO[i].enabled == 1){
-                    if(myIO[i].ioType == 'TCP-MODMUX-AI8' || myIO[i].ioType == 'TCP-MODMUX-DIO8') 
-                    {
-                        var ioTCPClient = new tcpClient.rmcTCP;
-                        ioTCPClient.init(function(err){
-                            console.log('io error',err);
-                        }, myIO[i].ipAddress,myIO[i].port,0);
+                    switch(myIO[i].ioType){
+                        case('TCP-MODMUX-AI8'):
+                        case('TCP-MODMUX-DIO8'):
+                            var ioTCPClient = new tcpClient.rmcTCP;
+                            ioTCPClient.init(function(err){
+                                console.log('io error',err);
+                            }, myIO[i].ipAddress,myIO[i].port,0);
 
-                        console.log('loaded ioType',myIO[i].ioType);
-                        var ioModbus = new iomodbustcp.ioModbus(myIO[i].ioType, myIO[i].id);
-                        
-                        ioModbus.init(ioTCPClient,0);
+                            console.log('loaded ioType',myIO[i].ioType);
+                            var ioModbus = new iomodbustcp.ioModbus(myIO[i].ioType, myIO[i].id);
+                            
+                            ioModbus.init(ioTCPClient,0);
 
-                        ioModbus.on('data',function(data){
-                            pubIO.processData(data);
-                        });
-                        var ioItem = {'id': myIO[i].id, 'io': ioModbus};
-                        arrIO.push(ioItem);
+                            ioModbus.on('data',function(data){
+                                pubIO.processData(data);
+                            });
+                            var ioItem = {'id': myIO[i].id, 'io': ioModbus};
+                            arrIO.push(ioItem);
 
-                        if(typeof pubIO.currentStatus[__settings.value.rtuId] === 'undefined'){
-                            var currentStatus = {};
-                            currentStatus.rtuAddress = __settings.value.rtuId;
+                            if(typeof pubIO.currentStatus[__settings.value.rtuId] === 'undefined'){
+                                var currentStatus = {};
+                                currentStatus.rtuAddress = __settings.value.rtuId;
+                                var id = myIO[i].id;
+                                // currentStatus.io = {};
+                                pubIO.currentStatus[__settings.value.rtuId] = currentStatus;
+                            }
+
                             var id = myIO[i].id;
-                            // currentStatus.io = {};
-                            pubIO.currentStatus[__settings.value.rtuId] = currentStatus;
-                        }
+                            var obj = { id: myIO[i].id, ioType: myIO[i].ioType, rawData: [], data: {}, scaling: myIO[i].scaling, cofs: myIO[i].cofs };
+                            ioDetails.push(obj);
+                            break;
+                        case('GAR-FEP'):
+                            console.log('RS232');
+                            // var myrs232 = new rs232.rmcRS232;
+                            // myrs232.init(1);
+                            var myrs232 = new rs232.rmcRS232;
+                            myrs232.init("/dev/ttyUSB0",9600,1);                
 
-                        var id = myIO[i].id;
-                        var obj = { id: myIO[i].id, ioType: myIO[i].ioType, rawData: [], data: {}, scaling: myIO[i].scaling, cofs: myIO[i].cofs };
-                        ioDetails.push(obj);
+                            var myIOModbusSerial_GARFEP = new iomodbusserial.ioModbusSerial('GAR-FEP');
+                            console.log('here2');
+                            myIOModbusSerial_GARFEP.init(myrs232,0);
+                            break
                     }
                 }
             }
