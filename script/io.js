@@ -286,9 +286,9 @@ var sbModule = function() {
                         // MODBUSDATA.id = item.ID;
                         // MODBUSDATA.ioType = item.ioType;
                         
-                        MODBUSDATA.AI1 = item.rawData[9];
+                        MODBUSDATA.AI1 = item.rawData[0];
                         MODBUSDATA.AI1 <<= 8;
-                        MODBUSDATA.AI1 += item.rawData[10];
+                        MODBUSDATA.AI1 += item.rawData[1];
 
                         var deviceTime = parseInt(new Date().getTime() / 1000|0);
                         var time = new dates.module().compressDateGlog(new Date(deviceTime * 1000),2);
