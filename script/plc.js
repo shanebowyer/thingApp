@@ -23,6 +23,12 @@ var sbModule = function() {
     var arrCOFS = [];
     var myLog;
 
+    setTimeout(function(){
+        // read [1, 3, 17, 2, 0, 2, 96, 247]
+        // write [1, 16, 0, 4, 0, 1, 2, 0, …]
+        io.writeRegister(1,2,3)
+    },5000)
+
     var pubPLC = {
         test: 0,
         COFSSettingsTemplate: function(){

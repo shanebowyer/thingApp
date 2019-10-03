@@ -286,9 +286,13 @@ var sbModule = function() {
                         // MODBUSDATA.id = item.ID;
                         // MODBUSDATA.ioType = item.ioType;
                         
-                        MODBUSDATA.AI1 = item.rawData[0];
+                        MODBUSDATA.AI1 = item.rawData[3];
                         MODBUSDATA.AI1 <<= 8;
-                        MODBUSDATA.AI1 += item.rawData[1];
+                        MODBUSDATA.AI1 += item.rawData[4];
+
+                        MODBUSDATA.AI2 = item.rawData[5];
+                        MODBUSDATA.AI2 <<= 8;
+                        MODBUSDATA.AI2 += item.rawData[6];
 
                         var deviceTime = parseInt(new Date().getTime() / 1000|0);
                         var time = new dates.module().compressDateGlog(new Date(deviceTime * 1000),2);
@@ -314,7 +318,7 @@ var sbModule = function() {
                 if(typeof item != 'undefined'){
                     if(item.id == ModuleAddress){
                         console.log('writeRegister',IOToWrite);
-                        item.io.writeRegister(ModuleAddress,IOToWrite,ValueToWrite,0);
+                        item.io.WriteRegister(ModuleAddress,IOToWrite,ValueToWrite,0);
                     }                    
                 }
 
